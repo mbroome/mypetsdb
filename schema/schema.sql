@@ -11,8 +11,9 @@ create table species_data (
    primary key         (scientific_name)
 );
 
+drop table pet_data;
 create table pet_data (
-   pet_id              VARCHAR(100) NOT NULL,
+   pet_id              INT NOT NULL AUTO_INCREMENT,
    scientific_name     VARCHAR(100) NOT NULL,
    variant             VARCHAR(100),
    collection_point    VARCHAR(100),
@@ -25,8 +26,9 @@ create table pet_data (
    key(scientific_name,variant,userid)
 );
 
-create table pet_notes (
-   pet_id              VARCHAR(100) NOT NULL,
+drop table pet_note;
+create table pet_note (
+   pet_id              INT NOT NULL AUTO_INCREMENT,
    public              BOOLEAN NOT NULL DEFAULT 0,
    note                TEXT,
    timestamp           TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
