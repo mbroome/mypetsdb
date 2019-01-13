@@ -23,19 +23,19 @@ itisspeciess_schema = ITISSpeciesSchema(many=True)
 
 
 # define the routes
-mod_species = Blueprint('species', __name__, url_prefix='/species')
+routes = Blueprint('species', __name__, url_prefix='/species')
 
 # endpoint to handle species lookups
-@mod_species.route("/<id>", methods=["GET"])
+@routes.route("/<id>", methods=["GET"])
 def species_lookup(id):
-   q = (models.mysession.query(models.ITISCommonName)
+   q = (models.Session.query(models.ITISCommonName)
        .filter(models.ITISCommonName.vernacular_name.ilike('%{0}%'.format(id)))
        .all())
 
    if q:
       return(itiscommonnames_schema.jsonify(q))
    else:
-      q = (models.mysession.query(models.ITISSpecies)
+      q = (models.Session.query(models.ITISSpecies)
           .filter(models.ITISSpecies.complete_name.ilike('%{0}%'.format(id)))
           .all())
       return(itisspeciess_schema.jsonify(q))
