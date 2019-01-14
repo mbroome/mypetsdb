@@ -1,0 +1,5 @@
+marshmallow-sqlalchemy
+sqlalchemy
+flask
+flask_marshmallow
+requests

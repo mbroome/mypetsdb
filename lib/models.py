@@ -1,9 +1,10 @@
 import os
 import json
 
-from sqlalchemy import Column, DateTime, Index, Integer, String, Text, Table
+from sqlalchemy import Column, DateTime, Index, Integer, String, Text, Table, Boolean
 from sqlalchemy.schema import FetchedValue
 from sqlalchemy.dialects.mysql.enumerated import ENUM
+from sqlalchemy.dialects.mysql import TIMESTAMP
 
 from sqlalchemy import ForeignKey
 from sqlalchemy import create_engine
@@ -31,41 +32,39 @@ class ITISSpecies(Base):
                       autoload=True,
                       autoload_with=engine)
 
+pet_species = Table('pet_species',
+   Base.metadata,
+   Column('pet_id', Integer, ForeignKey('pet_data.pet_id')),
+   Column('scientific_name', String(100), ForeignKey('species_data.scientific_name'))
+)
+
 class PetDatum(Base):
     __tablename__ = 'pet_data'
-    #__table_args__ = (
-    #    Index('scientific_name', 'scientific_name', 'variant', 'userid'),
-    #    {u'schema': 'aquadb'}
-    #)
 
     pet_id = Column(Integer, primary_key=True)
-    #scientific_name = Column(String(100), nullable=False)
     variant = Column(String(100))
     collection_point = Column(String(100))
     userid = Column(String(100), nullable=False)
     start = Column(DateTime)
     end = Column(DateTime)
     description = Column(String(255))
-    public = Column(Integer, nullable=False, server_default=FetchedValue())
+    public = Column(Boolean, nullable=False, server_default=FetchedValue())
 
-    notes = relationship('PetNote')
-    scientific_name = Column(String(100), ForeignKey('species_data.scientific_name'))
-
+    species = relationship('SpeciesDatum',secondary=pet_species, backref=backref('pet', lazy='joined'))
+    notes = relationship('PetNote', backref='pet', lazy='joined')
 
 class PetNote(Base):
     __tablename__ = 'pet_note'
-    #__table_args__ = {u'schema': 'aquadb'}
 
-    note_id = Column(Integer, primary_key=True, nullable=False)
-    pet_id = Column(Integer, ForeignKey('pet_data.pet_id'))
-    public = Column(Integer, nullable=False, server_default=FetchedValue())
+    note_id = Column(Integer, primary_key=True, autoincrement=True)
+    public = Column(Boolean, nullable=False, server_default=FetchedValue())
     note = Column(Text)
-    timestamp = Column(DateTime, primary_key=True, nullable=False, server_default=FetchedValue())
+    timestamp = Column(TIMESTAMP, primary_key=True, nullable=False)
 
+    pet_id = Column(Integer, ForeignKey('pet_data.pet_id'))
 
 class SpeciesDatum(Base):
     __tablename__ = 'species_data'
-    #__table_args__ = {u'schema': 'aquadb'}
 
     scientific_name = Column(String(100), primary_key=True)
     common_name = Column(String(100), nullable=True)
@@ -75,8 +74,6 @@ class SpeciesDatum(Base):
     cares = Column(Integer, nullable=False, server_default=FetchedValue())
     genus = Column(String(40), nullable=False)
     species = Column(String(40), nullable=False)
-
-    pet = relationship('PetDatum')
 
 
 Base.metadata.reflect(bind=engine)
