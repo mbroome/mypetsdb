@@ -1,39 +1,3 @@
-create table species_data (
-   scientific_name     VARCHAR(100) NOT NULL,
-   common_name         VARCHAR(100) NOT NULL,
-   endangered_status   BOOLEAN NOT NULL DEFAULT 0,
-   iucn_category       ENUM('DD', 'LC', 'NT', 'VU', 'EN', 'CR', 'EW', 'EX', 'LR/lc', 'LR/nt', 'LR/cd'),
-   iucn_id             VARCHAR(20),
-   cares               BOOLEAN NOT NULL DEFAULT 0,
-   family              VARCHAR(40) NOT NULL,
-   genus               VARCHAR(40) NOT NULL,
-   species             VARCHAR(40) NOT NULL,
-   primary key         (scientific_name)
-);
-
-drop table pet_data;
-create table pet_data (
-   pet_id              INT NOT NULL AUTO_INCREMENT,
-   scientific_name     VARCHAR(100) NOT NULL,
-   variant             VARCHAR(100),
-   collection_point    VARCHAR(100),
-   userid              VARCHAR(100) NOT NULL,
-   start               DATETIME,
-   end                 DATETIME,
-   description         VARCHAR(255),
-   public              BOOLEAN NOT NULL DEFAULT 0,
-   primary key         (pet_id),
-   key(scientific_name,variant,userid)
-);
-
-drop table pet_note;
-create table pet_note (
-   pet_id              INT NOT NULL AUTO_INCREMENT,
-   public              BOOLEAN NOT NULL DEFAULT 0,
-   note                TEXT,
-   timestamp           TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-   primary key         (pet_id,timestamp)
-);
 
 drop view itis_common_names;
 create view itis_common_names 

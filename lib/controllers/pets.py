@@ -40,6 +40,8 @@ def pet_lookup(id):
 
 @routes.route("/<id>", methods=["POST"])
 def pet_update(id):
+   content = request.get_json()
+
    s = 'neolamprologus multifasciatus'
    email = 'mitchell.broome@gmail.com'
    email = 'bob.broome@gmail.com'
@@ -96,18 +98,18 @@ def pet_update(id):
 
 @routes.route("/<id>/note", methods=["POST"])
 def pet_note_update(id):
-   s = 'neolamprologus multifasciatus'
-   email = 'mitchell.broome@gmail.com'
-   email = 'bob.broome@gmail.com'
+   content = request.get_json()
+   print(content)
 
    pet = (models.Session.query(models.PetDatum)
-         .filter(models.PetDatum.userid == email)
+         .filter(models.PetDatum.pet_id == id)
          .first())
 
    if not pet:
       return(jsonify({"status": "not found"}))
 
-   note = models.PetNote(public=False,note='this is a test')
+   note = models.PetNote(public=content['public'],
+                         note=content['note'])
    pet.notes.append(note)
    models.Session.commit()
 
