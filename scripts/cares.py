@@ -6,11 +6,6 @@ from contextlib import closing
 from bs4 import BeautifulSoup
 
 def simple_get(url):
-    """
-    Attempts to get the content at `url` by making an HTTP GET request.
-    If the content-type of response is some kind of HTML/XML, return the
-    text content, otherwise return None.
-    """
     try:
         with closing(get(url, stream=True)) as resp:
             if is_good_response(resp):
@@ -19,30 +14,20 @@ def simple_get(url):
                 return None
 
     except RequestException as e:
-        log_error('Error during requests to {0} : {1}'.format(url, str(e)))
+        print('Error during requests to {0} : {1}'.format(url, str(e)))
         return None
 
 
 def is_good_response(resp):
-    """
-    Returns True if the response seems to be HTML, False otherwise.
-    """
     content_type = resp.headers['Content-Type'].lower()
     return (resp.status_code == 200 
             and content_type is not None 
             and content_type.find('html') > -1)
 
 
-def log_error(e):
-    """
-    It is always a good idea to log errors. 
-    This function just prints them, but you can
-    make it do anything.
-    """
-    print(e)
+data = {"species":[],
+        "classifications":[]}
 
-
-data = []
 hostname = 'https://caresforfish.org/'
 
 def getTopLevelPage():
@@ -69,7 +54,7 @@ def getSpeciesPage(page):
    tbody = body.find('tbody')
    #print(tbody)
 
-   data = []
+   species = []
    for i, row in enumerate(tbody.find_all('tr')):
       #print(':::')
       #print(row)
@@ -83,9 +68,9 @@ def getSpeciesPage(page):
       rec['classification'] = cols[1]
       rec['assessment'] = cols[2]
       rec['authority'] = cols[3]
-      data.append(rec)
+      species.append(rec)
 
-   return(data)
+   return(species)
 
 def getClassifications():
    pid = 464
@@ -96,6 +81,7 @@ def getClassifications():
    tables = body.find_all(class_="directory")
    #tables = body.find_all('table')
 
+   cls = []
    for table in tables:
       #print(':::')
       tbody = table.find('tbody')
@@ -110,16 +96,16 @@ def getClassifications():
          rec['key'] = cols[0]
          rec['classification'] = cols[1]
          rec['description'] = cols[2]
-         data.append(rec)
+         cls.append(rec)
 
-   return(data)
+   return(cls)
 
 pages = getTopLevelPage()
-#print(pages)
-content = []
 for page in pages:
    d = getSpeciesPage(page)
-   content += d
+   data['species'] += d
 
-print(json.dumps(content))
+data['classifications'] = getClassifications()
+
+print(json.dumps(data))
 
