@@ -175,9 +175,8 @@ def pet_stop(id):
    return(pet_schema.jsonify(pet))
 
 @routes.route("/mypets/<id>/note", methods=["POST"])
-def pet_note_update(id):
+def pet_note_create(id):
    content = request.get_json()
-   print(content)
 
    pet = (models.Session.query(models.PetDatum)
          .filter(models.PetDatum.pet_id == id)
@@ -191,8 +190,24 @@ def pet_note_update(id):
    pet.notes.append(note)
    models.Session.commit()
 
-   
-   #output = pet_schema.dump(pet).data
-   #print output
+   return(pet_schema.jsonify(pet))
+
+@routes.route("/mypets/<id>/note/<note_id>", methods=["POST"])
+def pet_note_update(id, note_id):
+   content = request.get_json()
+
+   note = (models.Session.query(models.PetNote)
+         .filter(models.PetNote.note_id == note_id)
+         .first())
+
+   note.public = content['public']
+   note.note = content['note']
+
+   models.Session.commit()
+
+   pet = (models.Session.query(models.PetDatum)
+         .filter(models.PetDatum.pet_id == id)
+         .first())
+
    return(pet_schema.jsonify(pet))
 

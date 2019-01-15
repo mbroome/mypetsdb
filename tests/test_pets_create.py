@@ -8,27 +8,27 @@ import pytest
 }
 '''
 def XXXtest_create_mypets(client):
-   newpet = {
+   pet = {
       'userid': 'mitchell.broome@gmail.com',
       'description': 'multis',
       'public': True,
       'scientific_name': 'neolamprologus multifasciatus'
    }
 
-   response = client.post('/pets/mypets', json=newpet)
+   response = client.post('/pets/mypets', json=pet)
    json_data = response.get_json()
 
    assert len(json_data) > 0
 
 def XXXtest_update_mypets(client):
-   newpet = {
+   pet = {
       'userid': 'mitchell.broome@gmail.com',
       'description': 'multis',
       'public': True,
       'scientific_name': 'neolamprologus multifasciatus'
    }
 
-   response = client.post('/pets/mypets/2', json=newpet)
+   response = client.post('/pets/mypets/2', json=pet)
    json_data = response.get_json()
 
    assert len(json_data) > 0

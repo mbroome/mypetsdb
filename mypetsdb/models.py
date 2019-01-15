@@ -60,7 +60,7 @@ class PetNote(Base):
     note_id = Column(Integer, primary_key=True, autoincrement=True)
     public = Column(Boolean, nullable=False, server_default=FetchedValue())
     note = Column(Text)
-    timestamp = Column(TIMESTAMP, primary_key=True, nullable=False)
+    timestamp = Column(TIMESTAMP, primary_key=True, nullable=False, server_default=FetchedValue())
 
     pet_id = Column(Integer, ForeignKey('pet_data.pet_id'))
 
