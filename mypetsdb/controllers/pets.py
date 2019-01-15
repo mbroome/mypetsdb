@@ -20,7 +20,7 @@ class PetNoteSchema(ma.ModelSchema):
    class Meta:
       model = models.PetNote
 
-pet_schema = PetSchema()
+pet_schema = PetSchema(strict=True)
 
 # define the routes
 routes = Blueprint('pets', __name__, url_prefix='/pets')
@@ -31,8 +31,8 @@ def pet_lookup(id):
        .filter(models.PetDatum.pet_id == id)
        .first())
 
-   print(q.notes[0].note)
-   print(q.species[0].iucn_id)
+   #print(q.notes[0].note)
+   #print(q.species[0].iucn_id)
    #output = pet_schema.dump(q).data
    #print(output)
    return(pet_schema.jsonify(q))
@@ -91,8 +91,8 @@ def pet_update(id):
    pet.species.append(species)
    models.Session.commit()
 
-   output = pet_schema.dump(pet).data
-   print output
+   #output = pet_schema.dump(pet).data
+   #print output
    return(pet_schema.jsonify(pet))
 
 @routes.route("/<id>/note", methods=["POST"])
@@ -113,7 +113,7 @@ def pet_note_update(id):
    models.Session.commit()
 
    
-   output = pet_schema.dump(pet).data
-   print output
+   #output = pet_schema.dump(pet).data
+   #print output
    return(pet_schema.jsonify(pet))
 

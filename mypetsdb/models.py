@@ -13,7 +13,8 @@ from sqlalchemy.orm import backref, relationship
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-engine = create_engine('mysql://aquadb:wzUIrLafJ5nR@localhost/aquadb?charset=latin1', echo=True)
+#engine = create_engine('mysql://aquadb:wzUIrLafJ5nR@localhost/aquadb?charset=latin1', echo=True)
+engine = create_engine('mysql://aquadb:wzUIrLafJ5nR@localhost/aquadb?charset=latin1')
 sess = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Session = scoped_session(sess)
 
@@ -80,4 +81,5 @@ Base.metadata.reflect(bind=engine)
 
 if __name__ == '__main__':
    Base.metadata.create_all()
+
 

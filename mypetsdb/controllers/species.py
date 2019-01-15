@@ -10,15 +10,15 @@ class ITISCommonNameSchema(ma.Schema):
    class Meta:
       # Fields to expose
       fields = ('tsn', 'vernacular_name','unit_name1','unit_name2','complete_name')
-itiscommonname_schema = ITISCommonNameSchema()
-itiscommonnames_schema = ITISCommonNameSchema(many=True)
+itiscommonname_schema = ITISCommonNameSchema(strict=True)
+itiscommonnames_schema = ITISCommonNameSchema(many=True, strict=True)
 
 class ITISSpeciesSchema(ma.Schema):
    class Meta:
       # Fields to expose
       fields = ('tsn', 'unit_name1','unit_name2','complete_name')
-itisspecies_schema = ITISSpeciesSchema()
-itisspeciess_schema = ITISSpeciesSchema(many=True)
+itisspecies_schema = ITISSpeciesSchema(strict=True)
+itisspeciess_schema = ITISSpeciesSchema(many=True, strict=True)
 
 
 # define the routes
