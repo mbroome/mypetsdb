@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify, Blueprint
 import os
 import json
 import requests
+import time
+import datetime
 
 from mypetsdb import ma
 import mypetsdb.models as models
@@ -21,43 +23,99 @@ class PetNoteSchema(ma.ModelSchema):
       model = models.PetNote
 
 pet_schema = PetSchema(strict=True)
+pets_schema = PetSchema(many=True, strict=True)
 
 # define the routes
 routes = Blueprint('pets', __name__, url_prefix='/pets')
 
-@routes.route("/<id>", methods=["GET"])
-def pet_lookup(id):
+# Get all pets for a given user
+@routes.route("/mypets", methods=["GET"])
+def pet_lookup_all():
+   q = (models.Session.query(models.PetDatum)
+       #.filter(models.PetDatum.pet_id == id)
+       .all())
+
+   return(pets_schema.jsonify(q))
+
+# get a specific pet for a given user
+@routes.route("/mypets/<id>", methods=["GET"])
+def pet_lookup_specific(id):
    q = (models.Session.query(models.PetDatum)
        .filter(models.PetDatum.pet_id == id)
        .first())
 
-   #print(q.notes[0].note)
-   #print(q.species[0].iucn_id)
-   #output = pet_schema.dump(q).data
-   #print(output)
    return(pet_schema.jsonify(q))
 
-@routes.route("/<id>", methods=["POST"])
+# Create a new pet for a given user
+@routes.route("/mypets", methods=["POST"])
+def pet_create():
+   content = request.get_json()
+   in_genus, in_species = content['scientific_name'].split(' ')
+
+   # see if we already know about the species
+   species = (models.Session.query(models.SpeciesDatum)
+       .filter(models.SpeciesDatum.scientific_name == content['scientific_name'])
+       .first())
+
+   # if we don't know about it, find it and check it's status and store it for later
+   if not species:
+      species = models.SpeciesDatum(
+         scientific_name=content['scientific_name'],
+         genus=in_genus,
+         species=in_species)
+
+
+      token = "a2e02f6727c0a4c8b63144b65b4357ddb1c5f357afb52ca84bf43faf902c9af2"
+      url = 'http://apiv3.iucnredlist.org/api/v3/species/%s?token=%s' % (content['scientific_name'], token)
+      #print url
+      response = requests.request(
+         "GET",
+         url
+      )
+      data = json.loads(response.text)
+      #print data
+      for rec in data['result']:
+         species.iucn_id = rec['taxonid']
+         species.iucn_category = rec['category']
+
+      models.Session.add(species)
+      models.Session.commit()
+
+
+   # make the new pet and save it
+   pet = models.PetDatum(
+               userid=content['userid'],
+               description=content['description'],
+               public=content['public']
+            )
+
+   models.Session.add(pet)
+   models.Session.commit()
+
+   pet.species.append(species)
+   models.Session.commit()
+
+   return(pet_schema.jsonify(pet))
+
+# Update an existing pet for a given user
+@routes.route("/mypets/<id>", methods=["POST"])
 def pet_update(id):
    content = request.get_json()
+   in_genus, in_species = content['scientific_name'].split(' ')
 
-   s = 'neolamprologus multifasciatus'
-   email = 'mitchell.broome@gmail.com'
-   email = 'bob.broome@gmail.com'
-   
    species = (models.Session.query(models.SpeciesDatum)
-       .filter(models.SpeciesDatum.scientific_name == s)
+       .filter(models.SpeciesDatum.scientific_name == content['scientific_name'])
        .first())
 
    if not species:
       species = models.SpeciesDatum(
-         scientific_name=s,
-         genus='neolamprologus',
-         species='multifasciatus')
+         scientific_name=content['scientific_name'],
+         genus=in_genus,
+         species=in_species)
 
 
       token = "a2e02f6727c0a4c8b63144b65b4357ddb1c5f357afb52ca84bf43faf902c9af2"
-      url = 'http://apiv3.iucnredlist.org/api/v3/species/%s?token=%s' % (s, token)
+      url = 'http://apiv3.iucnredlist.org/api/v3/species/%s?token=%s' % (content['scientific_name'], token)
       #print url
       response = requests.request(
          "GET",
@@ -75,18 +133,12 @@ def pet_update(id):
 
 
    pet = (models.Session.query(models.PetDatum)
-         .filter(models.PetDatum.userid == email)
+         .filter(models.PetDatum.userid == content['userid'])
+         .filter(models.PetDatum.pet_id == id)
          .first())
 
-   if not pet:
-      pet = models.PetDatum(
-                  #scientific_name='neolamprologus multifasciatus',
-                  userid=email,
-                  public=False
-               )
-
-      models.Session.add(pet)
-      models.Session.commit()
+   pet.public = content['public']
+   pet.description = content['description']
 
    pet.species.append(species)
    models.Session.commit()
@@ -95,7 +147,34 @@ def pet_update(id):
    #print output
    return(pet_schema.jsonify(pet))
 
-@routes.route("/<id>/note", methods=["POST"])
+# start keeping a pet
+@routes.route("/mypets/<id>/start", methods=["GET"])
+def pet_start(id):
+
+   pet = (models.Session.query(models.PetDatum)
+         .filter(models.PetDatum.pet_id == id)
+         .first())
+
+   pet.start = datetime.datetime.now()
+   models.Session.commit()
+
+   return(pet_schema.jsonify(pet))
+
+# stop keeping a pet
+@routes.route("/mypets/<id>/stop", methods=["GET"])
+def pet_stop(id):
+
+   pet = (models.Session.query(models.PetDatum)
+         .filter(models.PetDatum.pet_id == id)
+         .first())
+
+   #pet.stop = datetime.datetime.now()
+   pet.end = datetime.datetime.now()
+   models.Session.commit()
+
+   return(pet_schema.jsonify(pet))
+
+@routes.route("/mypets/<id>/note", methods=["POST"])
 def pet_note_update(id):
    content = request.get_json()
    print(content)
