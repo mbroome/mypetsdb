@@ -4,3 +4,4 @@ flask
 flask_marshmallow
 requests
 BeautifulSoup4
+pytest

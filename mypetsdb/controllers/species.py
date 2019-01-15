@@ -1,10 +1,9 @@
 from flask import Flask, request, jsonify, Blueprint
-from flask_marshmallow import Marshmallow
 import os
 import json
 
-from lib.app import ma
-from lib import models
+from mypetsdb import ma
+import mypetsdb.models as models
 
 # define the response schema for json output
 class ITISCommonNameSchema(ma.Schema):

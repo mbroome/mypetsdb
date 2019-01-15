@@ -1,11 +1,10 @@
 from flask import Flask, request, jsonify, Blueprint
-from flask_marshmallow import Marshmallow
 import os
 import json
 import requests
 
-from lib.app import ma
-from lib import models
+from mypetsdb import ma
+import mypetsdb.models as models
 
 class PetSchema(ma.ModelSchema):
    class Meta:
