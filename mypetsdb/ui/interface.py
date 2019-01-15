@@ -27,7 +27,7 @@ class RegisterForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
 
-routes = Blueprint('ui', __name__, url_prefix='', template_folder='templates', static_folder='static')
+routes = Blueprint('ui', __name__, url_prefix='/', template_folder='templates', static_folder='static')
 
 
 @routes.route('/')
