@@ -6,3 +6,10 @@ requests
 BeautifulSoup4
 pytest
 coverage
+flask-dance
+flask-dance[sqla]
+
+flask_bootstrap
+flask_wtf
+wtforms
+flask_login

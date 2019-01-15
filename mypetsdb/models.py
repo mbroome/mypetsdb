@@ -12,6 +12,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+from flask_login import UserMixin
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 #engine = create_engine('mysql://aquadb:wzUIrLafJ5nR@localhost/aquadb?charset=latin1', echo=True)
 engine = create_engine('mysql://aquadb:wzUIrLafJ5nR@localhost/aquadb?charset=latin1')
@@ -75,6 +77,15 @@ class SpeciesDatum(Base):
     cares = Column(Integer, nullable=False, server_default=FetchedValue())
     genus = Column(String(40), nullable=False)
     species = Column(String(40), nullable=False)
+
+
+class User(UserMixin, Base):
+    __tablename__ = 'users'
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String(30), unique=True)
+    email = Column(String(50), unique=True)
+    password = Column(String(80))
 
 
 Base.metadata.reflect(bind=engine)
