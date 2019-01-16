@@ -19,14 +19,14 @@ def create_app(test_config=None):
 
    app.config['SECRET_KEY'] = '7c2a2b8a-5936-4a1a-816d-0ac526f8d7ed'
 
-   import controllers.species
-   import controllers.pets
-   import ui.interface
+   import interface.species
+   import interface.pets
+   import interface.ui
 
    # Register blueprint(s)
-   app.register_blueprint(controllers.species.routes)
-   app.register_blueprint(controllers.pets.routes)
-   app.register_blueprint(ui.interface.routes)
+   app.register_blueprint(interface.species.routes)
+   app.register_blueprint(interface.pets.routes)
+   app.register_blueprint(interface.ui.routes)
 
    return(app)
 
