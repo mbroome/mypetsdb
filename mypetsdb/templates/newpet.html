@@ -48,25 +48,15 @@ Dashboard
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="page-header">Welcome, {{ name }}</h1>
-{% for pet in petdata %}
-id: {{ pet.pet_id }}<br>
-description: {{ pet.description }}<br>
-start: {{ pet.start }}<br>
-end: {{ pet.end }}<br>
-species:<br>
-{% for species in pet.species %}
-   {{ wtf.quick_form(form) }}
-{% endfor %}
-notes:<br>
-{% for note in pet.notes %}
-  note_id: {{ note.note_id }}<br>
-  public: {{ note.public }}<br>
-  timestamp: {{ note.timestamp }}<br>
-  note: {{ note.note }}<br>
-{% endfor %}
-<p>
-{% endfor %}
+
+    <h1>New Pet</h1>
+    <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
         </div>
       </div>
     </div>
 {% endblock %}
+
