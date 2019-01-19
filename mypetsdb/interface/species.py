@@ -16,7 +16,7 @@ itisspeciess_schema = ITISSpeciesSchema(many=True, strict=True, partial=True)
 
 
 # define the routes
-routes = Blueprint('species', __name__, url_prefix='/species')
+routes = Blueprint('species', __name__, url_prefix='/api/species')
 
 # endpoint to handle species lookups
 @routes.route("/<id>", methods=["GET"])

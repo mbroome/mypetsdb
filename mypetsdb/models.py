@@ -51,7 +51,7 @@ class PetDatum(Base):
     start = Column(DateTime)
     end = Column(DateTime)
     description = Column(String(255))
-    public = Column(Boolean, nullable=False, server_default=FetchedValue())
+    public = Column(Boolean, nullable=False, default=False)
 
     species = relationship('SpeciesDatum',secondary=pet_species, backref=backref('pet', lazy='joined'))
     notes = relationship('PetNote', backref='pet', lazy='joined')
@@ -60,7 +60,7 @@ class PetNote(Base):
     __tablename__ = 'pet_note'
 
     note_id = Column(Integer, primary_key=True, autoincrement=True)
-    public = Column(Boolean, nullable=False, server_default=FetchedValue())
+    public = Column(Boolean, nullable=False, default=False)
     note = Column(Text)
     timestamp = Column(TIMESTAMP, primary_key=True, nullable=False, server_default=FetchedValue())
 
@@ -71,10 +71,10 @@ class SpeciesDatum(Base):
 
     scientific_name = Column(String(100), primary_key=True)
     common_name = Column(String(100), nullable=True)
-    endangered_status = Column(Integer, nullable=False, server_default=FetchedValue())
-    iucn_category = Column(ENUM(u'DD', u'LC', u'NT', u'VU', u'EN', u'CR', u'EW', u'EX', u'LR/lc', u'LR/nt', u'LR/cd'))
-    iucn_id = Column(String(20))
-    cares = Column(Integer, nullable=False, server_default=FetchedValue())
+    endangered_status = Column(Integer, nullable=True)
+    iucn_category = Column(String(10), nullable=True)
+    iucn_id = Column(String(20), nullable=True)
+    cares = Column(Integer, nullable=True)
     genus = Column(String(40), nullable=False)
     species = Column(String(40), nullable=False)
 

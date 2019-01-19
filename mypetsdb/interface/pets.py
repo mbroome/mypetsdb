@@ -27,7 +27,7 @@ pet_schema = PetSchema(strict=True)
 pets_schema = PetSchema(many=True, strict=True)
 
 # define the routes
-routes = Blueprint('pets', __name__, url_prefix='/pets')
+routes = Blueprint('pets', __name__, url_prefix='/api/pets')
 
 # Get all pets for a given user
 @routes.route("/mypets", methods=["GET"])

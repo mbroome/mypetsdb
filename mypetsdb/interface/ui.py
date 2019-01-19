@@ -74,9 +74,9 @@ def logout():
    logout_user()
    return redirect(url_for('ui.index'))
 
-@routes.route('/newpet', methods = ['GET', 'POST'])
+@routes.route('/pet/manage', methods = ['GET', 'POST'])
 @login_required
-def newpet():
+def manage_pet():
    form = forms.PetForm()
    print(json.dumps(form.data))
    if request.method == 'POST':
@@ -93,5 +93,5 @@ def newpet():
 
       return render_template('dashboard.html', name=current_user.username, petdata=p, form=form)
    elif request.method == 'GET':
-      return render_template('newpet.html', name=current_user.username, form=form)
+      return render_template('manage_pet.html', name=current_user.username, form=form)
 

@@ -1,16 +1,15 @@
-{% extends "bootstrap/base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
 
-{% block title %}
-Dashboard
-{% endblock %}
+<html>
+  <head>
+    <title>Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-{% block styles %}
-{{super()}}
-<link rel="stylesheet" href="{{url_for('ui.static', filename='dashboard.css')}}">
-{% endblock %}
+    <!-- Bootstrap -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('ui.static', filename='dashboard.css')}}">
+  </head>
 
-{% block content %}
+  <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -41,50 +40,16 @@ Dashboard
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
             <li class="active"><a href="/dashboard">Overview <span class="sr-only">(current)</span></a></li>
-            <li><a href="{{ url_for('ui.newpet') }}">New Pet</a></li>
+            <li><a href="{{ url_for('ui.manage_pet') }}">New Pet</a></li>
 <!--            <li><a href="#">Analytics</a></li>
             <li><a href="#">Export</a></li> -->
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <div class="row">
-             <div class="col-md-4">
-
-                <form action = "/newpet" method=post>
-                   <fieldset>
-                      <legend>New Pet</legend>
-                      {{ form.hidden_tag() }}
-            
-                      <div style = font-size:20px; font-weight:bold; margin-left:150px;>
-                         {{ form.scientific_name.label }} {{ form.scientific_name }}
-                         <br>
-                         {{ form.variant.label }} {{ form.variant }}
-                         <br>
-                         {{ form.collection_point.label }} {{ form.collection_point }}
-                         <br>
-               
-                         {{ form.start.label }} {{ form.start }} : {{ form.end.label }} {{ form.end }}
-                         <br>
-               
-                         {{ form.description.label }}<br>
-                         {{ form.description }}
-                         <br>
-
-                         {{ form.public.label }} {{ form.public }}
-                         <br>
-
-                         {{ form.submit }}
-                      </div>
-            
-                   </fieldset>
-                </form>
-
-
-
-            </div>
-          </div>
+{% block content %}
+{% endblock %}
         </div>
       </div>
     </div>
-{% endblock %}
-
+  </body>
+</html>
