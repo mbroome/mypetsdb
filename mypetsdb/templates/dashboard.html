@@ -20,13 +20,13 @@ Dashboard
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="#">MyPetsDB</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="#">Settings</a></li>
-            <li><a href="#">Profile</a></li>
+            <li><a href="#">Profile - {{ name }}</a></li>
             <li><a href="{{ url_for('ui.logout') }}">Log Out</a></li>
           </ul>
           <form class="navbar-form navbar-right">
@@ -40,32 +40,37 @@ Dashboard
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
+            <li class="active"><a href="/dashboard">Overview <span class="sr-only">(current)</span></a></li>
             <li><a href="{{ url_for('ui.newpet') }}">New Pet</a></li>
-            <li><a href="#">Analytics</a></li>
-            <li><a href="#">Export</a></li>
+<!--            <li><a href="#">Analytics</a></li>
+            <li><a href="#">Export</a></li> -->
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">Welcome, {{ name }}</h1>
 {% for pet in petdata %}
+<p>
 id: {{ pet.pet_id }}<br>
 description: {{ pet.description }}<br>
-start: {{ pet.start }}<br>
-end: {{ pet.end }}<br>
-species:<br>
-{% for species in pet.species %}
-   {{ wtf.quick_form(form) }}
-{% endfor %}
+start: {{ pet.start }} : end: {{ pet.end }}<br>
+scientific_name: {{ pet.species[0].scientific_name }}<br>
+common_name: {{ pet.species[0].common_name }}<br>
+endangered_status: {{ pet.species[0].endangered_status }}<br>
+iucn_category: {{ pet.species[0].iucn_category }}<br>
+iucn_id: {{ pet.species[0].iucn_id }}<br>
+cares: {{ pet.species[0].cares }}<br>
+genus: {{ pet.species[0].genus }}<br>
+species: {{ pet.species[0].species }}<br>
 notes:<br>
 {% for note in pet.notes %}
-  note_id: {{ note.note_id }}<br>
-  public: {{ note.public }}<br>
-  timestamp: {{ note.timestamp }}<br>
-  note: {{ note.note }}<br>
+  <p>
+     public: {{ note.public }} timestamp: {{ note.timestamp }}<br>
+     note: {{ note.note }}
+  </p>
 {% endfor %}
-<p>
+</p>
+<hr>
 {% endfor %}
+
         </div>
       </div>
     </div>

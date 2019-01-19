@@ -5,6 +5,8 @@ import requests
 import time
 import datetime
 
+from flask_login import current_user
+
 from mypetsdb import ma
 import mypetsdb.models as models
 
@@ -58,7 +60,7 @@ def pet_create(content):
 
    # make the new pet and save it
    pet = models.PetDatum(
-               userid=content['userid'],
+               userid=current_user.username,
                description=content['description'],
                public=content['public']
             )
@@ -104,7 +106,7 @@ def pet_update(id, content):
 
 
    pet = (models.Session.query(models.PetDatum)
-         .filter(models.PetDatum.userid == content['userid'])
+         .filter(models.PetDatum.userid == current_user.username)
          .filter(models.PetDatum.pet_id == id)
          .first())
 
