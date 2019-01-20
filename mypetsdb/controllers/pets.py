@@ -12,22 +12,45 @@ import mypetsdb.models as models
 
 
 def pet_lookup_all():
-   q = (models.Session.query(models.PetDatum)
-       #.filter(models.PetDatum.pet_id == id)
+   q = (models.Session.query(models.PetDatum, models.SpeciesDatum)
+       .select_from(models.PetDatum)
+       .filter(models.PetDatum.scientific_name == models.SpeciesDatum.scientific_name)
        .all())
 
-   return(q)
+   print(q)
+
+   response = []
+   for row in q:
+      notes = (models.Session.query(models.PetNoteDatum)
+               .filter(models.PetNoteDatum.pet_id == row[0].pet_id)
+               .all())
+      print(notes)
+
+      rec = {"pet": row[0], "species": row[1], "notes": notes}
+      response.append(rec)
+   return(response)
 
 def pet_lookup_specific(id):
    print('@@ get that pet: ' + id)
-   q = (models.Session.query(models.PetDatum)
+
+   q = (models.Session.query(models.PetDatum, models.SpeciesDatum)
+       .select_from(models.PetDatum)
+       .filter(models.PetDatum.scientific_name == models.SpeciesDatum.scientific_name)
        .filter(models.PetDatum.pet_id == id)
        .first())
+   
+   notes = (models.Session.query(models.PetNoteDatum)
+            .filter(models.PetNoteDatum.pet_id == q[0].pet_id)
+            .all())
 
-   #print(q)
-   return(q)
+   pet, species = q
+   return({"pet": pet, "species": species, "notes": notes})
 
 def pet_create(content):
+   #userid = current_user.username
+   #if not userid:
+   userid = 'mbroome'
+
    # see if we already know about the species
    species = (models.Session.query(models.SpeciesDatum)
        .filter(models.SpeciesDatum.scientific_name == content['scientific_name'])
@@ -57,20 +80,22 @@ def pet_create(content):
 
    # make the new pet and save it
    pet = models.PetDatum(
-               userid=current_user.username,
+               userid=userid,
                description=content['description'],
-               public=content['public']
+               public=content['public'],
+               scientific_name=content['scientific_name']
             )
 
    models.Session.add(pet)
    models.Session.commit()
 
-   pet.species.append(species)
    models.Session.commit()
 
-   return(pet)
+   return({"pet": pet, "species": species, "notes": []})
 
 def pet_update(id, content):
+   userid = 'mbroome'
+
    species = (models.Session.query(models.SpeciesDatum)
        .filter(models.SpeciesDatum.scientific_name == content['scientific_name'])
        .first())
@@ -99,19 +124,21 @@ def pet_update(id, content):
 
 
    pet = (models.Session.query(models.PetDatum)
-         .filter(models.PetDatum.userid == current_user.username)
+         .filter(models.PetDatum.userid == userid)
          .filter(models.PetDatum.pet_id == id)
          .first())
 
    pet.public = content['public']
    pet.description = content['description']
-
-   pet.species.append(species)
    models.Session.commit()
+
+   notes = (models.Session.query(models.PetNoteDatum)
+            .filter(models.PetNoteDatum.pet_id == pet.pet_id)
+            .all())
 
    #output = pet_schema.dump(pet).data
    #print output
-   return(pet)
+   return({"pet": pet, "species": species, "notes": notes})
 
 def pet_start(id):
 
@@ -136,35 +163,37 @@ def pet_stop(id):
 
    return(pet)
 
+################################################
+# notes
+def pet_note_get(id):
+   notes = (models.Session.query(models.PetNoteDatum)
+           .filter(models.PetNoteDatum.pet_id == id)
+           .first())
+
+   return(notes)
+
 def pet_note_create(id, content):
-   pet = (models.Session.query(models.PetDatum)
-         .filter(models.PetDatum.pet_id == id)
-         .first())
 
-   if not pet:
-      return(None)
-
-   note = models.PetNote(public=content['public'],
-                         note=content['note'])
-   pet.notes.append(note)
+   note = models.PetNoteDatum(public=content['public'],
+                              note=content['note'],
+                              pet_id=id)
+   models.Session.add(note)
    models.Session.commit()
 
-   return(pet)
+   #return(note)
+   return(pet_lookup_specific(id))
 
 def pet_note_update(id, note_id, content):
 
-   note = (models.Session.query(models.PetNote)
-         .filter(models.PetNote.note_id == note_id)
-         .first())
+   note = (models.Session.query(models.PetNoteDatum)
+           .filter(models.PetNoteDatum.note_id == note_id)
+           .first())
 
    note.public = content['public']
    note.note = content['note']
 
    models.Session.commit()
 
-   pet = (models.Session.query(models.PetDatum)
-         .filter(models.PetDatum.pet_id == id)
-         .first())
-
-   return(pet)
+   #return(note)
+   return(pet_lookup_specific(id))
 

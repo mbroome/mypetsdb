@@ -34,12 +34,6 @@ class ITISSpecies(Base):
                       autoload=True,
                       autoload_with=engine)
 
-pet_species = Table('pet_species',
-   Base.metadata,
-   Column('pet_id', Integer, ForeignKey('pet_data.pet_id')),
-   Column('scientific_name', String(100), ForeignKey('species_data.scientific_name'))
-)
-
 class PetDatum(Base):
     __tablename__ = 'pet_data'
 
@@ -52,10 +46,9 @@ class PetDatum(Base):
     description = Column(String(255))
     public = Column(Boolean, nullable=False, default=False)
 
-    species = relationship('SpeciesDatum',secondary=pet_species, backref=backref('pet', lazy='joined'))
-    notes = relationship('PetNote', backref='pet', lazy='joined')
+    scientific_name = Column(String(100))
 
-class PetNote(Base):
+class PetNoteDatum(Base):
     __tablename__ = 'pet_note'
 
     note_id = Column(Integer, primary_key=True, autoincrement=True)
@@ -63,7 +56,7 @@ class PetNote(Base):
     note = Column(Text)
     timestamp = Column(TIMESTAMP, primary_key=True, nullable=False, server_default=FetchedValue())
 
-    pet_id = Column(Integer, ForeignKey('pet_data.pet_id'))
+    pet_id = Column(Integer, nullable=False)
 
 class SpeciesDatum(Base):
     __tablename__ = 'species_data'
@@ -74,8 +67,6 @@ class SpeciesDatum(Base):
     iucn_category = Column(String(10), nullable=True)
     iucn_id = Column(String(20), nullable=True)
     cares = Column(Integer, nullable=True)
-    #genus = Column(String(40), nullable=False)
-    #species = Column(String(40), nullable=False)
 
 
 class User(UserMixin, Base):
