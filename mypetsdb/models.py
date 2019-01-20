@@ -16,6 +16,7 @@ from flask_login import UserMixin
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 engine = create_engine('mysql://mypetsdb:wzUIrLafJ5nR@localhost/mypetsdb?charset=latin1', pool_pre_ping=True)
+#engine = create_engine('mysql://mypetsdb:wzUIrLafJ5nR@localhost/mypetsdb?charset=latin1', pool_pre_ping=True, echo=True)
 sess = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Session = scoped_session(sess)
 
@@ -25,6 +26,7 @@ Base.metadata.bind = engine
 class ITISCommonName(Base):
     __table__ = Table('itis_common_names', Base.metadata,
                       Column('tsn', Integer, primary_key=True),
+                      Column('vernacular_name', String(80), primary_key=True),
                       autoload=True,
                       autoload_with=engine)
 

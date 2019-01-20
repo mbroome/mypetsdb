@@ -9,6 +9,7 @@ from flask_login import current_user
 
 from mypetsdb import ma
 import mypetsdb.models as models
+import mypetsdb.controllers.species
 
 
 def pet_lookup_all():
@@ -51,32 +52,8 @@ def pet_create(content):
    #if not userid:
    userid = 'mbroome'
 
-   # see if we already know about the species
-   species = (models.Session.query(models.SpeciesDatum)
-       .filter(models.SpeciesDatum.scientific_name == content['scientific_name'])
-       .first())
-
-   # if we don't know about it, find it and check it's status and store it for later
-   if not species:
-      species = models.SpeciesDatum(scientific_name=content['scientific_name'])
-
-
-      token = "a2e02f6727c0a4c8b63144b65b4357ddb1c5f357afb52ca84bf43faf902c9af2"
-      url = 'http://apiv3.iucnredlist.org/api/v3/species/%s?token=%s' % (content['scientific_name'], token)
-      #print url
-      response = requests.request(
-         "GET",
-         url
-      )
-      data = json.loads(response.text)
-      #print data
-      for rec in data['result']:
-         species.iucn_id = rec['taxonid']
-         species.iucn_category = rec['category']
-
-      models.Session.add(species)
-      models.Session.commit()
-
+   # find the species data
+   species = mypetsdb.controllers.species.species_cached_lookup(content['scientific_name'])
 
    # make the new pet and save it
    pet = models.PetDatum(
@@ -89,39 +66,12 @@ def pet_create(content):
    models.Session.add(pet)
    models.Session.commit()
 
-   models.Session.commit()
-
    return({"pet": pet, "species": species, "notes": []})
 
 def pet_update(id, content):
    userid = 'mbroome'
 
-   species = (models.Session.query(models.SpeciesDatum)
-       .filter(models.SpeciesDatum.scientific_name == content['scientific_name'])
-       .first())
-
-   if not species:
-      species = models.SpeciesDatum(
-         scientific_name=content['scientific_name'])
-
-
-      token = "a2e02f6727c0a4c8b63144b65b4357ddb1c5f357afb52ca84bf43faf902c9af2"
-      url = 'http://apiv3.iucnredlist.org/api/v3/species/%s?token=%s' % (content['scientific_name'], token)
-      #print url
-      response = requests.request(
-         "GET",
-         url
-      )
-      data = json.loads(response.text)
-      #print data
-      for rec in data['result']:
-         species.iucn_id = rec['taxonid']
-         species.iucn_category = rec['category']
-
-      models.Session.add(species)
-      models.Session.commit()
-
-
+   species = mypetsdb.controllers.species.species_cached_lookup(content['scientific_name'])
 
    pet = (models.Session.query(models.PetDatum)
          .filter(models.PetDatum.userid == userid)
