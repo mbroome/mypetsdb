@@ -2,26 +2,48 @@
 
 {% block content %}
 {% for pet in petdata %}
-<p>
-id: {{ pet.pet_id }}<br>
-description: {{ pet.description }}<br>
-start: {{ pet.start }} : end: {{ pet.end }}<br>
-scientific_name: {{ pet.species[0].scientific_name }}<br>
-common_name: {{ pet.species[0].common_name }}<br>
-endangered_status: {{ pet.species[0].endangered_status }}<br>
-iucn_category: {{ pet.species[0].iucn_category }}<br>
-iucn_id: {{ pet.species[0].iucn_id }}<br>
-cares: {{ pet.species[0].cares }}<br>
-genus: {{ pet.species[0].genus }}<br>
-species: {{ pet.species[0].species }}<br>
-notes:<br>
-{% for note in pet.notes %}
-  <p>
-     public: {{ note.public }} timestamp: {{ note.timestamp }}<br>
-     note: {{ note.note }}
-  </p>
-{% endfor %}
-</p>
+<form action = "/pet/manage/{{ pet.pet_id }}" method=post>
+   <fieldset>
+
+      {{ form.hidden_tag() }}
+      <div style = font-size:20px; font-weight:bold; margin-left:150px;>
+
+         {{ pet.pet_id }}: {{ pet.description }} {{ form.edit }}
+
+         <br>
+         {{ form.species[0].scientific_name.label }}: {{ pet.species[0].scientific_name }}
+         {{ form.species[0].common_name.label }}: {{ pet.species[0].common_name }}
+         <br>
+         {{ form.start.label }}: {{ pet.start }} : {{ form.end.label }}: {{ pet.end }}
+         <br>
+         {{ form.species[0].endangered_status.label }}: {{ pet.species[0].endangered_status }}
+         {{ form.species[0].iucn_category.label }}: {{ pet.species[0].iucn_category }}
+         {{ form.species[0].iucn_id.label }}: {{ pet.species[0].iucn_id }}
+         {{ form.species[0].cares.label }}: {{ pet.species[0].cares }}
+         <br>
+         {{ form.note.label }}: {{ form.note }}<br>
+
+
+         <div class="panel-group" id="accordion">
+           {% for note in pet.notes %}
+             <div class="panel panel-default">
+               <div class="panel-heading">
+                 <h4 class="panel-title">
+                  <button class="btn btn-primary" data-toggle="collapse" id="Bheader{{ note.note_id }}" data-parent="#accordion" href="#Bcollapse{{ note.note_id }}">{{ note.note_id }}</button>
+                 </h4>
+               </div>
+               <div id="Bcollapse{{ note.note_id }}" class="panel-collapse collapse in">
+                 <div class="panel-body" id="Bbody{{ note.note_id }}">
+                   {{ note.note }}
+                 </div>
+               </div>
+             </div>
+           {% endfor %}
+         </div>
+
+   </fieldset>
+</form>
+
 <hr>
 {% endfor %}
 {% endblock %}

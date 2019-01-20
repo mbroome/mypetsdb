@@ -19,15 +19,15 @@ def pet_lookup_all():
    return(q)
 
 def pet_lookup_specific(id):
+   print('@@ get that pet: ' + id)
    q = (models.Session.query(models.PetDatum)
        .filter(models.PetDatum.pet_id == id)
        .first())
 
+   #print(q)
    return(q)
 
 def pet_create(content):
-   in_genus, in_species = content['scientific_name'].split(' ')
-
    # see if we already know about the species
    species = (models.Session.query(models.SpeciesDatum)
        .filter(models.SpeciesDatum.scientific_name == content['scientific_name'])
@@ -35,10 +35,7 @@ def pet_create(content):
 
    # if we don't know about it, find it and check it's status and store it for later
    if not species:
-      species = models.SpeciesDatum(
-         scientific_name=content['scientific_name'],
-         genus=in_genus,
-         species=in_species)
+      species = models.SpeciesDatum(scientific_name=content['scientific_name'])
 
 
       token = "a2e02f6727c0a4c8b63144b65b4357ddb1c5f357afb52ca84bf43faf902c9af2"
@@ -74,17 +71,13 @@ def pet_create(content):
    return(pet)
 
 def pet_update(id, content):
-   in_genus, in_species = content['scientific_name'].split(' ')
-
    species = (models.Session.query(models.SpeciesDatum)
        .filter(models.SpeciesDatum.scientific_name == content['scientific_name'])
        .first())
 
    if not species:
       species = models.SpeciesDatum(
-         scientific_name=content['scientific_name'],
-         genus=in_genus,
-         species=in_species)
+         scientific_name=content['scientific_name'])
 
 
       token = "a2e02f6727c0a4c8b63144b65b4357ddb1c5f357afb52ca84bf43faf902c9af2"

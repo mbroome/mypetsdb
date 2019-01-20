@@ -64,8 +64,8 @@ def signup():
 @routes.route('/dashboard')
 @login_required
 def dashboard():
+   form = forms.PetForm()
    p = mypetsdb.controllers.pets.pet_lookup_all()
-   form = forms.PetSpeciesForm(obj=p[0].species[0])
    return render_template('dashboard.html', name=current_user.username, petdata=p, form=form)
 
 @routes.route('/logout')
@@ -74,10 +74,30 @@ def logout():
    logout_user()
    return redirect(url_for('ui.index'))
 
+
+@routes.route('/pet/manage/<id>', methods = ['GET', 'POST'])
+@login_required
+def manage_specific_pet(id):
+   form = forms.PetForm(request.form)
+   print(request.form)
+   print(json.dumps(form.data))
+   if request.method == 'POST':
+      print('in post of specific pet')
+      if form.edit.data == True:
+         pet = mypetsdb.controllers.pets.pet_lookup_specific(id)
+         print(pet.__dict__)
+         print(pet.species[0].__dict__)
+         editForm = forms.PetForm(obj=pet)
+         return render_template('manage_pet.html', name=current_user.username, petdata=pet, form=editForm)
+   elif request.method == 'GET':
+      return render_template('manage_pet.html', name=current_user.username, form=form)
+
+
+
 @routes.route('/pet/manage', methods = ['GET', 'POST'])
 @login_required
 def manage_pet():
-   form = forms.PetForm()
+   form = forms.PetForm(request.form)
    print(json.dumps(form.data))
    if request.method == 'POST':
       #if form.validate() == False:
@@ -89,7 +109,8 @@ def manage_pet():
       pet = mypetsdb.controllers.pets.pet_create(form.data)
 
       p = mypetsdb.controllers.pets.pet_lookup_all()
-      form = forms.PetSpeciesForm(obj=p[0].species[0])
+      if len(p):
+         form = forms.PetSpeciesForm(obj=p[0].species[0])
 
       return render_template('dashboard.html', name=current_user.username, petdata=p, form=form)
    elif request.method == 'GET':

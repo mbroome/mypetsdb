@@ -2,34 +2,32 @@
 
 {% block content %}
 
-                <form action = "/pet/manage" method=post>
-                   <fieldset>
-                      <legend>New Pet</legend>
-                      {{ form.hidden_tag() }}
-            
-                      <div style = font-size:20px; font-weight:bold; margin-left:150px;>
-                         {{ form.scientific_name.label }} {{ form.scientific_name }}
-                         <br>
-                         {{ form.variant.label }} {{ form.variant }}
-                         <br>
-                         {{ form.collection_point.label }} {{ form.collection_point }}
-                         <br>
+   <form action = "/pet/manage" method=post>
+      <fieldset>
+         {{ form.hidden_tag() }}
+         <div style = font-size:20px; font-weight:bold; margin-left:150px;>
+            {{ form.species[0].scientific_name.label }} {{ form.species[0].scientific_name }}
+            <br>
+            {{ form.variant.label }} {{ form.variant }}
+            <br>
+            {{ form.collection_point.label }} {{ form.collection_point }}
+            <br>
                
-                         {{ form.start.label }} {{ form.start }} : {{ form.end.label }} {{ form.end }}
-                         <br>
+            {{ form.start.label }} {{ form.start }} : {{ form.end.label }} {{ form.end }}
+            <br>
                
-                         {{ form.description.label }}<br>
-                         {{ form.description }}
-                         <br>
+            {{ form.description.label }}<br>
+            {{ form.description }}
+            <br>
 
-                         {{ form.public.label }} {{ form.public }}
-                         <br>
+            {{ form.public.label }} {{ form.public }}
+            <br>
 
-                         {{ form.submit }}
-                      </div>
+            {{ form.submit }}
+         </div>
             
-                   </fieldset>
-                </form>
+      </fieldset>
+   </form>
 
 {% endblock %}
 

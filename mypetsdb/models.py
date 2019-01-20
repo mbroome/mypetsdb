@@ -15,8 +15,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from flask_login import UserMixin
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-#engine = create_engine('mysql://aquadb:wzUIrLafJ5nR@localhost/aquadb?charset=latin1', echo=True)
-engine = create_engine('mysql://aquadb:wzUIrLafJ5nR@localhost/aquadb?charset=latin1')
+engine = create_engine('mysql://mypetsdb:wzUIrLafJ5nR@localhost/mypetsdb?charset=latin1', pool_pre_ping=True)
 sess = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Session = scoped_session(sess)
 
@@ -75,8 +74,8 @@ class SpeciesDatum(Base):
     iucn_category = Column(String(10), nullable=True)
     iucn_id = Column(String(20), nullable=True)
     cares = Column(Integer, nullable=True)
-    genus = Column(String(40), nullable=False)
-    species = Column(String(40), nullable=False)
+    #genus = Column(String(40), nullable=False)
+    #species = Column(String(40), nullable=False)
 
 
 class User(UserMixin, Base):
