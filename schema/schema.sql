@@ -19,4 +19,5 @@ as select t.tsn,
           t.unit_name2,
           t.complete_name
    from ITIS.taxonomic_units t
+   where t.unit_name2 != "";
 

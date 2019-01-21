@@ -7,12 +7,12 @@ import mypetsdb.models as models
 import mypetsdb.controllers.species
 
 # define the response schema for json output
-class ITISSpeciesSchema(ma.Schema):
+class SpeciesSchema(ma.Schema):
    class Meta:
-      fields = ('tsn','vernacular_name','unit_name1','unit_name2','complete_name')
+      fields = ('scientific_name','common_name','endangered_status','iucn_category','iucn_id','cares')
 
-itisspecies_schema = ITISSpeciesSchema(strict=True, partial=True)
-itisspeciess_schema = ITISSpeciesSchema(many=True, strict=True, partial=True)
+species_schema = SpeciesSchema(strict=True, partial=True)
+speciess_schema = SpeciesSchema(many=True, strict=True, partial=True)
 
 
 # define the routes
@@ -22,6 +22,9 @@ routes = Blueprint('species', __name__, url_prefix='/api/species')
 @routes.route("/<id>", methods=["GET"])
 def species_q(id):
    q =  mypetsdb.controllers.species.species_lookup(id)
-   return(itisspeciess_schema.jsonify(q))
-
+   #print(q)
+   try:
+      return(speciess_schema.jsonify(q))
+   except:
+      return(species_schema.jsonify(q))
 
