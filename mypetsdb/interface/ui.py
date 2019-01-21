@@ -79,15 +79,17 @@ def logout():
 @login_required
 def manage_specific_pet(id):
    form = forms.PetForm(request.form)
-   print(request.form)
-   print(json.dumps(form.data))
+   #print(request.form)
+   #print(json.dumps(form.data))
    if request.method == 'POST':
-      print('in post of specific pet')
+      #print('in post of specific pet')
       if form.edit.data == True:
          pet = mypetsdb.controllers.pets.pet_lookup_specific(id)
-         print(pet.__dict__)
-         print(pet.species[0].__dict__)
-         editForm = forms.PetForm(obj=pet)
+         #print(pet)
+         #print(pet['species'].__dict__)
+         editForm = forms.PetForm(pet=pet['pet'], species=pet['species'], notes=pet['notes'])
+         #editForm.pet.populate_obj(pet['pet'], 'pet')
+
          return render_template('manage_pet.html', name=current_user.username, petdata=pet, form=editForm)
    elif request.method == 'GET':
       return render_template('manage_pet.html', name=current_user.username, form=form)
@@ -98,7 +100,7 @@ def manage_specific_pet(id):
 @login_required
 def manage_pet():
    form = forms.PetForm(request.form)
-   print(json.dumps(form.data))
+   #print(json.dumps(form.data))
    if request.method == 'POST':
       #if form.validate() == False:
       #   print("#### validation failed")

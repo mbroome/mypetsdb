@@ -45,7 +45,7 @@ class PetDatum(Base):
     userid = Column(String(100), nullable=False)
     start = Column(DateTime)
     end = Column(DateTime)
-    description = Column(String(255))
+    desc = Column(String(255))
     public = Column(Boolean, nullable=False, default=False)
 
     scientific_name = Column(String(100))

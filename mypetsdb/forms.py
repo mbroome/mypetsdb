@@ -17,14 +17,14 @@ class RegisterForm(FlaskForm):
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
 
 
-class NoteForm(FlaskForm):
+class NoteDatumForm(FlaskForm):
     note_id =  IntegerField('note_id')
     public =  BooleanField('public')
     note = StringField('note', validators=[Length(min=4, max=255)])
     timestamp = DateField('timestamp')
     submit = SubmitField('Submit')
 
-class PetSpeciesForm(FlaskForm):
+class SpeciesDatumForm(FlaskForm):
     scientific_name = StringField('Scientific Name')
     common_name = StringField('Common Name')
     endangered_status = IntegerField('Endangered Status')
@@ -32,16 +32,19 @@ class PetSpeciesForm(FlaskForm):
     iucn_id = StringField('IUCN ID')
     cares = IntegerField('CARES')
 
-class PetForm(FlaskForm):
+class PetDatumForm(FlaskForm):
     pet_id = IntegerField('pet_id')
     variant = StringField('Variant')
     collection_point = StringField('Collection Point')
     start = DateField('Start')
     end = DateField('End')
-    description =  StringField('Description')
+    desc = StringField('Description')
     public =  BooleanField('Public')
 
-    species = FieldList(FormField(PetSpeciesForm),min_entries=1)
+class PetForm(FlaskForm):
+    pet = FormField(PetDatumForm)
+    species = FormField(SpeciesDatumForm)
+    notes = FieldList(FormField(NoteDatumForm,min_entries=1))
 
     edit = SubmitField('Edit')
     submit = SubmitField('Submit')

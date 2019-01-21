@@ -1,31 +1,28 @@
 {% extends "dashboard_base.html" %}
 
 {% block content %}
-{% for pet in petdata %}
-<form action = "/pet/manage/{{ pet.pet_id }}" method=post>
+{% for record in petdata %}
+<form action = "/pet/manage/{{ record.pet.pet_id }}" method=post>
    <fieldset>
 
       {{ form.hidden_tag() }}
       <div style = font-size:20px; font-weight:bold; margin-left:150px;>
 
-         {{ pet.pet_id }}: {{ pet.description }} {{ form.edit }}
-
+         {{ form.pet.pet_id.label }}: {{ record.pet.pet_id }}: {{ form.pet.desc.label }}: {{ record.pet.desc }} {{ form.edit }}
          <br>
-         {{ form.species[0].scientific_name.label }}: {{ pet.species[0].scientific_name }}
-         {{ form.species[0].common_name.label }}: {{ pet.species[0].common_name }}
+         {{ form.species.scientific_name.label }}: {{ record.species.scientific_name }}
+         {{ form.species.common_name.label }}: {{ record.species.common_name }}
          <br>
-         {{ form.start.label }}: {{ pet.start }} : {{ form.end.label }}: {{ pet.end }}
+         {{ form.pet.start.label }}: {{ record.pet.start }} : {{ form.pet.end.label }}: {{ record.pet.end }}
          <br>
-         {{ form.species[0].endangered_status.label }}: {{ pet.species[0].endangered_status }}
-         {{ form.species[0].iucn_category.label }}: {{ pet.species[0].iucn_category }}
-         {{ form.species[0].iucn_id.label }}: {{ pet.species[0].iucn_id }}
-         {{ form.species[0].cares.label }}: {{ pet.species[0].cares }}
+         {{ form.species.endangered_status.label }}: {{ record.species.endangered_status }}
+         {{ form.species.iucn_category.label }}: {{ record.species.iucn_category }}
+         {{ form.species.iucn_id.label }}: {{ record.species.iucn_id }}
+         {{ form.species.cares.label }}: {{ record.species.cares }}
          <br>
-         {{ form.note.label }}: {{ form.note }}<br>
-
 
          <div class="panel-group" id="accordion">
-           {% for note in pet.notes %}
+           {% for note in record.notes %}
              <div class="panel panel-default">
                <div class="panel-heading">
                  <h4 class="panel-title">
@@ -41,6 +38,7 @@
            {% endfor %}
          </div>
 
+      </div>
    </fieldset>
 </form>
 

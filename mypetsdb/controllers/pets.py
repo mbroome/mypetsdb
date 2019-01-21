@@ -18,14 +18,14 @@ def pet_lookup_all():
        .filter(models.PetDatum.scientific_name == models.SpeciesDatum.scientific_name)
        .all())
 
-   print(q)
+   #print(q)
 
    response = []
    for row in q:
       notes = (models.Session.query(models.PetNoteDatum)
                .filter(models.PetNoteDatum.pet_id == row[0].pet_id)
                .all())
-      print(notes)
+      #print(notes)
 
       rec = {"pet": row[0], "species": row[1], "notes": notes}
       response.append(rec)
@@ -58,7 +58,7 @@ def pet_create(content):
    # make the new pet and save it
    pet = models.PetDatum(
                userid=userid,
-               description=content['description'],
+               desc=content['desc'],
                public=content['public'],
                scientific_name=content['scientific_name']
             )
@@ -79,7 +79,7 @@ def pet_update(id, content):
          .first())
 
    pet.public = content['public']
-   pet.description = content['description']
+   pet.desc = content['desc']
    models.Session.commit()
 
    notes = (models.Session.query(models.PetNoteDatum)
