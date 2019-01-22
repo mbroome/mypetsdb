@@ -47,6 +47,7 @@ class PetForm(FlaskForm):
     notes = FieldList(FormField(NoteDatumForm,min_entries=1))
 
     edit = SubmitField('Edit')
+    delete = SubmitField('Delete')
     submit = SubmitField('Submit')
     note = SubmitField('Notes')
 
