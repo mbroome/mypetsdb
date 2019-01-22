@@ -100,7 +100,7 @@ def manage_specific_pet(id):
 @login_required
 def manage_pet():
    form = forms.PetForm(request.form)
-   #print(json.dumps(form.data))
+   print(json.dumps(form.data))
    if request.method == 'POST':
       #if form.validate() == False:
       #   print("#### validation failed")
@@ -110,11 +110,7 @@ def manage_pet():
       #   print("### validation passed")
       pet = mypetsdb.controllers.pets.pet_create(form.data)
 
-      p = mypetsdb.controllers.pets.pet_lookup_all()
-      if len(p):
-         form = forms.PetSpeciesForm(obj=p[0].species[0])
-
-      return render_template('dashboard.html', name=current_user.username, petdata=p, form=form)
+      return redirect(url_for('ui.dashboard'))
    elif request.method == 'GET':
       return render_template('manage_pet.html', name=current_user.username, form=form)
 

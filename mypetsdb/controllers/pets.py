@@ -51,16 +51,26 @@ def pet_create(content):
    #userid = current_user.username
    #if not userid:
    userid = 'mbroome'
+   print(content)
+
+   data = {}
+   # detect if we were passed a flattened object or a nested dict
+   if 'pet' in content and 'species' in content:
+      data['scientific_name'] = content['species']['scientific_name']
+      data['desc'] = content['pet']['desc']
+      data['public'] = content['pet']['public']
+   else:
+      data = content
 
    # find the species data
-   species = mypetsdb.controllers.species.species_cached_lookup(content['scientific_name'])
+   species = mypetsdb.controllers.species.species_cached_lookup(data['scientific_name'])
 
    # make the new pet and save it
    pet = models.PetDatum(
                userid=userid,
-               desc=content['desc'],
-               public=content['public'],
-               scientific_name=content['scientific_name']
+               desc=data['desc'],
+               public=data['public'],
+               scientific_name=data['scientific_name']
             )
 
    models.Session.add(pet)
@@ -71,15 +81,24 @@ def pet_create(content):
 def pet_update(id, content):
    userid = 'mbroome'
 
-   species = mypetsdb.controllers.species.species_cached_lookup(content['scientific_name'])
+   data = {}
+   # detect if we were passed a flattened object or a nested dict
+   if 'pet' in content and 'species' in content:
+      data['scientific_name'] = content['species']['scientific_name']
+      data['desc'] = content['pet']['desc']
+      data['public'] = content['pet']['public']
+   else:
+      data = content
+
+   species = mypetsdb.controllers.species.species_cached_lookup(data['scientific_name'])
 
    pet = (models.Session.query(models.PetDatum)
          .filter(models.PetDatum.userid == userid)
          .filter(models.PetDatum.pet_id == id)
          .first())
 
-   pet.public = content['public']
-   pet.desc = content['desc']
+   pet.public = data['public']
+   pet.desc = data['desc']
    models.Session.commit()
 
    notes = (models.Session.query(models.PetNoteDatum)
