@@ -5,6 +5,8 @@ from wtforms import StringField, PasswordField, BooleanField, IntegerField, Subm
 from wtforms.validators import InputRequired, Email, Length
 from wtforms.fields.html5 import DateField
 
+from datetime import datetime
+
 import mypetsdb.models as models
 
 class LoginForm(FlaskForm):
@@ -22,7 +24,9 @@ class NoteDatumForm(FlaskForm):
     note_id =  IntegerField('Note ID')
     public =  BooleanField('Public')
     note = StringField('Note')
-    timestamp = DateField('timestamp')
+    timestamp = DateField('timestamp',format="%m/%d/%Y",default=datetime.now())
+
+    edit = SubmitField('Edit')
     submit = SubmitField('Submit')
 
 class SpeciesDatumForm(FlaskForm):

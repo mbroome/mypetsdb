@@ -1,6 +1,6 @@
 {% extends "dashboard_base.html" %}
 
-{% block content %}
+{% block inner_content %}
 
 {% if petdata is defined and petdata.pet.pet_id is not none %}
    <form action = "/pet/manage/{{ petdata.pet.pet_id }}" method=post>

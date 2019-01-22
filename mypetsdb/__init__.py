@@ -7,14 +7,16 @@ from flask_bootstrap import Bootstrap
 
 
 ma = Marshmallow()
-bootstrap = Bootstrap()
+#bootstrap = Bootstrap()
+bootstrap = None
 login_manager = LoginManager()
 
 def create_app(test_config=None):
 
    app = Flask(__name__)
    ma.init_app(app)
-   bootstrap.init_app(app)
+   #bootstrap.init_app(app)
+   bootstrap = Bootstrap(app)
    login_manager.init_app(app)
 
    app.config['SECRET_KEY'] = '7c2a2b8a-5936-4a1a-816d-0ac526f8d7ed'

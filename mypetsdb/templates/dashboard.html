@@ -1,47 +1,46 @@
 {% extends "dashboard_base.html" %}
 
-{% block content %}
+{% block inner_content %}
+{{ super() }}
+
+<div class="panel-group" id="my-accordion">
 {% for record in petdata %}
-<form action = "/pet/manage/{{ record.pet.pet_id }}" method=post>
-   <fieldset>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a  href="#collapse-pet-{{ record.pet.pet_id }}" data-parent="#my-accordion" data-toggle="collapse" class="panel-title">{{ record.pet.desc }}</a>
+        </div>
+        <div class="panel-collapse collapse" id="collapse-pet-{{ record.pet.pet_id }}">
+            <div class="panel-body">
+               <form action = "/pet/manage/{{ record.pet.pet_id }}" method=post>
+                  <fieldset>
+                     {{ form.hidden_tag() }}
+                     <div style = font-size:20px; font-weight:bold; margin-left:150px;>
+                        <br>
+                        {{ form.species.scientific_name.label }}: {{ record.species.scientific_name }} 
+                        {{ form.species.common_name.label }}: {{ record.species.common_name }} : {{ form.edit }} {{ form.note }} {{ form.delete }}
+                        <br>
+                        {{ form.pet.start.label }}: {{ record.pet.start }} : {{ form.pet.end.label }}: {{ record.pet.end }}
+                        <br>
+                        {{ form.species.endangered_status.label }}: {{ record.species.endangered_status }}
+                        {{ form.species.iucn_category.label }}: {{ record.species.iucn_category }}
+                        {{ form.species.iucn_id.label }}: {{ record.species.iucn_id }}
+                        {{ form.species.cares.label }}: {{ record.species.cares }}
+                        <br>
 
-      {{ form.hidden_tag() }}
-      <div style = font-size:20px; font-weight:bold; margin-left:150px;>
+                        Notes:<br>
+                        {% for note in record.notes %}
+                           {{ note.note }}
+                           </br>
+                        {% endfor %}
 
-         {{ form.pet.pet_id.label }}: {{ record.pet.pet_id }}: {{ form.pet.desc.label }}: {{ record.pet.desc }} {{ form.edit }} {{ form.note }} {{ form.delete }}
-         <br>
-         {{ form.species.scientific_name.label }}: {{ record.species.scientific_name }}
-         {{ form.species.common_name.label }}: {{ record.species.common_name }}
-         <br>
-         {{ form.pet.start.label }}: {{ record.pet.start }} : {{ form.pet.end.label }}: {{ record.pet.end }}
-         <br>
-         {{ form.species.endangered_status.label }}: {{ record.species.endangered_status }}
-         {{ form.species.iucn_category.label }}: {{ record.species.iucn_category }}
-         {{ form.species.iucn_id.label }}: {{ record.species.iucn_id }}
-         {{ form.species.cares.label }}: {{ record.species.cares }}
-         <br>
-
-         <div class="panel-group" id="accordion">
-           {% for note in record.notes %}
-             <div class="panel panel-default">
-               <div class="panel-heading">
-                 <h4 class="panel-title">
-                  <button class="btn btn-primary" data-toggle="collapse" id="Bheader{{ note.note_id }}" data-parent="#accordion" href="#Bcollapse{{ note.note_id }}">{{ note.note_id }}</button>
-                 </h4>
-               </div>
-               <div id="Bcollapse{{ note.note_id }}" class="panel-collapse collapse in">
-                 <div class="panel-body" id="Bbody{{ note.note_id }}">
-                   {{ note.note }}
-                 </div>
-               </div>
-             </div>
-           {% endfor %}
-         </div>
-
-      </div>
-   </fieldset>
-</form>
-
-<hr>
+                     </div>
+                  </fieldset>
+               </form>
+            </div><!-- .accordion-inner -->
+        </div><!-- .accordion-body -->
+    </div><!-- .accordion-group -->
+   <p>
 {% endfor %}
+</div>
+
 {% endblock %}

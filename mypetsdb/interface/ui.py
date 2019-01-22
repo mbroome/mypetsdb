@@ -8,7 +8,7 @@ from wtforms.validators import InputRequired, Email, Length
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
-from mypetsdb import bootstrap, login_manager
+from mypetsdb import login_manager
 import mypetsdb.controllers.pets 
 import mypetsdb.models as models
 import mypetsdb.forms as forms
@@ -80,11 +80,13 @@ def logout():
 def manage_specific_pet_note(id):
    form = forms.NoteDatumForm(request.form)
    #print(request.form)
-   print(json.dumps(form.data))
+   #print(json.dumps(form.data))
    if request.method == 'POST':
       print('got a post in pet note')
       if form.submit.data == True:
          status = mypetsdb.controllers.pets.pet_note_create(id, form.data)
+      elif form.edit.data == True:
+         print('### got a note edit request')
       return redirect(url_for('ui.dashboard'))
    elif request.method == 'GET':
       return render_template('manage_note.html', name=current_user.username, form=form, pet_id=id)

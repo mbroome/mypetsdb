@@ -1,6 +1,6 @@
 {% extends "dashboard_base.html" %}
 
-{% block content %}
+{% block inner_content %}
 
    <form action = "/pet/manage/{{ pet_id }}/note" method=post>
       <fieldset>
@@ -8,11 +8,10 @@
             
          <div style = font-size:20px; font-weight:bold; margin-left:150px;>
                
-            {{ form.timestamp.label }} {{ form.timestamp }}
-            {{ form.public.label }} {{ form.public }}
+            {{ form.public.label }}: {{ form.public }}
             <br>
                
-            {{ form.note.label }}<br>
+            {{ form.note.label }}:<br>
             {{ form.note }}
             <br>
 
