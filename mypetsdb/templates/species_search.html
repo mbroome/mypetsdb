@@ -1,0 +1,17 @@
+{% extends "dashboard_base.html" %}
+
+{% block inner_content %}
+
+{% for record in searchdata %}
+    {{ form.scientific_name.label }}: {{ record.scientific_name }}<br>
+    {{ form.common_name.label }}: {{ record.common_name or 'N/A' }}<br>
+    {{ form.endangered_status.label }}: {{ record.endangered_status or 'N/A' }}<br>
+    {{ form.iucn_category.label }}: {{ record.iucn_category or 'N/A' }}<br>
+    {{ form.iucn_id.label }}: {{ record.iucn_id or 'N/A' }}<br>
+    {{ form.cares.label }}: {{ record.cares or 'N/A' }}<br>
+    <hr>
+
+{% endfor %}
+
+{% endblock %}
+

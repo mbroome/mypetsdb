@@ -10,6 +10,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 
 from mypetsdb import login_manager
 import mypetsdb.controllers.pets 
+import mypetsdb.controllers.species
 import mypetsdb.models as models
 import mypetsdb.forms as forms
 
@@ -68,12 +69,28 @@ def dashboard():
    searchform = forms.SearchForm()
    petform = forms.PetForm()
 
-   if searchform.searchdata.data:
-      print(searchform.searchdata.data)
-      p = mypetsdb.controllers.pets.pet_search(searchform.searchdata.data)
+   if request.method == 'POST' and searchform.petsearch.data:
+      print(searchform.petsearch.data)
+      p = mypetsdb.controllers.pets.pet_search(searchform.petsearch.data)
    else:
       p = mypetsdb.controllers.pets.pet_lookup_all()
    return render_template('dashboard.html', name=current_user.username, petdata=p, form=petform, searchform=searchform)
+
+@routes.route('/species', methods=['GET', 'POST'])
+@login_required
+def species():
+   searchform = forms.SearchForm()
+   speciesform = forms.SpeciesDatumForm()
+   #print(searchform.speciessearch.data)
+   q = None
+   if request.method == 'POST' and searchform.speciessearch.data:
+      print('get it on')
+      q =  mypetsdb.controllers.species.species_lookup(searchform.speciessearch.data)
+      print(q)
+      if type(q) is not list:
+         q = [q]
+
+   return render_template('species_search.html', name=current_user.username, searchdata=q, form=speciesform, searchform=searchform)
 
 @routes.route('/logout')
 @login_required

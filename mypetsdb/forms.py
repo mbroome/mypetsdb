@@ -21,7 +21,10 @@ class RegisterForm(FlaskForm):
 
 
 class SearchForm(FlaskForm):
-    searchdata = StringField('Search', [InputRequired()], render_kw={"placeholder": "Pet Search..."})
+    petsearch = StringField('Search', [InputRequired()], render_kw={"placeholder": "Pet Search..."})
+    speciessearch = StringField('Search', [InputRequired()], render_kw={"placeholder": "Species Search..."})
+
+#class SpeciesSearchForm(FlaskForm):
 
 class NoteDatumForm(FlaskForm):
     note_id =  IntegerField('Note ID')
