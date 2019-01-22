@@ -61,12 +61,19 @@ def signup():
 
    return render_template('signup.html', form=form)
 
-@routes.route('/dashboard')
+@routes.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
-   form = forms.PetForm()
-   p = mypetsdb.controllers.pets.pet_lookup_all()
-   return render_template('dashboard.html', name=current_user.username, petdata=p, form=form)
+   #print(request.data)
+   searchform = forms.SearchForm()
+   petform = forms.PetForm()
+
+   if searchform.searchdata.data:
+      print(searchform.searchdata.data)
+      p = mypetsdb.controllers.pets.pet_search(searchform.searchdata.data)
+   else:
+      p = mypetsdb.controllers.pets.pet_lookup_all()
+   return render_template('dashboard.html', name=current_user.username, petdata=p, form=petform, searchform=searchform)
 
 @routes.route('/logout')
 @login_required
@@ -78,6 +85,7 @@ def logout():
 @routes.route('/pet/manage/<id>/note', methods = ['GET', 'POST'])
 @login_required
 def manage_specific_pet_note(id):
+   searchform = forms.SearchForm()
    form = forms.NoteDatumForm(request.form)
    #print(request.form)
    #print(json.dumps(form.data))
@@ -89,11 +97,12 @@ def manage_specific_pet_note(id):
          print('### got a note edit request')
       return redirect(url_for('ui.dashboard'))
    elif request.method == 'GET':
-      return render_template('manage_note.html', name=current_user.username, form=form, pet_id=id)
+      return render_template('manage_note.html', name=current_user.username, form=form, searchform=searchform, pet_id=id)
 
 @routes.route('/pet/manage/<id>', methods = ['GET', 'POST'])
 @login_required
 def manage_specific_pet(id):
+   searchform = forms.SearchForm()
    form = forms.PetForm(request.form)
    #print(request.form)
    #print(json.dumps(form.data))
@@ -102,23 +111,22 @@ def manage_specific_pet(id):
          pet = mypetsdb.controllers.pets.pet_lookup_specific(id)
          editForm = forms.PetForm(pet=pet['pet'], species=pet['species'], notes=pet['notes'])
 
-         return render_template('manage_pet.html', name=current_user.username, petdata=pet, form=editForm)
+         return render_template('manage_pet.html', name=current_user.username, petdata=pet, form=editForm, searchform=searchform)
       elif form.submit.data == True:
          pet = mypetsdb.controllers.pets.pet_update(id, form.data)
       elif form.delete.data == True:
          status = mypetsdb.controllers.pets.pet_delete(id)
       elif form.note.data == True:
-         #nform = forms.NoteDatumForm()
-         #return render_template('manage_note.html', name=current_user.username, form=nform, pet_id=id)
          return redirect(url_for('ui.manage_specific_pet_note', id=id))
       return redirect(url_for('ui.dashboard'))
    elif request.method == 'GET':
-      return render_template('manage_pet.html', name=current_user.username, form=form)
+      return render_template('manage_pet.html', name=current_user.username, form=form, searchform=searchform)
 
 
 @routes.route('/pet/manage', methods = ['GET', 'POST'])
 @login_required
 def manage_pet():
+   searchform = forms.SearchForm()
    form = forms.PetForm(request.form)
    #print(json.dumps(form.data))
    if request.method == 'POST':
@@ -126,5 +134,5 @@ def manage_pet():
 
       return redirect(url_for('ui.dashboard'))
    elif request.method == 'GET':
-      return render_template('manage_pet.html', name=current_user.username, form=form)
+      return render_template('manage_pet.html', name=current_user.username, form=form, searchform=searchform)
 

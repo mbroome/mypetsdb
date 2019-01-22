@@ -6,6 +6,7 @@ import time
 import datetime
 
 from flask_login import current_user
+from sqlalchemy import func, or_
 
 from mypetsdb import ma
 import mypetsdb.models as models
@@ -25,6 +26,24 @@ def _flatten_pet_dict(content):
    else:
       data = content
    return(data)
+
+def pet_search(name):
+   q = (models.Session.query(models.PetDatum, models.SpeciesDatum)
+        .select_from(models.PetDatum)
+        .filter(models.PetDatum.scientific_name == models.SpeciesDatum.scientific_name)
+        .filter(or_(models.PetDatum.desc.ilike('%{0}%'.format(name)), models.PetDatum.scientific_name.ilike('%{0}%'.format(name)),  models.SpeciesDatum.common_name.ilike('%{0}%'.format(name))))
+        .all())
+
+   response = []
+   for row in q:
+      notes = (models.Session.query(models.PetNoteDatum)
+               .filter(models.PetNoteDatum.pet_id == row[0].pet_id)
+               .all())
+      #print(notes)
+
+      rec = {"pet": row[0], "species": row[1], "notes": notes}
+      response.append(rec)
+   return(response)
 
 def pet_lookup_all():
    q = (models.Session.query(models.PetDatum, models.SpeciesDatum)
@@ -65,16 +84,8 @@ def pet_create(content):
    #userid = current_user.username
    #if not userid:
    userid = 'mbroome'
-   print(content)
+   #print(content)
 
-   #data = {}
-   ## detect if we were passed a flattened object or a nested dict
-   #if 'pet' in content and 'species' in content:
-   #   data['scientific_name'] = content['species']['scientific_name']
-   #   data['desc'] = content['pet']['desc']
-   #   data['public'] = content['pet']['public']
-   #else:
-   #   data = content
    data = _flatten_pet_dict(content)
 
    # find the species data
@@ -102,14 +113,6 @@ def pet_create(content):
 def pet_update(id, content):
    userid = 'mbroome'
 
-   #data = {}
-   ## detect if we were passed a flattened object or a nested dict
-   #if 'pet' in content and 'species' in content:
-   #   data['scientific_name'] = content['species']['scientific_name']
-   #   data['desc'] = content['pet']['desc']
-   #   data['public'] = content['pet']['public']
-   #else:
-   #   data = content
    data = _flatten_pet_dict(content)
 
    species = mypetsdb.controllers.species.species_cached_lookup(data['scientific_name'])
@@ -133,8 +136,6 @@ def pet_update(id, content):
             .filter(models.PetNoteDatum.pet_id == pet.pet_id)
             .all())
 
-   #output = pet_schema.dump(pet).data
-   #print output
    return({"pet": pet, "species": species, "notes": notes})
 
 def pet_delete(id):

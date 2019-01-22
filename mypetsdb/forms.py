@@ -20,6 +20,9 @@ class RegisterForm(FlaskForm):
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
 
 
+class SearchForm(FlaskForm):
+    searchdata = StringField('Search', [InputRequired()], render_kw={"placeholder": "Pet Search..."})
+
 class NoteDatumForm(FlaskForm):
     note_id =  IntegerField('Note ID')
     public =  BooleanField('Public')

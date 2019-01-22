@@ -27,17 +27,17 @@ Dashboard
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">MyPetsDB</a>
+          <a class="navbar-brand" href="/dashboard">MyPetsDB</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="{{ url_for('ui.manage_pet') }}">New Pet</a></li>
             <li><a href="#">Settings</a></li>
             <li><a href="#">Profile - {{ name }}</a></li>
             <li><a href="{{ url_for('ui.logout') }}">Log Out</a></li>
           </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
+          <form class="navbar-form navbar-right" action={{ url_for('ui.dashboard') }} method=post>
+             {{ searchform.searchdata(class_="form-control") }} <a href='/dashboard'>X</a>
           </form>
         </div>
       </div>
@@ -45,15 +45,7 @@ Dashboard
 
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            <li class="active"><a href="/dashboard">Overview <span class="sr-only">(current)</span></a></li>
-            <li><a href="{{ url_for('ui.manage_pet') }}">New Pet</a></li>
-<!--            <li><a href="#">Analytics</a></li>
-            <li><a href="#">Export</a></li> -->
-          </ul>
-        </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="col-sm-9 col-md-10 col-md-offset-1 main">
 {% block inner_content %}
 {% endblock %}
         </div>
