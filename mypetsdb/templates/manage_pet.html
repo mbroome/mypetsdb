@@ -2,7 +2,11 @@
 
 {% block content %}
 
+{% if petdata is defined and petdata.pet.pet_id is not none %}
+   <form action = "/pet/manage/{{ petdata.pet.pet_id }}" method=post>
+{% else %}
    <form action = "/pet/manage" method=post>
+{% endif %}
       <fieldset>
          {{ form.hidden_tag() }}
          <div style = font-size:20px; font-weight:bold; margin-left:150px;>
