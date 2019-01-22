@@ -75,6 +75,20 @@ def logout():
    return redirect(url_for('ui.index'))
 
 
+@routes.route('/pet/manage/<id>/note', methods = ['GET', 'POST'])
+@login_required
+def manage_specific_pet_note(id):
+   form = forms.NoteDatumForm(request.form)
+   #print(request.form)
+   print(json.dumps(form.data))
+   if request.method == 'POST':
+      print('got a post in pet note')
+      if form.submit.data == True:
+         status = mypetsdb.controllers.pets.pet_note_create(id, form.data)
+      return redirect(url_for('ui.dashboard'))
+   elif request.method == 'GET':
+      return render_template('manage_note.html', name=current_user.username, form=form, pet_id=id)
+
 @routes.route('/pet/manage/<id>', methods = ['GET', 'POST'])
 @login_required
 def manage_specific_pet(id):
@@ -90,13 +104,14 @@ def manage_specific_pet(id):
       elif form.submit.data == True:
          pet = mypetsdb.controllers.pets.pet_update(id, form.data)
       elif form.delete.data == True:
-         print('#### delete request for: %s' % id)
          status = mypetsdb.controllers.pets.pet_delete(id)
-
+      elif form.note.data == True:
+         #nform = forms.NoteDatumForm()
+         #return render_template('manage_note.html', name=current_user.username, form=nform, pet_id=id)
+         return redirect(url_for('ui.manage_specific_pet_note', id=id))
       return redirect(url_for('ui.dashboard'))
    elif request.method == 'GET':
       return render_template('manage_pet.html', name=current_user.username, form=form)
-
 
 
 @routes.route('/pet/manage', methods = ['GET', 'POST'])

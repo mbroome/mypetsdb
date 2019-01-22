@@ -18,9 +18,9 @@ class RegisterForm(FlaskForm):
 
 
 class NoteDatumForm(FlaskForm):
-    note_id =  IntegerField('note_id')
-    public =  BooleanField('public')
-    note = StringField('note', validators=[Length(min=4, max=255)])
+    note_id =  IntegerField('Note ID')
+    public =  BooleanField('Public')
+    note = StringField('Note')
     timestamp = DateField('timestamp')
     submit = SubmitField('Submit')
 
@@ -49,5 +49,5 @@ class PetForm(FlaskForm):
     edit = SubmitField('Edit')
     delete = SubmitField('Delete')
     submit = SubmitField('Submit')
-    note = SubmitField('Notes')
+    note = SubmitField('+Note')
 

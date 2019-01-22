@@ -2,25 +2,25 @@
 
 {% block content %}
 
-                <form action = "/pet/manage/{{ pet.pet_id }}/note" method=post>
-                   <fieldset>
-                      <legend>New Note</legend>
-                      {{ form.hidden_tag() }}
+   <form action = "/pet/manage/{{ pet_id }}/note" method=post>
+      <fieldset>
+         {{ form.hidden_tag() }}
             
-                      <div style = font-size:20px; font-weight:bold; margin-left:150px;>
+         <div style = font-size:20px; font-weight:bold; margin-left:150px;>
                
-                         {{ form.timestamp.label }} {{ form.timestamp }}
-                         <br>
+            {{ form.timestamp.label }} {{ form.timestamp }}
+            {{ form.public.label }} {{ form.public }}
+            <br>
                
-                         {{ form.note.label }}<br>
-                         {{ form.note }}
-                         <br>
+            {{ form.note.label }}<br>
+            {{ form.note }}
+            <br>
 
-                         {{ form.submit }}
-                      </div>
-            
-                   </fieldset>
-                </form>
+            {{ form.submit }}
+         </div>
+
+      </fieldset>
+   </form>
 
 {% endblock %}
 
