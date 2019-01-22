@@ -1,8 +1,9 @@
 from flask import Flask, render_template, redirect, url_for, Blueprint
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, IntegerField, DateField, SubmitField, FieldList, FormField
+from wtforms import StringField, PasswordField, BooleanField, IntegerField, SubmitField, FieldList, FormField
 from wtforms.validators import InputRequired, Email, Length
+from wtforms.fields.html5 import DateField
 
 import mypetsdb.models as models
 
