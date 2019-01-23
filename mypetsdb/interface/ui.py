@@ -36,6 +36,8 @@ def index():
 
    return render_template('index.html')
 
+#########################################################
+# Auth related endpoints
 @routes.route('/login', methods=['GET', 'POST'])
 def login():
    form = forms.LoginForm()
@@ -75,6 +77,8 @@ def logout():
    logout_user()
    return redirect(url_for('ui.index'))
 
+#########################################################
+# The base logged in dashboard
 @routes.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
@@ -89,9 +93,10 @@ def dashboard():
       p = mypetsdb.controllers.pets.pet_lookup_all()
    return render_template('dashboard.html', name=current_user.username, petdata=p, form=petform, searchform=searchform)
 
-@routes.route('/species', methods=['GET', 'POST'])
+# Species search from the main dashboard
+@routes.route('/dashboard/species', methods=['GET', 'POST'])
 @login_required
-def species():
+def dashboard_species():
    searchform = forms.SearchForm()
    speciesform = forms.SpeciesDatumForm()
    #print(searchform.speciessearch.data)
@@ -105,7 +110,32 @@ def species():
 
    return render_template('species_search.html', name=current_user.username, searchdata=q, form=speciesform, searchform=searchform)
 
+# manage a specific note about a specific pet
+@routes.route('/pet/manage/<id>/note/<note_id>', methods = ['GET', 'POST'])
+@login_required
+def manage_specific_pet_note_id(id, note_id):
+   print('In dat note edit')
+   searchform = forms.SearchForm()
+   form = forms.NoteDatumForm(request.form)
+   print(request.form)
+   print(form.data)
+   print('id: %s, note: %s' % (id, note_id))
+   if request.method == 'POST':
+      print('got a post in pet note')
+      if form.submit.data == True:
+         status = mypetsdb.controllers.pets.pet_note_update(id, note_id, form.data)
+      return redirect(url_for('ui.dashboard'))
+   elif request.method == 'GET':
+      print('in the get')
+      note = mypetsdb.controllers.pets.pet_note_get_id(id, note_id)
+      print(note)
+      print(note.__dict__)
+      form = forms.NoteDatumForm(obj=note)
+      print(form.data)
+      return render_template('manage_note.html', name=current_user.username, form=form, searchform=searchform, pet_id=id, notedata=note)
 
+
+# manage notes about a specific pet
 @routes.route('/pet/manage/<id>/note', methods = ['GET', 'POST'])
 @login_required
 def manage_specific_pet_note(id):
@@ -123,6 +153,7 @@ def manage_specific_pet_note(id):
    elif request.method == 'GET':
       return render_template('manage_note.html', name=current_user.username, form=form, searchform=searchform, pet_id=id)
 
+# manage a specific pet
 @routes.route('/pet/manage/<id>', methods = ['GET', 'POST'])
 @login_required
 def manage_specific_pet(id):
@@ -147,6 +178,7 @@ def manage_specific_pet(id):
       return render_template('manage_pet.html', name=current_user.username, form=form, searchform=searchform)
 
 
+# create a pet
 @routes.route('/pet/manage', methods = ['GET', 'POST'])
 @login_required
 def manage_pet():

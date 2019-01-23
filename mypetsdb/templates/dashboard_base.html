@@ -39,7 +39,7 @@ Dashboard
           <form class="navbar-form navbar-right" action={{ url_for('ui.dashboard') }} method=post>
              <div>{{ searchform.petsearch(class_="form-control") }} <a href='/dashboard'><span class="glyphicon glyphicon-refresh" style="padding-left: 4px;" aria-hidden="true"></span></a></div>
           </form>
-          <form class="navbar-form navbar-right" action={{ url_for('ui.species') }} method=post>
+          <form class="navbar-form navbar-right" action={{ url_for('ui.dashboard_species') }} method=post>
              <div>{{ searchform.speciessearch(class_="form-control") }} <a href='/dashboard'><span class="glyphicon glyphicon-refresh" style="padding-left: 4px;" aria-hidden="true"></span></a></div>
           </form>
         </div>
@@ -48,7 +48,7 @@ Dashboard
 
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-9 col-md-10 col-md-offset-1 main">
+        <div class="col-sm-12 col-md-12 main">
 {% block inner_content %}
 {% endblock %}
         </div>

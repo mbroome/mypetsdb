@@ -185,6 +185,14 @@ def pet_stop(id):
 
 ################################################
 # notes
+def pet_note_get_id(id, note_id):
+   note = (models.Session.query(models.PetNoteDatum)
+           .filter(models.PetNoteDatum.pet_id == id)
+           .filter(models.PetNoteDatum.note_id == note_id)
+           .first())
+
+   return(note)
+
 def pet_note_get(id):
    notes = (models.Session.query(models.PetNoteDatum)
            .filter(models.PetNoteDatum.pet_id == id)
