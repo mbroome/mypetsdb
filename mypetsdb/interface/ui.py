@@ -27,6 +27,13 @@ routes = Blueprint('ui', __name__, template_folder='templates', static_folder='s
 
 @routes.route('/')
 def index():
+   if current_user:
+      try:
+         if current_user.username:
+            return redirect(url_for('ui.dashboard'))
+      except:
+         pass
+
    return render_template('index.html')
 
 @routes.route('/login', methods=['GET', 'POST'])
@@ -62,6 +69,12 @@ def signup():
 
    return render_template('signup.html', form=form)
 
+@routes.route('/logout')
+@login_required
+def logout():
+   logout_user()
+   return redirect(url_for('ui.index'))
+
 @routes.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
@@ -91,12 +104,6 @@ def species():
          q = [q]
 
    return render_template('species_search.html', name=current_user.username, searchdata=q, form=speciesform, searchform=searchform)
-
-@routes.route('/logout')
-@login_required
-def logout():
-   logout_user()
-   return redirect(url_for('ui.index'))
 
 
 @routes.route('/pet/manage/<id>/note', methods = ['GET', 'POST'])
