@@ -1,7 +1,7 @@
 import os
 import json
 
-from sqlalchemy import Column, DateTime, Index, Integer, String, Text, Table, Boolean
+from sqlalchemy import Column, Date, DateTime, Index, Integer, String, Text, Table, Boolean
 from sqlalchemy.schema import FetchedValue
 from sqlalchemy.dialects.mysql.enumerated import ENUM
 from sqlalchemy.dialects.mysql import TIMESTAMP
@@ -43,10 +43,11 @@ class PetDatum(Base):
     variant = Column(String(100))
     collection_point = Column(String(100))
     userid = Column(String(100), nullable=False)
-    start = Column(DateTime)
-    end = Column(DateTime)
+    start = Column(Date)
+    end = Column(Date)
     desc = Column(String(255))
     public = Column(Boolean, nullable=False, default=False)
+    timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
 
     scientific_name = Column(String(100))
 
@@ -69,7 +70,26 @@ class SpeciesDatum(Base):
     iucn_category = Column(String(10), nullable=True)
     iucn_id = Column(String(20), nullable=True)
     cares = Column(Integer, nullable=True)
+    timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
 
+
+class CommonNameDatum(Base):
+    __tablename__ = 'common_names'
+
+    common_name = Column(String(100), primary_key=True, nullable=False)
+    scientific_name = Column(String(100), primary_key=True, nullable=False)
+    source = Column(String(20), nullable=True)
+    timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
+
+    xref_id = Column(Integer, nullable=True)
+
+class SpeciesNameDatum(Base):
+    __tablename__ = 'species_names'
+
+    scientific_name = Column(String(100), primary_key=True, nullable=False)
+    timestamp = Column(TIMESTAMP, primary_key=True, nullable=False, server_default=FetchedValue())
+
+    xref_id = Column(Integer, nullable=True)
 
 class User(UserMixin, Base):
     __tablename__ = 'users'
@@ -85,4 +105,29 @@ Base.metadata.reflect(bind=engine)
 if __name__ == '__main__':
    Base.metadata.create_all()
 
+   common_names = Session.query(ITISCommonName).all()
+
+   count = 0
+   for name in common_names:
+      print(name)
+      common_name = name.vernacular_name.lower()
+      common_name = common_name.encode('ascii', 'ignore').decode('ascii')
+
+      scientific_name = name.complete_name.lower()
+      scientific_name = scientific_name.encode('ascii', 'ignore').decode('ascii')
+
+      cn = CommonNameDatum(common_name=common_name,
+                           scientific_name=scientific_name,
+                           xref_id=name.tsn,
+                           source='itis')
+      Session.merge(cn)
+
+      if count > 50:
+         print 'commit'
+         Session.commit()
+         count = 0
+      else:
+         count += 1
+
+   Session.commit()
 
