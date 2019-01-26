@@ -3,16 +3,26 @@
 {% block inner_content %}
 
 {% for record in searchdata %}
-    {{ form.scientific_name.label }}: {{ record.scientific_name }}
-    <a target="_blank" href="https://www.google.com/search?q={{ record.scientific_name|quote_plus }}&tbm=isch">Google Images</a>
-    <br>
-    {{ form.common_name.label }}: {{ record.common_name or 'N/A' }}<br>
-    {{ form.endangered_status.label }}: {{ record.endangered_status or 'N/A' }}<br>
-    {{ form.iucn_category.label }}: {{ record.iucn_category or 'N/A' }}<br>
-    {{ form.iucn_id.label }}: {{ record.iucn_id or 'N/A' }}<br>
-    {{ form.cares.label }}: {{ record.cares or 'N/A' }}<br>
-    <hr>
+<form id="{{ record.scientific_name }}" action = "/pet/manage" method=post>
+   <fieldset>
+      {{ form.hidden_tag() }}
+ 
+      {{ form.scientific_name.label }}: <input id="species-scientific_name" name="species-scientific_name" type="text" value="{{ record.scientific_name }}">
+      <a href="#" onclick="document.getElementById('{{ record.scientific_name }}').submit();">
+        <span class="glyphicon glyphicon-plus" style="padding-left: 4px;" aria-hidden="true"></span>
+      </a>
+      <a target="_blank" href="https://www.google.com/search?q={{ record.scientific_name|quote_plus }}&tbm=isch">
+        <span class="glyphicon glyphicon-picture" style="padding-left: 4px;" aria-hidden="true"></span>
+      </a>
+      <br>
+      {{ form.common_name.label }}: {{ record.common_name or 'N/A' }}<br>
+      {{ form.endangered_status.label }}: {{ record.endangered_status or 'N/A' }}<br>
+      {{ form.iucn_category.label }}: {{ record.iucn_category or 'N/A' }}<br>
+      {{ form.iucn_id.label }}: {{ record.iucn_id or 'N/A' }}<br>
+      {{ form.cares.label }}: {{ record.cares or 'N/A' }}<br>
+      <hr>
 
+   </fieldset>
 {% endfor %}
 
 {% endblock %}

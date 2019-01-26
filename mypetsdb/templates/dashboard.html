@@ -32,6 +32,10 @@
                      <div style = font-size:20px; font-weight:bold; margin-left:150px;>
                         <br>
                         {{ form.species.scientific_name.label }}: {{ record.species.scientific_name }} 
+                        <a target="_blank" href="https://www.google.com/search?q={{ record.species.scientific_name|quote_plus }}&tbm=isch">
+                           <span class="glyphicon glyphicon-picture" style="padding-left: 4px;" aria-hidden="true"></span>
+                        </a>
+
                         {{ form.species.common_name.label }}: {{ record.species.common_name }} : {{ form.edit }} {{ form.note }} {{ form.delete }}
                         <br>
                         {{ form.pet.start.label }}: {{ record.pet.start }} : {{ form.pet.end.label }}: {{ record.pet.end }}

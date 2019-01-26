@@ -189,11 +189,14 @@ def manage_specific_pet(id):
 def manage_pet():
    searchform = forms.SearchForm()
    form = forms.PetForm(request.form)
-   #print(json.dumps(form.data))
+   print(request.form)
+   print(json.dumps(form.data))
    if request.method == 'POST':
-      pet = mypetsdb.controllers.pets.pet_create(form.data)
+      if form.submit.data == True:
+         pet = mypetsdb.controllers.pets.pet_create(form.data)
 
-      return redirect(url_for('ui.dashboard'))
+         return redirect(url_for('ui.dashboard'))
+      return render_template('manage_pet.html', name=current_user.username, form=form, searchform=searchform)
    elif request.method == 'GET':
       return render_template('manage_pet.html', name=current_user.username, form=form, searchform=searchform)
 
