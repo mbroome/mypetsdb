@@ -3,7 +3,9 @@
 {% block inner_content %}
 
 {% for record in searchdata %}
-    {{ form.scientific_name.label }}: {{ record.scientific_name }}<br>
+    {{ form.scientific_name.label }}: {{ record.scientific_name }}
+    <a target="_blank" href="https://www.google.com/search?q={{ record.scientific_name|quote_plus }}&tbm=isch">Google Images</a>
+    <br>
     {{ form.common_name.label }}: {{ record.common_name or 'N/A' }}<br>
     {{ form.endangered_status.label }}: {{ record.endangered_status or 'N/A' }}<br>
     {{ form.iucn_category.label }}: {{ record.iucn_category or 'N/A' }}<br>

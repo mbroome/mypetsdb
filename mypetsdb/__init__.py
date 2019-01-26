@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify
 from flask_marshmallow import Marshmallow
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_bootstrap import Bootstrap
+import urllib
 
 
 ma = Marshmallow()
@@ -18,6 +19,8 @@ def create_app(test_config=None):
    #bootstrap.init_app(app)
    bootstrap = Bootstrap(app)
    login_manager.init_app(app)
+
+   app.jinja_env.filters['quote_plus'] = lambda u: urllib.quote_plus(u)
 
    app.config['SECRET_KEY'] = '7c2a2b8a-5936-4a1a-816d-0ac526f8d7ed'
 
