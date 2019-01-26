@@ -11,6 +11,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.orm import scoped_session, sessionmaker
+import sqlalchemy.exc
 
 from flask_login import UserMixin
 
@@ -87,6 +88,7 @@ class SpeciesNameDatum(Base):
     __tablename__ = 'species_names'
 
     scientific_name = Column(String(100), primary_key=True, nullable=False)
+    source = Column(String(20), nullable=True)
     timestamp = Column(TIMESTAMP, primary_key=True, nullable=False, server_default=FetchedValue())
 
     xref_id = Column(Integer, nullable=True)
@@ -105,29 +107,53 @@ Base.metadata.reflect(bind=engine)
 if __name__ == '__main__':
    Base.metadata.create_all()
 
-   common_names = Session.query(ITISCommonName).all()
+   
+   common_names = (Session.query(ITISCommonName)
+      .filter(ITISCommonName.language.like('%english%'))
+      .all())
 
-   count = 0
    for name in common_names:
-      print(name)
+      #print(name)
       common_name = name.vernacular_name.lower()
-      common_name = common_name.encode('ascii', 'ignore').decode('ascii')
+      #common_name = common_name.encode('ascii', 'ignore').decode('ascii')
 
       scientific_name = name.complete_name.lower()
-      scientific_name = scientific_name.encode('ascii', 'ignore').decode('ascii')
+      #scientific_name = scientific_name.encode('ascii', 'ignore').decode('ascii')
+      if ' ssp. ' in scientific_name:
+         scientific_name = scientific_name[:scientific_name.find(' ssp. ')]
+      if ' var. ' in scientific_name:
+         scientific_name = scientific_name[:scientific_name.find(' var. ')]
 
-      cn = CommonNameDatum(common_name=common_name,
-                           scientific_name=scientific_name,
-                           xref_id=name.tsn,
-                           source='itis')
-      Session.merge(cn)
+      rec = {'common_name': common_name,
+             'scientific_name': scientific_name,
+             'xref_id': name.tsn,
+             'source': 'itis'}
+      if 'apisto' in scientific_name:
+         print(rec)
 
-      if count > 50:
-         print 'commit'
-         Session.commit()
-         count = 0
-      else:
-         count += 1
+      try:
+         engine.execute(CommonNameDatum.__table__.insert().values(rec))
+      except sqlalchemy.exc.IntegrityError:
+         pass
+   
 
-   Session.commit()
+   species_names = (Session.query(ITISSpecies).all())
 
+   for name in species_names:
+      #print(name)
+      scientific_name = name.complete_name.lower()
+      #scientific_name = scientific_name.encode('ascii', 'ignore').decode('ascii')
+      if ' ssp. ' in scientific_name:
+         scientific_name = scientific_name[:scientific_name.find(' ssp. ')]
+      if ' var. ' in scientific_name:
+         scientific_name = scientific_name[:scientific_name.find(' var. ')]
+
+      rec = {'scientific_name': scientific_name,
+             'xref_id': name.tsn,
+             'source': 'itis'}
+      print(rec)
+      try:
+         engine.execute(SpeciesNameDatum.__table__.insert().values(rec))
+      except sqlalchemy.exc.IntegrityError:
+         pass
+  

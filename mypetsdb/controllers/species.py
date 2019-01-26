@@ -53,8 +53,18 @@ def species_lookup(id):
             response.append(rec)
          return(response)
 
-   # return a null
-   return(species)
+   else:
+      species = (models.Session.query(models.SpeciesNameDatum)
+                   .filter(models.SpeciesNameDatum.scientific_name.ilike('%{0}%'.format(id)))
+                   .all())
+
+      response = []
+      for s in species:
+         rec =  models.SpeciesDatum(scientific_name=s.scientific_name)
+                                    
+         response.append(rec)
+      # return a null
+      return(response)
 
 # lookup a species on the iucn red list
 def species_metadata_callout(species):
