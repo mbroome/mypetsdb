@@ -12,12 +12,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.orm import scoped_session, sessionmaker
 import sqlalchemy.exc
+from sqlalchemy.sql import select, text
 
 from flask_login import UserMixin
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 engine = create_engine('mysql://mypetsdb:wzUIrLafJ5nR@localhost/mypetsdb?charset=latin1', pool_pre_ping=True)
-#engine = create_engine('mysql://mypetsdb:wzUIrLafJ5nR@localhost/mypetsdb?charset=latin1', pool_pre_ping=True, echo=True)
 sess = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Session = scoped_session(sess)
 
@@ -102,12 +102,37 @@ class User(UserMixin, Base):
     password = Column(String(80))
 
 
+def loadSpeciesData():
+   itis_engine = create_engine('mysql://mypetsdb:wzUIrLafJ5nR@localhost/ITIS?charset=latin1', pool_pre_ping=True)
+   #itis_sess = sessionmaker(autocommit=False, autoflush=False, bind=itis_engine)
+   #itis_session = scoped_session(itis_sess)
+
+   species_query = text('select unit_name1,unit_name2,tsn from taxonomic_units where unit_name1!="" and unit_name2!=""')
+   species_list = itis_engine.execute(species_query).fetchall()
+   print(len(species_list))
+   print(species_list[0])
+
+   for species in species_list:
+      scientific_name = "%s %s" % (species[0], species[1])
+
+      rec = {'scientific_name': scientific_name.lower(),
+             'xref_id': species[2],
+             'source': 'itis'}
+      print(rec)
+      try:
+         engine.execute(SpeciesNameDatum.__table__.insert().values(rec))
+      except sqlalchemy.exc.IntegrityError:
+         pass
+
+
 Base.metadata.reflect(bind=engine)
 
 if __name__ == '__main__':
    Base.metadata.create_all()
 
-   
+   loadSpeciesData()
+
+   '''
    common_names = (Session.query(ITISCommonName)
       .filter(ITISCommonName.language.like('%english%'))
       .all())
@@ -156,4 +181,4 @@ if __name__ == '__main__':
          engine.execute(SpeciesNameDatum.__table__.insert().values(rec))
       except sqlalchemy.exc.IntegrityError:
          pass
-  
+   ''' 

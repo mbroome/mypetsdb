@@ -16,6 +16,11 @@ Dashboard
     <link rel="stylesheet" href="{{url_for('ui.static', filename='dashboard.css')}}">
 {% endblock %}
 
+{% block scripts %}
+{{ super() }}
+    <script src="{{url_for('ui.static', filename='bootbox.min.js')}}"></script>
+{% endblock %}
+
 {% block content %}
 {{ super() }}
     <nav class="navbar navbar-inverse navbar-fixed-top">

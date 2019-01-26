@@ -110,28 +110,32 @@ def dashboard_species():
 
    return render_template('species_search.html', name=current_user.username, searchdata=q, form=speciesform, searchform=searchform)
 
+############################################################
 # manage a specific note about a specific pet
 @routes.route('/pet/manage/<id>/note/<note_id>', methods = ['GET', 'POST'])
 @login_required
 def manage_specific_pet_note_id(id, note_id):
-   print('In dat note edit')
+   #print('In dat note edit')
    searchform = forms.SearchForm()
    form = forms.NoteDatumForm(request.form)
-   print(request.form)
-   print(form.data)
-   print('id: %s, note: %s' % (id, note_id))
+   #print(request.form)
+   #print(form.data)
+   #print('id: %s, note: %s' % (id, note_id))
    if request.method == 'POST':
-      print('got a post in pet note')
+      #print('got a post in pet note')
       if form.submit.data == True:
          status = mypetsdb.controllers.pets.pet_note_update(id, note_id, form.data)
+      elif form.delete.data == True:
+         #print('## we got a note delete for: %s => %s' % (id, note_id))
+         status = mypetsdb.controllers.pets.pet_note_delete(id, note_id)
       return redirect(url_for('ui.dashboard'))
    elif request.method == 'GET':
-      print('in the get')
+      #print('in the get')
       note = mypetsdb.controllers.pets.pet_note_get_id(id, note_id)
-      print(note)
-      print(note.__dict__)
+      #print(note)
+      #print(note.__dict__)
       form = forms.NoteDatumForm(obj=note)
-      print(form.data)
+      #print(form.data)
       return render_template('manage_note.html', name=current_user.username, form=form, searchform=searchform, pet_id=id, notedata=note)
 
 
@@ -153,6 +157,7 @@ def manage_specific_pet_note(id):
    elif request.method == 'GET':
       return render_template('manage_note.html', name=current_user.username, form=form, searchform=searchform, pet_id=id)
 
+############################################################
 # manage a specific pet
 @routes.route('/pet/manage/<id>', methods = ['GET', 'POST'])
 @login_required

@@ -34,6 +34,8 @@ class NoteDatumForm(FlaskForm):
 
     edit = SubmitField('Edit')
     submit = SubmitField('Submit')
+    delete = SubmitField('Delete')
+    cancel = SubmitField('Cancel')
 
 class SpeciesDatumForm(FlaskForm):
     scientific_name = StringField('Scientific Name')
@@ -61,4 +63,5 @@ class PetForm(FlaskForm):
     delete = SubmitField('Delete')
     submit = SubmitField('Submit')
     note = SubmitField('+Note')
+    cancel = SubmitField('Cancel')
 

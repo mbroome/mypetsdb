@@ -225,3 +225,16 @@ def pet_note_update(id, note_id, content):
    #return(note)
    return(pet_lookup_specific(id))
 
+def pet_note_delete(id, note_id):
+
+   note = (models.Session.query(models.PetNoteDatum)
+           .filter(models.PetNoteDatum.note_id == note_id)
+           .first())
+
+   if note:
+      models.Session.delete(note)
+      models.Session.commit()
+
+   return(True)
+
+

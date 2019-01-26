@@ -1,5 +1,20 @@
 {% extends "dashboard_base.html" %}
 
+{% block scripts %}
+{{ super() }}
+<script>
+   function deleteNote(data, redirectUrl){
+      console.log(data, redirectUrl);
+      if(data){
+         $.post(redirectUrl, {'delete': true}, function(result){
+            window.location.replace("/dashboard");
+         });
+      }
+   }  
+
+</script>
+{% endblock %}
+
 {% block inner_content %}
 {{ super() }}
 
@@ -43,7 +58,7 @@
                                  <a data-toggle="tooltip" title="Last Edited: {{ note.timestamp }}" href="{{ url_for('ui.manage_specific_pet_note_id', id=record.pet.pet_id, note_id=note.note_id) }}">
                                      <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                  </a>
-                                 <a href="{{ url_for('ui.manage_specific_pet_note_id', id=record.pet.pet_id, note_id=note.note_id) }}">
+                                 <a href="#" onclick="bootbox.confirm('Delete note?', function(r){ deleteNote(r, '{{ url_for('ui.manage_specific_pet_note_id', id=record.pet.pet_id, note_id=note.note_id) }}'); } );">
                                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                  </a>
                               </div>

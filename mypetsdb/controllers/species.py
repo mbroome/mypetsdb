@@ -61,7 +61,11 @@ def species_lookup(id):
       response = []
       for s in species:
          rec =  models.SpeciesDatum(scientific_name=s.scientific_name)
-                                    
+         if len(species) == 1:
+            rec = species_metadata_callout(rec)
+            models.Session.add(rec)
+            models.Session.commit()
+
          response.append(rec)
       # return a null
       return(response)
