@@ -1,10 +1,11 @@
 import os
+import urllib
 
 from flask import Flask, request, jsonify
 from flask_marshmallow import Marshmallow
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_bootstrap import Bootstrap
-import urllib
+from werkzeug.contrib.fixers import ProxyFix
 
 
 ma = Marshmallow()
@@ -15,6 +16,7 @@ login_manager = LoginManager()
 def create_app(test_config=None):
 
    app = Flask(__name__)
+   app.wsgi_app = ProxyFix(app.wsgi_app)
    ma.init_app(app)
    #bootstrap.init_app(app)
    bootstrap = Bootstrap(app)
