@@ -113,11 +113,10 @@ class User(UserMixin, Base):
     password = Column(String(80))
 
 
-def loadSpeciesData():
+def loadITISData():
    itis_engine = create_engine(config['db']['itis'], pool_pre_ping=True)
-   #itis_sess = sessionmaker(autocommit=False, autoflush=False, bind=itis_engine)
-   #itis_session = scoped_session(itis_sess)
 
+   '''
    species_query = text('select unit_name1,unit_name2,tsn from taxonomic_units where unit_name1!="" and unit_name2!=""')
    species_list = itis_engine.execute(species_query).fetchall()
    print(len(species_list))
@@ -134,6 +133,25 @@ def loadSpeciesData():
          engine.execute(SpeciesNameDatum.__table__.insert().values(rec))
       except sqlalchemy.exc.IntegrityError:
          pass
+   '''
+
+   common_query = text('select v.tsn, v.vernacular_name, t.unit_name1, t.unit_name2, t.complete_name from vernaculars v, taxonomic_units t where v.tsn=t.tsn and t.unit_name2 != "" and language = "english"')
+   common_list = itis_engine.execute(common_query).fetchall()
+   print(len(common_list))
+   print(common_list[0])
+
+   for common in common_list:
+      scientific_name = "%s %s" % (common[2], common[3])
+
+      rec = {'scientific_name': scientific_name.lower(),
+             'common_name': common[1],
+             'xref_id': common[0],
+             'source': 'itis'}
+      print(rec)
+      try:
+         engine.execute(CommonNameDatum.__table__.insert().values(rec))
+      except sqlalchemy.exc.IntegrityError:
+         pass
 
 
 Base.metadata.reflect(bind=engine)
@@ -141,7 +159,7 @@ Base.metadata.reflect(bind=engine)
 if __name__ == '__main__':
    Base.metadata.create_all()
 
-   loadSpeciesData()
+   loadITISData()
 
    '''
    common_names = (Session.query(ITISCommonName)
