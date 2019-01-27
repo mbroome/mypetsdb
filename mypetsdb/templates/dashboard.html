@@ -21,8 +21,8 @@
 <div class="panel-group" id="my-accordion">
 {% for record in petdata %}
     <div class="panel panel-default">
-        <div class="panel-heading">
-            <a  href="#collapse-pet-{{ record.pet.pet_id }}" data-parent="#my-accordion" data-toggle="collapse" class="panel-title">{{ record.pet.desc }}</a>
+        <div class="panel-heading"   href="#collapse-pet-{{ record.pet.pet_id }}" data-parent="#my-accordion" data-toggle="collapse">
+            <a>{{ record.pet.desc }}</a>
         </div>
         <div class="panel-collapse collapse" id="collapse-pet-{{ record.pet.pet_id }}">
             <div class="panel-body">

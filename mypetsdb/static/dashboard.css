@@ -117,4 +117,11 @@ p {
   word-break: break-all;
 }
 
+.panel-heading {
+   cursor: pointer;
+}
+
+a.accordion-toggle {
+  display: block;
+}
 
