@@ -20,11 +20,15 @@ try:
    contents = open('/etc/config/mypetsdb.json', 'r').read()
    config = json.loads(contents)
 except:
-   config = {'dbstring': 'mysql://mypetsdb:wzUIrLafJ5nR@localhost/mypetsdb?charset=latin1'}
+   config = {'db':{
+                  'mypetsdb': 'mysql://mypetsdb:wzUIrLafJ5nR@localhost/mypetsdb?charset=latin1',
+                  'itis': 'mysql://mypetsdb:wzUIrLafJ5nR@localhost/ITIS?charset=latin1'
+                 }
+            }
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-engine = create_engine(config['dbstring'], pool_pre_ping=True)
+engine = create_engine(config['db']['mypetsdb'], pool_pre_ping=True)
 sess = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Session = scoped_session(sess)
 
@@ -110,7 +114,7 @@ class User(UserMixin, Base):
 
 
 def loadSpeciesData():
-   itis_engine = create_engine('mysql://mypetsdb:wzUIrLafJ5nR@localhost/ITIS?charset=latin1', pool_pre_ping=True)
+   itis_engine = create_engine(config['db']['mypetsdb'], pool_pre_ping=True)
    #itis_sess = sessionmaker(autocommit=False, autoflush=False, bind=itis_engine)
    #itis_session = scoped_session(itis_sess)
 
