@@ -114,7 +114,7 @@ class User(UserMixin, Base):
 
 
 def loadSpeciesData():
-   itis_engine = create_engine(config['db']['mypetsdb'], pool_pre_ping=True)
+   itis_engine = create_engine(config['db']['itis'], pool_pre_ping=True)
    #itis_sess = sessionmaker(autocommit=False, autoflush=False, bind=itis_engine)
    #itis_session = scoped_session(itis_sess)
 
