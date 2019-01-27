@@ -1,6 +1,7 @@
 marshmallow
 marshmallow-sqlalchemy
 sqlalchemy
+flask_sqlalchemy
 flask
 flask_marshmallow
 requests
