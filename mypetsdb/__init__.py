@@ -23,6 +23,7 @@ def create_app(test_config=None):
    login_manager.init_app(app)
 
    app.jinja_env.filters['quote_plus'] = lambda u: urllib.quote_plus(u)
+   app.jinja_env.filters['hash_key'] = lambda u: abs(hash(u))
 
    app.config['SECRET_KEY'] = '7c2a2b8a-5936-4a1a-816d-0ac526f8d7ed'
 

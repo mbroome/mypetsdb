@@ -3,12 +3,14 @@
 {% block inner_content %}
 
 {% for record in searchdata %}
-<form id="{{ record.scientific_name }}" action = "/pet/manage" method=post>
+<form id="f{{ record.scientific_name|hash_key }}" action = "/pet/manage" method=post>
    <fieldset>
       {{ form.hidden_tag() }}
  
-      {{ form.scientific_name.label }}: <input id="species-scientific_name" name="species-scientific_name" type="text" value="{{ record.scientific_name }}">
-      <a href="#" onclick="document.getElementById('{{ record.scientific_name }}').submit();">
+      <input id="species-scientific_name" name="species-scientific_name" type="hidden" value="{{ record.scientific_name }}">
+
+      {{ form.scientific_name.label }}: {{ record.scientific_name }} 
+      <a href="#" onclick="document.getElementById('f{{ record.scientific_name|hash_key }}').submit();">
         <span class="glyphicon glyphicon-plus" style="padding-left: 4px;" aria-hidden="true"></span>
       </a>
       <a target="_blank" href="https://www.google.com/search?q={{ record.scientific_name|quote_plus }}&tbm=isch">
@@ -23,6 +25,7 @@
       <hr>
 
    </fieldset>
+</form>
 {% endfor %}
 
 {% endblock %}
