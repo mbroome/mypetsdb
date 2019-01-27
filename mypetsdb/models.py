@@ -16,8 +16,15 @@ from sqlalchemy.sql import select, text
 
 from flask_login import UserMixin
 
+try:
+   contents = open('/etc/config/mypetsdb.json', 'r').read()
+   config = json.loads(contents)
+except:
+   config = {'dbstring': 'mysql://mypetsdb:wzUIrLafJ5nR@localhost/mypetsdb?charset=latin1'}
+
+
 basedir = os.path.abspath(os.path.dirname(__file__))
-engine = create_engine('mysql://mypetsdb:wzUIrLafJ5nR@localhost/mypetsdb?charset=latin1', pool_pre_ping=True)
+engine = create_engine(config['dbstring'], pool_pre_ping=True)
 sess = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Session = scoped_session(sess)
 
