@@ -35,19 +35,19 @@ Session = scoped_session(sess)
 Base = declarative_base()
 Base.metadata.bind = engine
 
-class ITISCommonName(Base):
-    __table__ = Table('itis_common_names', Base.metadata,
-                      Column('tsn', Integer, primary_key=True),
-                      Column('vernacular_name', String(80), primary_key=True),
-                      autoload=True,
-                      autoload_with=engine)
-
-class ITISSpecies(Base):
-    __table__ = Table('itis_species', Base.metadata,
-                      Column('tsn', Integer, primary_key=True),
-                      autoload=True,
-                      autoload_with=engine)
-
+#class ITISCommonName(Base):
+#    __table__ = Table('itis_common_names', Base.metadata,
+#                      Column('tsn', Integer, primary_key=True),
+#                      Column('vernacular_name', String(80), primary_key=True),
+#                      autoload=True,
+#                      autoload_with=engine)
+#
+#class ITISSpecies(Base):
+#    __table__ = Table('itis_species', Base.metadata,
+#                      Column('tsn', Integer, primary_key=True),
+#                      autoload=True,
+#                      autoload_with=engine)
+#
 class PetDatum(Base):
     __tablename__ = 'pet_data'
 
