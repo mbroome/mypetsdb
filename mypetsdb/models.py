@@ -1,7 +1,7 @@
 import os
 import json
 
-from sqlalchemy import Column, Date, DateTime, Index, Integer, String, Text, Table, Boolean
+from sqlalchemy import Column, Date, DateTime, Index, Integer, String, Text, Table, Boolean, ARRAY
 from sqlalchemy.schema import FetchedValue
 from sqlalchemy.dialects.mysql.enumerated import ENUM
 from sqlalchemy.dialects.mysql import TIMESTAMP
@@ -35,19 +35,6 @@ Session = scoped_session(sess)
 Base = declarative_base()
 Base.metadata.bind = engine
 
-#class ITISCommonName(Base):
-#    __table__ = Table('itis_common_names', Base.metadata,
-#                      Column('tsn', Integer, primary_key=True),
-#                      Column('vernacular_name', String(80), primary_key=True),
-#                      autoload=True,
-#                      autoload_with=engine)
-#
-#class ITISSpecies(Base):
-#    __table__ = Table('itis_species', Base.metadata,
-#                      Column('tsn', Integer, primary_key=True),
-#                      autoload=True,
-#                      autoload_with=engine)
-#
 class PetDatum(Base):
     __tablename__ = 'pet_data'
 
@@ -73,11 +60,10 @@ class PetNoteDatum(Base):
 
     pet_id = Column(Integer, nullable=False)
 
-class SpeciesDatum(Base):
+class PetSpeciesDatum(Base):
     __tablename__ = 'species_data'
 
     scientific_name = Column(String(100), primary_key=True)
-    common_name = Column(String(100), nullable=True)
     endangered_status = Column(Integer, nullable=True)
     iucn_category = Column(String(10), nullable=True)
     iucn_id = Column(String(20), nullable=True)
@@ -85,8 +71,8 @@ class SpeciesDatum(Base):
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
 
 
-class CommonNameDatum(Base):
-    __tablename__ = 'common_names'
+class CommonNameXREF(Base):
+    __tablename__ = 'common_names_xref'
 
     common_name = Column(String(100), primary_key=True, nullable=False)
     scientific_name = Column(String(100), primary_key=True, nullable=False)
@@ -95,8 +81,8 @@ class CommonNameDatum(Base):
 
     xref_id = Column(Integer, nullable=True)
 
-class SpeciesNameDatum(Base):
-    __tablename__ = 'species_names'
+class SpeciesNameXREF(Base):
+    __tablename__ = 'species_names_xref'
 
     scientific_name = Column(String(100), primary_key=True, nullable=False)
     source = Column(String(20), nullable=True)
@@ -130,7 +116,7 @@ def loadITISData():
              'source': 'itis'}
       print(rec)
       try:
-         engine.execute(SpeciesNameDatum.__table__.insert().values(rec))
+         engine.execute(SpeciesNameXREF.__table__.insert().values(rec))
       except sqlalchemy.exc.IntegrityError:
          pass
    '''
@@ -149,7 +135,7 @@ def loadITISData():
              'source': 'itis'}
       print(rec)
       try:
-         engine.execute(CommonNameDatum.__table__.insert().values(rec))
+         engine.execute(CommonNameXREF.__table__.insert().values(rec))
       except sqlalchemy.exc.IntegrityError:
          pass
 
@@ -159,55 +145,5 @@ Base.metadata.reflect(bind=engine)
 if __name__ == '__main__':
    Base.metadata.create_all()
 
-   loadITISData()
+   #loadITISData()
 
-   '''
-   common_names = (Session.query(ITISCommonName)
-      .filter(ITISCommonName.language.like('%english%'))
-      .all())
-
-   for name in common_names:
-      #print(name)
-      common_name = name.vernacular_name.lower()
-      #common_name = common_name.encode('ascii', 'ignore').decode('ascii')
-
-      scientific_name = name.complete_name.lower()
-      #scientific_name = scientific_name.encode('ascii', 'ignore').decode('ascii')
-      if ' ssp. ' in scientific_name:
-         scientific_name = scientific_name[:scientific_name.find(' ssp. ')]
-      if ' var. ' in scientific_name:
-         scientific_name = scientific_name[:scientific_name.find(' var. ')]
-
-      rec = {'common_name': common_name,
-             'scientific_name': scientific_name,
-             'xref_id': name.tsn,
-             'source': 'itis'}
-      if 'apisto' in scientific_name:
-         print(rec)
-
-      try:
-         engine.execute(CommonNameDatum.__table__.insert().values(rec))
-      except sqlalchemy.exc.IntegrityError:
-         pass
-   
-
-   species_names = (Session.query(ITISSpecies).all())
-
-   for name in species_names:
-      #print(name)
-      scientific_name = name.complete_name.lower()
-      #scientific_name = scientific_name.encode('ascii', 'ignore').decode('ascii')
-      if ' ssp. ' in scientific_name:
-         scientific_name = scientific_name[:scientific_name.find(' ssp. ')]
-      if ' var. ' in scientific_name:
-         scientific_name = scientific_name[:scientific_name.find(' var. ')]
-
-      rec = {'scientific_name': scientific_name,
-             'xref_id': name.tsn,
-             'source': 'itis'}
-      print(rec)
-      try:
-         engine.execute(SpeciesNameDatum.__table__.insert().values(rec))
-      except sqlalchemy.exc.IntegrityError:
-         pass
-   ''' 

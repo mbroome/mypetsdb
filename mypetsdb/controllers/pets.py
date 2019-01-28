@@ -28,10 +28,10 @@ def _flatten_pet_dict(content):
    return(data)
 
 def pet_search(name):
-   q = (models.Session.query(models.PetDatum, models.SpeciesDatum)
+   q = (models.Session.query(models.PetDatum, models.PetSpeciesDatum)
         .select_from(models.PetDatum)
-        .filter(models.PetDatum.scientific_name == models.SpeciesDatum.scientific_name)
-        .filter(or_(models.PetDatum.desc.ilike('%{0}%'.format(name)), models.PetDatum.scientific_name.ilike('%{0}%'.format(name)),  models.SpeciesDatum.common_name.ilike('%{0}%'.format(name))))
+        .filter(models.PetDatum.scientific_name == models.PetSpeciesDatum.scientific_name)
+        .filter(models.PetDatum.desc.ilike('%{0}%'.format(name)), models.PetDatum.scientific_name.ilike('%{0}%'.format(name)))
         .all())
 
    response = []
@@ -46,9 +46,9 @@ def pet_search(name):
    return(response)
 
 def pet_lookup_all():
-   q = (models.Session.query(models.PetDatum, models.SpeciesDatum)
+   q = (models.Session.query(models.PetDatum, models.PetSpeciesDatum)
        .select_from(models.PetDatum)
-       .filter(models.PetDatum.scientific_name == models.SpeciesDatum.scientific_name)
+       .filter(models.PetDatum.scientific_name == models.PetSpeciesDatum.scientific_name)
        .all())
 
    #print(q)
@@ -67,9 +67,9 @@ def pet_lookup_all():
 def pet_lookup_specific(id):
    #print('@@ get that pet: ' + id)
 
-   q = (models.Session.query(models.PetDatum, models.SpeciesDatum)
+   q = (models.Session.query(models.PetDatum, models.PetSpeciesDatum)
        .select_from(models.PetDatum)
-       .filter(models.PetDatum.scientific_name == models.SpeciesDatum.scientific_name)
+       .filter(models.PetDatum.scientific_name == models.PetSpeciesDatum.scientific_name)
        .filter(models.PetDatum.pet_id == id)
        .first())
    
@@ -90,6 +90,11 @@ def pet_create(content):
 
    # find the species data
    species = mypetsdb.controllers.species.species_cached_lookup(data['scientific_name'])
+
+   if not species:
+      #print('################ lookup uncached pet')
+      species = mypetsdb.controllers.species.species_lookup(data['scientific_name'])
+      #print(species)
 
    # make the new pet and save it
    pet = models.PetDatum(

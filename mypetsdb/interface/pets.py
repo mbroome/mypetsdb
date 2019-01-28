@@ -14,9 +14,9 @@ class PetDatumSchema(ma.ModelSchema):
    class Meta:
       model = models.PetDatum
 
-class SpeciesDatumSchema(ma.ModelSchema):
+class PetSpeciesDatumSchema(ma.ModelSchema):
    class Meta:
-      model = models.SpeciesDatum
+      model = models.PetSpeciesDatum
 
 class PetNoteDatumSchema(ma.ModelSchema):
    class Meta:
@@ -24,7 +24,7 @@ class PetNoteDatumSchema(ma.ModelSchema):
 
 class PetSchema(ma.ModelSchema):
    pet = ma.Nested('PetDatumSchema')
-   species = ma.Nested('SpeciesDatumSchema')
+   species = ma.Nested('PetSpeciesDatumSchema')
    notes = ma.Nested('PetNoteDatumSchema', many=True)
 
 pet_schema = PetSchema(strict=True)

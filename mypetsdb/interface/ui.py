@@ -87,7 +87,7 @@ def dashboard():
    petform = forms.PetForm()
 
    if request.method == 'POST' and searchform.petsearch.data:
-      print(searchform.petsearch.data)
+      #print(searchform.petsearch.data)
       p = mypetsdb.controllers.pets.pet_search(searchform.petsearch.data)
    else:
       p = mypetsdb.controllers.pets.pet_lookup_all()
@@ -98,13 +98,13 @@ def dashboard():
 @login_required
 def dashboard_species():
    searchform = forms.SearchForm()
-   speciesform = forms.SpeciesDatumForm()
+   speciesform = forms.PetSpeciesDatumForm()
    #print(searchform.speciessearch.data)
    q = None
    if request.method == 'POST' and searchform.speciessearch.data:
-      print('get it on')
+      #print('get it on')
       q =  mypetsdb.controllers.species.species_lookup(searchform.speciessearch.data)
-      print(q)
+      #print(q)
       if type(q) is not list:
          q = [q]
 
@@ -122,7 +122,6 @@ def manage_specific_pet_note_id(id, note_id):
    #print(form.data)
    #print('id: %s, note: %s' % (id, note_id))
    if request.method == 'POST':
-      #print('got a post in pet note')
       if form.submit.data == True:
          status = mypetsdb.controllers.pets.pet_note_update(id, note_id, form.data)
       elif form.delete.data == True:
@@ -148,11 +147,10 @@ def manage_specific_pet_note(id):
    #print(request.form)
    #print(json.dumps(form.data))
    if request.method == 'POST':
-      print('got a post in pet note')
       if form.submit.data == True:
          status = mypetsdb.controllers.pets.pet_note_create(id, form.data)
-      elif form.edit.data == True:
-         print('### got a note edit request')
+      #elif form.edit.data == True:
+      #   #print('### got a note edit request')
       return redirect(url_for('ui.dashboard'))
    elif request.method == 'GET':
       return render_template('manage_note.html', name=current_user.username, form=form, searchform=searchform, pet_id=id)
@@ -189,9 +187,12 @@ def manage_specific_pet(id):
 def manage_pet():
    searchform = forms.SearchForm()
    form = forms.PetForm(request.form)
-   print(request.form)
-   print(json.dumps(form.data))
+   #print(request.form)
+   #print(json.dumps(form.data))
    if request.method == 'POST':
+      #print(form.species.scientific_name.data)
+      q =  mypetsdb.controllers.species.species_lookup_scientific(form.species.scientific_name.data)
+
       if form.submit.data == True:
          pet = mypetsdb.controllers.pets.pet_create(form.data)
 

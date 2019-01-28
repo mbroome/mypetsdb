@@ -9,66 +9,62 @@ import mypetsdb.models as models
 # return a species from our cache if we have it
 def species_cached_lookup(id):
    id = id.lower()
-   species = (models.Session.query(models.SpeciesDatum)
-       .filter(or_(models.SpeciesDatum.scientific_name == id.lower(), models.SpeciesDatum.common_name == id.lower()))
+   species = (models.Session.query(models.PetSpeciesDatum)
+       .filter(models.PetSpeciesDatum.scientific_name == id.lower())
        .first())
    return(species)
 
 # do a full lookup and build the cache if we found a specific species
 def species_lookup(id):
    id = id.lower()
-   #species = (models.Session.query(models.SpeciesDatum)
-   #    .filter(or_(models.SpeciesDatum.scientific_name == id.lower(), models.SpeciesDatum.common_name == id.lower()))
-   #    .first())
    species = species_cached_lookup(id)
+
+   #print('### here')
 
    if species:
       print('already cached species')
       return(species)
 
-   # ok, we don't have an existing record so we need to figure out what
-   # the user is actually asking for.
+   species = (models.Session.query(models.SpeciesNameXREF)
+                .filter(models.SpeciesNameXREF.scientific_name.ilike('%{0}%'.format(id)))
+                .all())
 
-   # is it by common name?
-   names = (models.Session.query(models.CommonNameDatum)
-             .filter(or_(models.CommonNameDatum.common_name.ilike('%{0}%'.format(id)), models.CommonNameDatum.scientific_name.ilike('%{0}%'.format(id))))
-             .all())
+   #print('#### species lookup:')
+   #print(species)
+   response = []
+   for s in species:
+      rec =  models.PetSpeciesDatum(scientific_name=s.scientific_name)
+      #if len(species) == 1:
+      #   rec = species_metadata_callout(rec)
+      #   models.Session.add(rec)
+      #   models.Session.commit()
 
-   if names:
-      # if it's one specific match for the name, this 'should' be it
-      if len(names) == 1:
-         # so we make sure we have the proper scientific name entry
-         species = species_metadata_callout(models.SpeciesDatum(scientific_name=names[0].scientific_name.lower()))
-         species.common_name = names[0].common_name.lower()
-         models.Session.add(species)
+      response.append(rec)
+   # return a null
+   return(response)
+
+def species_lookup_scientific(id):
+   species = species_cached_lookup(id)
+
+   if species:
+      return(species)
+   else:
+      species = (models.Session.query(models.SpeciesNameXREF)
+                 .filter(models.SpeciesNameXREF.scientific_name == id)
+                 .first())
+
+      if species:
+         print('#### scientific_lookup lookup:')
+         print(species)
+
+         rec = models.PetSpeciesDatum(scientific_name=species.scientific_name)
+         rec = species_metadata_callout(rec)
+         models.Session.add(rec)
          models.Session.commit()
 
-         return(species)
+         return(rec)
 
-      else: # transform the data to be consistent with our species cache
-         response = []
-         for c in names:
-            rec = models.SpeciesDatum(scientific_name=c.scientific_name,
-                                      common_name=c.common_name)
-            response.append(rec)
-         return(response)
 
-   else:
-      species = (models.Session.query(models.SpeciesNameDatum)
-                   .filter(models.SpeciesNameDatum.scientific_name.ilike('%{0}%'.format(id)))
-                   .all())
-
-      response = []
-      for s in species:
-         rec =  models.SpeciesDatum(scientific_name=s.scientific_name)
-         if len(species) == 1:
-            rec = species_metadata_callout(rec)
-            models.Session.add(rec)
-            models.Session.commit()
-
-         response.append(rec)
-      # return a null
-      return(response)
 
 # lookup a species on the iucn red list
 def species_metadata_callout(species):

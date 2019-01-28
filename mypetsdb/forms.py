@@ -37,9 +37,8 @@ class NoteDatumForm(FlaskForm):
     delete = SubmitField('Delete')
     cancel = SubmitField('Cancel')
 
-class SpeciesDatumForm(FlaskForm):
+class PetSpeciesDatumForm(FlaskForm):
     scientific_name = StringField('Scientific Name')
-    common_name = StringField('Common Name')
     endangered_status = IntegerField('Endangered Status')
     iucn_category = StringField('IUCN Category')
     iucn_id = StringField('IUCN ID')
@@ -56,7 +55,7 @@ class PetDatumForm(FlaskForm):
 
 class PetForm(FlaskForm):
     pet = FormField(PetDatumForm)
-    species = FormField(SpeciesDatumForm)
+    species = FormField(PetSpeciesDatumForm)
     notes = FieldList(FormField(NoteDatumForm,min_entries=1))
 
     edit = SubmitField('Edit')
