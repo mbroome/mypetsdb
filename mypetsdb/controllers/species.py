@@ -45,23 +45,22 @@ def species_lookup(id):
          c = species_get_common_names(s.scientific_name)
          recList[s.scientific_name] = {'species': s, 'common': c}
 
-   else:
-      print('@@@ in the common list')
-      # but we might have more than one common name for the same species
-      common = (models.Session.query(models.CommonNameXREF)
-                .filter(models.CommonNameXREF.common_name.ilike('%{0}%'.format(id)))
-                .all())
+   print('@@@ in the common list')
+   # but we might have more than one common name for the same species
+   common = (models.Session.query(models.CommonNameXREF)
+             .filter(models.CommonNameXREF.common_name.ilike('%{0}%'.format(id)))
+             .all())
 
-      if common:
-         slist = {}
-         for c in common:
-            slist[c.scientific_name] = True
+   if common:
+      slist = {}
+      for c in common:
+         slist[c.scientific_name] = True
 
-         for name in slist:
-            s =  models.PetSpeciesDatum(scientific_name=name)
-            c = species_get_common_names(name)
+      for name in slist:
+         s =  models.PetSpeciesDatum(scientific_name=name)
+         c = species_get_common_names(name)
 
-            recList[s.scientific_name] = {'species': s, 'common': c}
+         recList[s.scientific_name] = {'species': s, 'common': c}
 
    # since we stuck the data into a dict, we need to turn the values into an array
    response = []
