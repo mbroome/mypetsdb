@@ -38,6 +38,11 @@
 
                         : {{ form.edit }} {{ form.note }} {{ form.delete }}
                         <br>
+                        <label>Common Names:</label>
+                        {% for c in record.common %}
+                            {{ c.common_name }}{%- if not loop.last -%},{% endif %}
+                        {% endfor %}
+                        <br>
                         {{ form.pet.start.label }}: {{ record.pet.start }} : {{ form.pet.end.label }}: {{ record.pet.end }}
                         <br>
                         {{ form.species.endangered_status.label }}: {{ record.species.endangered_status }}

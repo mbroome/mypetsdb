@@ -3,24 +3,29 @@
 {% block inner_content %}
 
 {% for record in searchdata %}
-<form id="f{{ record.scientific_name|hash_key }}" action = "/pet/manage" method=post>
+<form id="f{{ record.species.scientific_name|hash_key }}" action = "/pet/manage" method=post>
    <fieldset>
       {{ form.hidden_tag() }}
  
-      <input id="species-scientific_name" name="species-scientific_name" type="hidden" value="{{ record.scientific_name }}">
+      <input id="species-scientific_name" name="species-scientific_name" type="hidden" value="{{ record.species.scientific_name }}">
 
-      {{ form.scientific_name.label }}: {{ record.scientific_name }} 
-      <a href="#" onclick="document.getElementById('f{{ record.scientific_name|hash_key }}').submit();">
+      {{ form.scientific_name.label }}: {{ record.species.scientific_name }} 
+      <a href="#" onclick="document.getElementById('f{{ record.species.scientific_name|hash_key }}').submit();">
         <span class="glyphicon glyphicon-plus" style="padding-left: 4px;" aria-hidden="true"></span>
       </a>
-      <a target="_blank" href="https://www.google.com/search?q={{ record.scientific_name|quote_plus }}&tbm=isch">
+      <a target="_blank" href="https://www.google.com/search?q={{ record.species.scientific_name|quote_plus }}&tbm=isch">
         <span class="glyphicon glyphicon-picture" style="padding-left: 4px;" aria-hidden="true"></span>
       </a>
       <br>
-      {{ form.endangered_status.label }}: {{ record.endangered_status or 'N/A' }}<br>
-      {{ form.iucn_category.label }}: {{ record.iucn_category or 'N/A' }}<br>
-      {{ form.iucn_id.label }}: {{ record.iucn_id or 'N/A' }}<br>
-      {{ form.cares.label }}: {{ record.cares or 'N/A' }}<br>
+      <label>Common Names:</label>
+{% for c in record.common %}
+   {{ c.common_name }}{%- if not loop.last -%},{% endif %}
+{% endfor %}
+      <br>
+      {{ form.endangered_status.label }}: {{ record.species.endangered_status or 'N/A' }}<br>
+      {{ form.iucn_category.label }}: {{ record.species.iucn_category or 'N/A' }}<br>
+      {{ form.iucn_id.label }}: {{ record.species.iucn_id or 'N/A' }}<br>
+      {{ form.cares.label }}: {{ record.species.cares or 'N/A' }}<br>
       <hr>
 
    </fieldset>

@@ -10,9 +10,13 @@ import mypetsdb.models as models
 def species_cached_lookup(id):
    id = id.lower()
    species = (models.Session.query(models.PetSpeciesDatum)
-       .filter(models.PetSpeciesDatum.scientific_name == id.lower())
+       .filter(models.PetSpeciesDatum.scientific_name == id)
        .first())
-   return(species)
+
+   common = species_get_common_names(id)
+
+   if species:
+      return({'species': species, 'common': common})
 
 # do a full lookup and build the cache if we found a specific species
 def species_lookup(id):
@@ -25,23 +29,55 @@ def species_lookup(id):
       print('already cached species')
       return(species)
 
+   # first try a fuzzy search on the species name
    species = (models.Session.query(models.SpeciesNameXREF)
                 .filter(models.SpeciesNameXREF.scientific_name.ilike('%{0}%'.format(id)))
+                .order_by(models.SpeciesNameXREF.scientific_name)
                 .all())
 
-   #print('#### species lookup:')
-   #print(species)
-   response = []
-   for s in species:
-      rec =  models.PetSpeciesDatum(scientific_name=s.scientific_name)
-      #if len(species) == 1:
-      #   rec = species_metadata_callout(rec)
-      #   models.Session.add(rec)
-      #   models.Session.commit()
+   # we need to dedup the species list
+   recList = {}
+   if species:
+      print('@@@ in the species list')
+      # the species lookup is effectifly not duplicated already
+      for s in species:
+         s =  models.PetSpeciesDatum(scientific_name=s.scientific_name)
+         c = species_get_common_names(s.scientific_name)
+         recList[s.scientific_name] = {'species': s, 'common': c}
 
-      response.append(rec)
-   # return a null
+   else:
+      print('@@@ in the common list')
+      # but we might have more than one common name for the same species
+      common = (models.Session.query(models.CommonNameXREF)
+                .filter(models.CommonNameXREF.common_name.ilike('%{0}%'.format(id)))
+                .all())
+
+      if common:
+         slist = {}
+         for c in common:
+            slist[c.scientific_name] = True
+
+         for name in slist:
+            s =  models.PetSpeciesDatum(scientific_name=name)
+            c = species_get_common_names(name)
+
+            recList[s.scientific_name] = {'species': s, 'common': c}
+
+   # since we stuck the data into a dict, we need to turn the values into an array
+   response = []
+   for r in sorted(recList):
+      response.append(recList[r])
+
    return(response)
+
+def species_get_common_names(id):
+
+   common = (models.Session.query(models.CommonNameXREF)
+             .filter(models.CommonNameXREF.scientific_name == id)
+             .all())
+
+   return(common)
+
 
 def species_lookup_scientific(id):
    species = species_cached_lookup(id)

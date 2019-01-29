@@ -108,6 +108,9 @@ def dashboard_species():
       if type(q) is not list:
          q = [q]
 
+      #print(q)
+      #for r in q:
+      #   print(r)
    return render_template('species_search.html', name=current_user.username, searchdata=q, form=speciesform, searchform=searchform)
 
 ############################################################

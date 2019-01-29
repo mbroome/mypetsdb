@@ -39,9 +39,10 @@ def pet_search(name):
       notes = (models.Session.query(models.PetNoteDatum)
                .filter(models.PetNoteDatum.pet_id == row[0].pet_id)
                .all())
-      #print(notes)
 
-      rec = {"pet": row[0], "species": row[1], "notes": notes}
+      common = mypetsdb.controllers.species.species_get_common_names(row[0].scientific_name)
+
+      rec = {"pet": row[0], "species": row[1], "notes": notes, "common": common}
       response.append(rec)
    return(response)
 
@@ -58,9 +59,10 @@ def pet_lookup_all():
       notes = (models.Session.query(models.PetNoteDatum)
                .filter(models.PetNoteDatum.pet_id == row[0].pet_id)
                .all())
-      #print(notes)
 
-      rec = {"pet": row[0], "species": row[1], "notes": notes}
+      common = mypetsdb.controllers.species.species_get_common_names(row[0].scientific_name)
+
+      rec = {"pet": row[0], "species": row[1], "notes": notes, "common": common}
       response.append(rec)
    return(response)
 
@@ -77,8 +79,10 @@ def pet_lookup_specific(id):
             .filter(models.PetNoteDatum.pet_id == q[0].pet_id)
             .all())
 
+   common = mypetsdb.controllers.species.species_get_common_names(q[0].scientific_name)
+
    pet, species = q
-   return({"pet": pet, "species": species, "notes": notes})
+   return({"pet": pet, "species": species, "notes": notes, "common": common})
 
 def pet_create(content):
    #userid = current_user.username
