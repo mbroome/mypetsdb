@@ -1,5 +1,6 @@
 {% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
+{% from "_formhelpers.html" import render_field %}
 
 {% block title %}
 {{ super() }}
@@ -36,21 +37,37 @@ MyPetsDB
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
+            <li>
+               <form class="navbar-form navbar-right" action={{ url_for('ui.dashboard') }} method=post>
+                  <div>{{ searchform.petsearch(class_="form-control") }} <a href='/dashboard'><span class="glyphicon glyphicon-refresh" style="padding-left: 4px;" aria-hidden="true"></span></a></div>
+               </form>
+            </li>
+            <li>
+               <form class="navbar-form navbar-right" action={{ url_for('ui.dashboard_species') }} method=post>
+                  <div>{{ searchform.speciessearch(class_="form-control") }} <a href='/dashboard'><span class="glyphicon glyphicon-refresh" style="padding-left: 4px;" aria-hidden="true"></span></a></div>
+               </form>
+            </li>
             <li><a href="#">Settings</a></li>
             <li><a href="#">Profile - {{ name }}</a></li>
             <li><a href="{{ url_for('ui.logout') }}">Log Out</a></li>
           </ul>
-          <form class="navbar-form navbar-right" action={{ url_for('ui.dashboard') }} method=post>
-             <div>{{ searchform.petsearch(class_="form-control") }} <a href='/dashboard'><span class="glyphicon glyphicon-refresh" style="padding-left: 4px;" aria-hidden="true"></span></a></div>
-          </form>
-          <form class="navbar-form navbar-right" action={{ url_for('ui.dashboard_species') }} method=post>
-             <div>{{ searchform.speciessearch(class_="form-control") }} <a href='/dashboard'><span class="glyphicon glyphicon-refresh" style="padding-left: 4px;" aria-hidden="true"></span></a></div>
-          </form>
         </div>
       </div>
     </nav>
 
     <div class="container-fluid">
+<!--
+      <div class="row">
+  {% if form and form.errors %}
+    <ul class=errors>
+    {% for error in form.errors %}
+      <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+      </div>
+-->
+
       <div class="row">
         <div class="col-sm-12 col-md-12 main">
 {% block inner_content %}

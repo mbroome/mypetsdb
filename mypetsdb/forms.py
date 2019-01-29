@@ -21,15 +21,13 @@ class RegisterForm(FlaskForm):
 
 
 class SearchForm(FlaskForm):
-    petsearch = StringField('Search', [InputRequired()], render_kw={"placeholder": "Pet Search..."})
-    speciessearch = StringField('Search', [InputRequired()], render_kw={"placeholder": "Species Search..."})
-
-#class SpeciesSearchForm(FlaskForm):
+    petsearch = StringField('Search', validators=[Length(min=4, max=50)], render_kw={"placeholder": "Pet Search..."})
+    speciessearch = StringField('Search', validators=[Length(min=4, max=50)], render_kw={"placeholder": "Species Search..."})
 
 class NoteDatumForm(FlaskForm):
     note_id =  IntegerField('Note ID')
     public =  BooleanField('Public')
-    note = StringField('Note')
+    note = StringField('Note', validators=[InputRequired(message='A note must be between 4 and 255 characters long'), Length(min=4, max=255)])
     timestamp = DateField('timestamp',format="%m/%d/%Y",default=datetime.now())
 
     edit = SubmitField('Edit')
@@ -46,8 +44,8 @@ class PetSpeciesDatumForm(FlaskForm):
 
 class PetDatumForm(FlaskForm):
     pet_id = IntegerField('pet_id')
-    variant = StringField('Variant')
-    collection_point = StringField('Collection Point')
+    variant = StringField('Variant', validators=[Length(min=0, max=50)])
+    collection_point = StringField('Collection Point', validators=[Length(min=0, max=50)])
     start = DateField('Start')
     end = DateField('End')
     desc = StringField('Description')

@@ -126,6 +126,10 @@ def manage_specific_pet_note_id(id, note_id):
    #print(form.data)
    #print('id: %s, note: %s' % (id, note_id))
    if request.method == 'POST':
+      if not form.validate_on_submit():
+         flash(form.errors)
+         print(form.errors)
+
       if form.submit.data == True:
          status = mypetsdb.controllers.pets.pet_note_update(id, note_id, form.data)
       elif form.delete.data == True:
@@ -151,6 +155,11 @@ def manage_specific_pet_note(id):
    #print(request.form)
    #print(json.dumps(form.data))
    if request.method == 'POST':
+      if not form.validate_on_submit():
+         flash(form.errors)
+         print(form.errors)
+         return render_template('manage_note.html', name=current_user.username, form=form, searchform=searchform, pet_id=id)
+
       if form.submit.data == True:
          status = mypetsdb.controllers.pets.pet_note_create(id, form.data)
       #elif form.edit.data == True:
@@ -169,6 +178,11 @@ def manage_specific_pet(id):
    #print(request.form)
    #print(json.dumps(form.data))
    if request.method == 'POST':
+
+      if not form.validate_on_submit():
+         flash(form.errors)
+         print(form.errors)
+
       if form.edit.data == True:
          pet = mypetsdb.controllers.pets.pet_lookup_specific(id)
          editForm = forms.PetForm(pet=pet['pet'], species=pet['species'], notes=[])
@@ -193,9 +207,22 @@ def manage_specific_pet(id):
 def manage_pet():
    searchform = forms.SearchForm()
    form = forms.PetForm(request.form)
+   if form.csrf_token.data:
+      form.pet.csrf_token.data = form.csrf_token.data
+      form.species.csrf_token.data = form.csrf_token.data
+
    #print(request.form)
-   #print(json.dumps(form.data))
+   print(json.dumps(form.data))
    if request.method == 'POST':
+      print('manage POST')
+      #del(form.pet.start)
+      #del(form.pet.end)
+      #del(form.pet.pet_id)
+      print(dir(form.pet))
+      if not form.validate_on_submit():
+         flash(form.errors)
+         print(form.errors)
+         print('failed validation')
       #print(form.species.scientific_name.data)
       q =  mypetsdb.controllers.species.species_lookup_scientific(form.species.scientific_name.data)
 
@@ -204,6 +231,7 @@ def manage_pet():
 
          return redirect(url_for('ui.dashboard'))
       return render_template('manage_pet.html', name=current_user.username, form=form, searchform=searchform)
-   elif request.method == 'GET':
+   else:
+      print('manage GET')
       return render_template('manage_pet.html', name=current_user.username, form=form, searchform=searchform)
 

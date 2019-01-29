@@ -12,11 +12,11 @@
             
          <div style = font-size:20px; font-weight:bold; margin-left:150px;>
             Last edited: {{ form.timestamp.data }}
-            {{ form.public.label }}: {{ form.public }}
+            <br>
+            {{ render_field(form.public) }}
             <br>
                
-            {{ form.note.label }}:<br>
-            {{ form.note }}
+            {{ render_field(form.note) }}
             <br>
 
             {{ form.submit }}

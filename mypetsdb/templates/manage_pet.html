@@ -1,4 +1,5 @@
 {% extends "dashboard_base.html" %}
+{% from "_formhelpers.html" import render_field %}
 
 {% block inner_content %}
 
@@ -14,18 +15,19 @@
             <input id="species-scientific_name" name="species-scientific_name" type="hidden" value="{{ form.species.scientific_name.data }}">
             {{ form.species.scientific_name.data }}
             <br>
-            {{ form.pet.variant.label }} {{ form.pet.variant }}
+
+            {{ render_field(form.pet.desc) }}
             <br>
-            {{ form.pet.collection_point.label }} {{ form.pet.collection_point }}
+
+            {{ render_field(form.pet.variant) }}
+            <br>
+            {{ render_field(form.pet.collection_point) }}
             <br>
 <!--            {{ form.pet.start.label }} {{ form.pet.start }} : {{ form.pet.end.label }} {{ form.pet.end }}
             <br>
 -->               
-            {{ form.pet.desc.label }}<br>
-            {{ form.pet.desc }}
-            <br>
-
-            {{ form.pet.public.label }} {{ form.pet.public }}
+<!--            {{ form.pet.desc.label }}<br> -->
+            {{ render_field(form.pet.public) }}
             <br>
 
             {{ form.submit }}
