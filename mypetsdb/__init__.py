@@ -1,7 +1,8 @@
 import os
 import urllib
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, render_template, redirect, url_for, Blueprint, flash
+
 from flask_marshmallow import Marshmallow
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_bootstrap import Bootstrap
@@ -38,9 +39,9 @@ def create_app(test_config=None):
 
 
 
-   #@app.errorhandler(500)
-   #def page_not_found(e):
-   #   return render_template('logged_out_error.html'), 500
+   @app.errorhandler(500)
+   def page_not_found(e):
+      return render_template('error.html'), 500
 
    return(app)
 
