@@ -12,16 +12,15 @@
          <div style = font-size:20px; font-weight:bold; margin-left:150px;>
             {{ form.species.scientific_name.label }}
             <input id="species-scientific_name" name="species-scientific_name" type="hidden" value="{{ form.species.scientific_name.data }}">
-
- {{ form.species.scientific_name.data }}
+            {{ form.species.scientific_name.data }}
             <br>
             {{ form.pet.variant.label }} {{ form.pet.variant }}
             <br>
             {{ form.pet.collection_point.label }} {{ form.pet.collection_point }}
             <br>
-            {{ form.pet.start.label }} {{ form.pet.start }} : {{ form.pet.end.label }} {{ form.pet.end }}
+<!--            {{ form.pet.start.label }} {{ form.pet.start }} : {{ form.pet.end.label }} {{ form.pet.end }}
             <br>
-               
+-->               
             {{ form.pet.desc.label }}<br>
             {{ form.pet.desc }}
             <br>

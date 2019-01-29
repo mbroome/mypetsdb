@@ -3,7 +3,7 @@
 {% block scripts %}
 {{ super() }}
 <script>
-   function deleteNote(data, redirectUrl){
+   function deleteItem(data, redirectUrl){
       console.log(data, redirectUrl);
       if(data){
          $.post(redirectUrl, {'delete': true}, function(result){
@@ -22,7 +22,7 @@
 {% for record in petdata %}
     <div class="panel panel-default">
         <div class="panel-heading"   href="#collapse-pet-{{ record.pet.pet_id }}" data-parent="#my-accordion" data-toggle="collapse">
-            <a>{{ record.pet.desc }}</a>
+            <a>{{ record.pet.desc }}</a> -  {{ record.species.scientific_name }}
         </div>
         <div class="panel-collapse collapse" id="collapse-pet-{{ record.pet.pet_id }}">
             <div class="panel-body">
@@ -32,18 +32,27 @@
                      <div style = font-size:20px; font-weight:bold; margin-left:150px;>
                         <br>
                         {{ form.species.scientific_name.label }}: {{ record.species.scientific_name }} 
+
+                        : 
                         <a target="_blank" href="https://www.google.com/search?q={{ record.species.scientific_name|quote_plus }}&tbm=isch">
                            <span class="glyphicon glyphicon-picture" style="padding-left: 4px;" aria-hidden="true"></span>
                         </a>
+                        <a data-toggle="tooltip" title="Last Edited: {{ record.species.timestamp }}" href="{{ url_for('ui.manage_specific_pet', id=record.pet.pet_id) }}">
+                           <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        </a>
 
-                        : {{ form.edit }} {{ form.note }} {{ form.delete }}
+                        <a href="#" onclick="bootbox.confirm('Delete Pet?', function(r){ deleteItem(r, '{{ url_for('ui.manage_specific_pet', id=record.pet.pet_id) }}'); } );">
+                           <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </a>
+ 
                         <br>
                         <label>Common Names:</label>
                         {% for c in record.common %}
                             {{ c.common_name }}{%- if not loop.last -%},{% endif %}
                         {% endfor %}
-                        <br>
+<!--                        <br>
                         {{ form.pet.start.label }}: {{ record.pet.start }} : {{ form.pet.end.label }}: {{ record.pet.end }}
+-->
                         <br>
                         {{ form.species.endangered_status.label }}: {{ record.species.endangered_status }}
                         {{ form.species.iucn_category.label }}: {{ record.species.iucn_category }}
@@ -51,7 +60,12 @@
                         {{ form.species.cares.label }}: {{ record.species.cares }}
                         <br>
 
-                        Notes:<br>
+                        Notes:
+                        <a data-toggle="tooltip" href="{{ url_for('ui.manage_specific_pet_note', id=record.pet.pet_id) }}">
+                           <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        </a>
+                        <br>
+
                         <div>
                         {% for note in record.notes %}
                            <div class="row well well-sm">
@@ -67,7 +81,7 @@
                                  <a data-toggle="tooltip" title="Last Edited: {{ note.timestamp }}" href="{{ url_for('ui.manage_specific_pet_note_id', id=record.pet.pet_id, note_id=note.note_id) }}">
                                      <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                  </a>
-                                 <a href="#" onclick="bootbox.confirm('Delete note?', function(r){ deleteNote(r, '{{ url_for('ui.manage_specific_pet_note_id', id=record.pet.pet_id, note_id=note.note_id) }}'); } );">
+                                 <a href="#" onclick="bootbox.confirm('Delete note?', function(r){ deleteItem(r, '{{ url_for('ui.manage_specific_pet_note_id', id=record.pet.pet_id, note_id=note.note_id) }}'); } );">
                                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                  </a>
                               </div>

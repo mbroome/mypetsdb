@@ -170,7 +170,7 @@ def manage_specific_pet(id):
    if request.method == 'POST':
       if form.edit.data == True:
          pet = mypetsdb.controllers.pets.pet_lookup_specific(id)
-         editForm = forms.PetForm(pet=pet['pet'], species=pet['species'], notes=pet['notes'])
+         editForm = forms.PetForm(pet=pet['pet'], species=pet['species'], notes=[])
 
          return render_template('manage_pet.html', name=current_user.username, petdata=pet, form=editForm, searchform=searchform)
       elif form.submit.data == True:
@@ -181,7 +181,9 @@ def manage_specific_pet(id):
          return redirect(url_for('ui.manage_specific_pet_note', id=id))
       return redirect(url_for('ui.dashboard'))
    elif request.method == 'GET':
-      return render_template('manage_pet.html', name=current_user.username, form=form, searchform=searchform)
+      pet = mypetsdb.controllers.pets.pet_lookup_specific(id)
+      editForm = forms.PetForm(pet=pet['pet'], species=pet['species'], notes=[])
+      return render_template('manage_pet.html', name=current_user.username,  petdata=pet, form=editForm, searchform=searchform)
 
 
 # create a pet
