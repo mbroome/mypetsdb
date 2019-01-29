@@ -236,3 +236,11 @@ def manage_pet():
       print('manage GET')
       return render_template('manage_pet.html', name=current_user.username, form=form, searchform=searchform)
 
+
+@routes.route('/help')
+def help():
+   searchform = forms.SearchForm()
+   petform = forms.PetForm()
+
+   return render_template('help.html', name=current_user.username, petdata={}, form=petform, searchform=searchform)
+

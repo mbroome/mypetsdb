@@ -49,6 +49,7 @@ MyPetsDB
             </li>
             <li><a href="#">Settings</a></li>
             <li><a href="#">Profile - {{ name }}</a></li>
+            <li><a href="{{ url_for('ui.help') }}">Help</a></li>
             <li><a href="{{ url_for('ui.logout') }}">Log Out</a></li>
           </ul>
         </div>
