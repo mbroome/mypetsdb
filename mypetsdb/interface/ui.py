@@ -66,7 +66,8 @@ def signup():
       models.Session.add(new_user)
       models.Session.commit()
 
-      return '<h1>New user has been created!</h1>'
+      flash('User created')
+      return redirect(url_for('ui.login'))
       #return '<h1>' + form.username.data + ' ' + form.email.data + ' ' + form.password.data + '</h1>'
 
    return render_template('signup.html', form=form)

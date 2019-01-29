@@ -28,10 +28,15 @@ def _flatten_pet_dict(content):
    return(data)
 
 def pet_search(name):
+   userid = current_user.username
+   if not userid:
+      userid = 'mbroome'
+
    q = (models.Session.query(models.PetDatum, models.PetSpeciesDatum)
         .select_from(models.PetDatum)
         .filter(models.PetDatum.scientific_name == models.PetSpeciesDatum.scientific_name)
         .filter(models.PetDatum.desc.ilike('%{0}%'.format(name)), models.PetDatum.scientific_name.ilike('%{0}%'.format(name)))
+        .filter(models.PetDatum.userid == userid)
         .all())
 
    response = []
@@ -47,9 +52,14 @@ def pet_search(name):
    return(response)
 
 def pet_lookup_all():
+   userid = current_user.username
+   if not userid:
+      userid = 'mbroome'
+
    q = (models.Session.query(models.PetDatum, models.PetSpeciesDatum)
        .select_from(models.PetDatum)
        .filter(models.PetDatum.scientific_name == models.PetSpeciesDatum.scientific_name)
+       .filter(models.PetDatum.userid == userid)
        .all())
 
    #print(q)
@@ -67,11 +77,15 @@ def pet_lookup_all():
    return(response)
 
 def pet_lookup_specific(id):
+   userid = current_user.username
+   if not userid:
+      userid = 'mbroome'
    #print('@@ get that pet: ' + id)
 
    q = (models.Session.query(models.PetDatum, models.PetSpeciesDatum)
        .select_from(models.PetDatum)
        .filter(models.PetDatum.scientific_name == models.PetSpeciesDatum.scientific_name)
+       .filter(models.PetDatum.userid == userid)
        .filter(models.PetDatum.pet_id == id)
        .first())
    
@@ -85,9 +99,9 @@ def pet_lookup_specific(id):
    return({"pet": pet, "species": species, "notes": notes, "common": common})
 
 def pet_create(content):
-   #userid = current_user.username
-   #if not userid:
-   userid = 'mbroome'
+   userid = current_user.username
+   if not userid:
+      userid = 'mbroome'
    #print(content)
 
    data = _flatten_pet_dict(content)
@@ -120,7 +134,9 @@ def pet_create(content):
    return({"pet": pet, "species": species, "notes": []})
 
 def pet_update(id, content):
-   userid = 'mbroome'
+   userid = current_user.username
+   if not userid:
+      userid = 'mbroome'
 
    data = _flatten_pet_dict(content)
 
@@ -148,7 +164,9 @@ def pet_update(id, content):
    return({"pet": pet, "species": species, "notes": notes})
 
 def pet_delete(id):
-   userid = 'mbroome'
+   userid = current_user.username
+   if not userid:
+      userid = 'mbroome'
 
    pet = (models.Session.query(models.PetDatum)
          .filter(models.PetDatum.userid == userid)
@@ -170,8 +188,12 @@ def pet_delete(id):
    return(False)
 
 def pet_start(id):
+   userid = current_user.username
+   if not userid:
+      userid = 'mbroome'
 
    pet = (models.Session.query(models.PetDatum)
+         .filter(models.PetDatum.userid == userid)
          .filter(models.PetDatum.pet_id == id)
          .first())
 
@@ -181,8 +203,12 @@ def pet_start(id):
    return(pet)
 
 def pet_stop(id):
+   userid = current_user.username
+   if not userid:
+      userid = 'mbroome'
 
    pet = (models.Session.query(models.PetDatum)
+         .filter(models.PetDatum.userid == userid)
          .filter(models.PetDatum.pet_id == id)
          .first())
 
@@ -195,6 +221,9 @@ def pet_stop(id):
 ################################################
 # notes
 def pet_note_get_id(id, note_id):
+   userid = current_user.username
+   if not userid:
+      userid = 'mbroome'
    note = (models.Session.query(models.PetNoteDatum)
            .filter(models.PetNoteDatum.pet_id == id)
            .filter(models.PetNoteDatum.note_id == note_id)
@@ -203,6 +232,9 @@ def pet_note_get_id(id, note_id):
    return(note)
 
 def pet_note_get(id):
+   userid = current_user.username
+   if not userid:
+      userid = 'mbroome'
    notes = (models.Session.query(models.PetNoteDatum)
            .filter(models.PetNoteDatum.pet_id == id)
            .all())
@@ -210,6 +242,9 @@ def pet_note_get(id):
    return(notes)
 
 def pet_note_create(id, content):
+   userid = current_user.username
+   if not userid:
+      userid = 'mbroome'
 
    note = models.PetNoteDatum(public=content['public'],
                               note=content['note'],
@@ -221,6 +256,9 @@ def pet_note_create(id, content):
    return(pet_lookup_specific(id))
 
 def pet_note_update(id, note_id, content):
+   userid = current_user.username
+   if not userid:
+      userid = 'mbroome'
 
    note = (models.Session.query(models.PetNoteDatum)
            .filter(models.PetNoteDatum.note_id == note_id)
@@ -235,6 +273,9 @@ def pet_note_update(id, note_id, content):
    return(pet_lookup_specific(id))
 
 def pet_note_delete(id, note_id):
+   userid = current_user.username
+   if not userid:
+      userid = 'mbroome'
 
    note = (models.Session.query(models.PetNoteDatum)
            .filter(models.PetNoteDatum.note_id == note_id)

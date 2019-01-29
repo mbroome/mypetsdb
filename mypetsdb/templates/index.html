@@ -26,6 +26,20 @@ MyPetsDB
       </div>
     </nav>
 
-    <div class="container">
-    </div><!-- /.container -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    <li>{{ messages[-1] }}</li>
+    </ul>
+  {% endif %}
+{% endwith %}
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-12 col-md-12 main">
+{% block inner_content %}
+{% endblock %}
+        </div>
+      </div>
+    </div>
 {% endblock %}
