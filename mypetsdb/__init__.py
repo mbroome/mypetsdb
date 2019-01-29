@@ -36,5 +36,11 @@ def create_app(test_config=None):
    app.register_blueprint(interface.pets.routes)
    app.register_blueprint(interface.ui.routes)
 
+
+
+   #@app.errorhandler(500)
+   #def page_not_found(e):
+   #   return render_template('logged_out_error.html'), 500
+
    return(app)
 
