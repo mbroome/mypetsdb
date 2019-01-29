@@ -21,7 +21,7 @@ try:
    config = json.loads(contents)
 except:
    config = {'db':{
-                  'mypetsdb': 'mysql://mypetsdb:wzUIrLafJ5nR@localhost/mypetsdb?charset=latin1',
+                  'mypetsdb': 'mysql://mypetsdb:wzUIrLafJ5nR@localhost/mypetsdb?charset=utf8',
                   'itis': 'mysql://mypetsdb:wzUIrLafJ5nR@localhost/ITIS?charset=latin1'
                  }
             }
@@ -90,6 +90,24 @@ class SpeciesNameXREF(Base):
 
     xref_id = Column(Integer, nullable=True)
 
+class EndangeredClasificationXREF(Base):
+    __tablename__ = 'endangered_clasification_xref'
+
+    code = Column(String(10), primary_key=True, nullable=False)
+    name  = Column(String(30), nullable=True)
+    description  = Column(String(512), nullable=True)
+    source = Column(String(20), nullable=True)
+    timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
+
+class CaresXREF(Base):
+    __tablename__ = 'cares_xref'
+
+    scientific_name = Column(String(100), primary_key=True, nullable=False)
+    code = Column(String(10), primary_key=True, nullable=False)
+    assessment  = Column(String(50), nullable=True)
+    authority  = Column(String(50), nullable=True)
+    timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
+
 class User(UserMixin, Base):
     __tablename__ = 'users'
 
@@ -139,6 +157,36 @@ def loadITISData():
       except sqlalchemy.exc.IntegrityError:
          pass
 
+def loadCARESData():
+   dataFile = '../data/cares-1-29-2019.json'
+   contents = open(dataFile, 'r').read()
+   data = json.loads(contents)
+
+   #print(data)
+   #EndangeredClasificationXREF
+   for classification in data['classifications']:
+      rec = {'code': classification['key'],
+             'name': classification['classification'],
+             'description': classification['description'],
+             'source': 'cares'}
+      print(rec)
+      print(len(rec['description']))
+      try:
+         engine.execute(EndangeredClasificationXREF.__table__.insert().values(rec))
+      except sqlalchemy.exc.IntegrityError:
+         pass
+
+   for species in data['species']:
+      rec = {'scientific_name': species['species'].lower(),
+             'code': species['classification'][:species['classification'].find(' ')],
+             'assessment': species['assessment'],
+             'authority': species['authority']}
+      print(rec)
+      try:
+         engine.execute(CaresXREF.__table__.insert().values(rec))
+      except sqlalchemy.exc.IntegrityError:
+         pass
+
 
 Base.metadata.reflect(bind=engine)
 
@@ -146,4 +194,5 @@ if __name__ == '__main__':
    Base.metadata.create_all()
 
    #loadITISData()
+   loadCARESData()
 

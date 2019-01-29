@@ -33,7 +33,7 @@ hostname = 'https://caresforfish.org/'
 def getTopLevelPage():
    pid = 40
    raw_html = simple_get(hostname +'?page_id=%s' % pid)
-   html = BeautifulSoup(raw_html, 'html.parser')
+   html = BeautifulSoup(raw_html.decode('utf-8','ignore'), 'html.parser')
    tags = html.find(class_='entry-content')
 
    pages = []
@@ -49,7 +49,7 @@ def getSpeciesPage(page):
    #pid = 257
    #pid = 401
    raw_html = simple_get(hostname + page)
-   html = BeautifulSoup(raw_html, 'html.parser')
+   html = BeautifulSoup(raw_html.decode('utf-8','ignore'), 'html.parser')
    body = html.find(class_='entry-content')
    tbody = body.find('tbody')
    #print(tbody)
@@ -75,7 +75,7 @@ def getSpeciesPage(page):
 def getClassifications():
    pid = 464
    raw_html = simple_get(hostname +'?page_id=%s' % pid)
-   html = BeautifulSoup(raw_html, 'html.parser')
+   html = BeautifulSoup(raw_html.decode('utf-8','ignore'), 'html.parser')
    body = html.find(class_='entry-content')
 
    tables = body.find_all(class_="directory")
