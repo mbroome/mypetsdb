@@ -21,6 +21,8 @@ def species_cached_lookup(id):
 # do a full lookup and build the cache if we found a specific species
 def species_lookup(id):
    id = id.lower()
+   id = id.rstrip().lstrip()
+   
    species = species_cached_lookup(id)
 
    #print('### here')
@@ -29,10 +31,13 @@ def species_lookup(id):
       print('already cached species')
       return(species)
 
+   id = id.replace(' ', '%')
+
    # first try a fuzzy search on the species name
    species = (models.Session.query(models.SpeciesNameXREF)
                 .filter(models.SpeciesNameXREF.scientific_name.ilike('%{0}%'.format(id)))
                 .order_by(models.SpeciesNameXREF.scientific_name)
+                .limit(50)
                 .all())
 
    # we need to dedup the species list
@@ -49,6 +54,7 @@ def species_lookup(id):
    # but we might have more than one common name for the same species
    common = (models.Session.query(models.CommonNameXREF)
              .filter(models.CommonNameXREF.common_name.ilike('%{0}%'.format(id)))
+             .limit(50)
              .all())
 
    if common:
