@@ -1,7 +1,7 @@
 import os
 import json
 
-from sqlalchemy import Column, Date, DateTime, Index, Integer, String, Text, Table, Boolean, ARRAY
+from sqlalchemy import Column, Date, DateTime, Index, Integer, String, Text, Table, Boolean, ARRAY, UniqueConstraint
 from sqlalchemy.schema import FetchedValue
 from sqlalchemy.dialects.mysql.enumerated import ENUM
 from sqlalchemy.dialects.mysql import TIMESTAMP
@@ -38,7 +38,7 @@ Base.metadata.bind = engine
 class PetDatum(Base):
     __tablename__ = 'pet_data'
 
-    pet_id = Column(Integer, primary_key=True)
+    pet_id = Column(Integer, primary_key=True, autoincrement=True)
     variant = Column(String(100))
     collection_point = Column(String(100))
     userid = Column(String(100), nullable=False)
@@ -47,8 +47,7 @@ class PetDatum(Base):
     desc = Column(String(255))
     public = Column(Boolean, nullable=False, default=False)
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
-
-    scientific_name = Column(String(100))
+    scientific_name = Column(String(175))
 
 class PetNoteDatum(Base):
     __tablename__ = 'pet_note'
@@ -57,38 +56,43 @@ class PetNoteDatum(Base):
     public = Column(Boolean, nullable=False, default=False)
     note = Column(Text)
     timestamp = Column(TIMESTAMP, primary_key=True, nullable=False, server_default=FetchedValue())
-
     pet_id = Column(Integer, nullable=False)
 
 class PetSpeciesDatum(Base):
     __tablename__ = 'species_data'
 
-    scientific_name = Column(String(100), primary_key=True)
-    endangered_status = Column(Integer, nullable=True)
-    iucn_category = Column(String(10), nullable=True)
-    iucn_id = Column(String(20), nullable=True)
-    cares = Column(Integer, nullable=True)
+    rec_id = Column(Integer, primary_key=True, autoincrement=True)
+    scientific_name = Column(String(175), unique=True)
+    iucn_category = Column(String(10), nullable=False, server_default='')
+    iucn_id = Column(String(20), nullable=False, server_default='')
+    cares = Column(String(10), nullable=False, server_default='')
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
 
 
 class CommonNameXREF(Base):
     __tablename__ = 'common_names_xref'
 
-    common_name = Column(String(100), primary_key=True, nullable=False)
-    scientific_name = Column(String(100), primary_key=True, nullable=False)
+    rec_id = Column(Integer, primary_key=True, autoincrement=True)
+    common_name = Column(String(100), nullable=False)
+    scientific_name = Column(String(175), nullable=False)
     source = Column(String(20), nullable=True)
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
-
     xref_id = Column(Integer, nullable=True)
+
+    __table_args__ = (
+        UniqueConstraint('scientific_name', 'common_name', name='u_cname_xref'),
+    )
+
 
 class SpeciesNameXREF(Base):
     __tablename__ = 'species_names_xref'
 
-    scientific_name = Column(String(100), primary_key=True, nullable=False)
+    rec_id = Column(Integer, primary_key=True, autoincrement=True)
+    scientific_name = Column(String(175), primary_key=True, nullable=False, unique=True)
     source = Column(String(20), nullable=True)
-    timestamp = Column(TIMESTAMP, primary_key=True, nullable=False, server_default=FetchedValue())
-
+    timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
     xref_id = Column(Integer, nullable=True)
+
 
 class EndangeredClasificationXREF(Base):
     __tablename__ = 'endangered_clasification_xref'
@@ -102,10 +106,12 @@ class EndangeredClasificationXREF(Base):
 class CaresXREF(Base):
     __tablename__ = 'cares_xref'
 
-    scientific_name = Column(String(100), primary_key=True, nullable=False)
-    code = Column(String(10), primary_key=True, nullable=False)
+    rec_id = Column(Integer, primary_key=True, autoincrement=True)
+    scientific_name = Column(String(175), nullable=False, unique=True)
+    code = Column(String(10), nullable=False)
     assessment  = Column(String(50), nullable=True)
     authority  = Column(String(50), nullable=True)
+    link = Column(String(255), nullable=True)
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
 
 class User(UserMixin, Base):
@@ -120,24 +126,21 @@ class User(UserMixin, Base):
 def loadITISData():
    itis_engine = create_engine(config['db']['itis'], pool_pre_ping=True)
 
-   '''
-   species_query = text('select unit_name1,unit_name2,tsn from taxonomic_units where unit_name1!="" and unit_name2!=""')
+   
+   species_query = text('select complete_name,tsn from taxonomic_units where unit_name1!="" and unit_name2!=""')
    species_list = itis_engine.execute(species_query).fetchall()
    print(len(species_list))
    print(species_list[0])
 
    for species in species_list:
-      scientific_name = "%s %s" % (species[0], species[1])
-
-      rec = {'scientific_name': scientific_name.lower(),
-             'xref_id': species[2],
+      rec = {'scientific_name': species[0].lower(),
+             'xref_id': species[1],
              'source': 'itis'}
       print(rec)
       try:
          engine.execute(SpeciesNameXREF.__table__.insert().values(rec))
       except sqlalchemy.exc.IntegrityError:
          pass
-   '''
 
    common_query = text('select v.tsn, v.vernacular_name, t.unit_name1, t.unit_name2, t.complete_name from vernaculars v, taxonomic_units t where v.tsn=t.tsn and t.unit_name2 != "" and language = "english"')
    common_list = itis_engine.execute(common_query).fetchall()
@@ -162,15 +165,12 @@ def loadCARESData():
    contents = open(dataFile, 'r').read()
    data = json.loads(contents)
 
-   #print(data)
-   #EndangeredClasificationXREF
    for classification in data['classifications']:
       rec = {'code': classification['key'],
              'name': classification['classification'],
              'description': classification['description'],
              'source': 'cares'}
-      print(rec)
-      print(len(rec['description']))
+      #print(rec)
       try:
          engine.execute(EndangeredClasificationXREF.__table__.insert().values(rec))
       except sqlalchemy.exc.IntegrityError:
@@ -180,10 +180,19 @@ def loadCARESData():
       rec = {'scientific_name': species['species'].lower(),
              'code': species['classification'][:species['classification'].find(' ')],
              'assessment': species['assessment'],
+             'link': species['link'],
              'authority': species['authority']}
-      print(rec)
+      #print(rec)
       try:
          engine.execute(CaresXREF.__table__.insert().values(rec))
+      except sqlalchemy.exc.IntegrityError:
+         pass
+
+      rec = {'scientific_name': species['species'].lower(),
+             'source': 'cares'}
+
+      try:
+         engine.execute(SpeciesNameXREF.__table__.insert().values(rec))
       except sqlalchemy.exc.IntegrityError:
          pass
 
@@ -193,6 +202,6 @@ Base.metadata.reflect(bind=engine)
 if __name__ == '__main__':
    Base.metadata.create_all()
 
-   #loadITISData()
+   loadITISData()
    loadCARESData()
 

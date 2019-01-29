@@ -22,7 +22,6 @@
    {{ c.common_name }}{%- if not loop.last -%},{% endif %}
 {% endfor %}
       <br>
-      {{ form.endangered_status.label }}: {{ record.species.endangered_status or 'N/A' }}<br>
       {{ form.iucn_category.label }}: {{ record.species.iucn_category or 'N/A' }}<br>
       {{ form.iucn_id.label }}: {{ record.species.iucn_id or 'N/A' }}<br>
       {{ form.cares.label }}: {{ record.species.cares or 'N/A' }}<br>

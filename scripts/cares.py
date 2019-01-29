@@ -48,7 +48,8 @@ def getSpeciesPage(page):
    #pid = 317
    #pid = 257
    #pid = 401
-   raw_html = simple_get(hostname + page)
+   link = hostname + page
+   raw_html = simple_get(link)
    html = BeautifulSoup(raw_html.decode('utf-8','ignore'), 'html.parser')
    body = html.find(class_='entry-content')
    tbody = body.find('tbody')
@@ -68,6 +69,7 @@ def getSpeciesPage(page):
       rec['classification'] = cols[1]
       rec['assessment'] = cols[2]
       rec['authority'] = cols[3]
+      rec['link'] = link
       species.append(rec)
 
    return(species)

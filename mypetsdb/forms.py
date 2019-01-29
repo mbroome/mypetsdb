@@ -37,7 +37,6 @@ class NoteDatumForm(FlaskForm):
 
 class PetSpeciesDatumForm(FlaskForm):
     scientific_name = StringField('Scientific Name')
-    endangered_status = IntegerField('Endangered Status')
     iucn_category = StringField('IUCN Category')
     iucn_id = StringField('IUCN ID')
     cares = IntegerField('CARES')

@@ -125,5 +125,12 @@ def species_metadata_callout(species):
    except:
       pass
 
+   cares = (models.Session.query(models.CaresXREF)
+            .filter(models.CaresXREF.scientific_name == species.scientific_name)
+            .first())
+
+   if cares:
+      species.cares = cares.code
+
    return(species)
 
