@@ -31,6 +31,9 @@ def species_lookup(id):
       print('already cached species')
       return(species)
 
+   if len(id) < 4:
+      return([])
+
    id = id.replace(' ', '%')
 
    # first try a fuzzy search on the species name

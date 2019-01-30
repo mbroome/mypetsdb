@@ -2,6 +2,13 @@
 
 {% block inner_content %}
 
+{% if searchdata|length >= 50 %}
+Showing first 50 species.  More available more specific search criteria
+{% else %}
+Showing {{ searchdata|length }} species
+{% endif %}
+<br>
+<br>
 {% for record in searchdata %}
 <form id="f{{ record.species.scientific_name|hash_key }}" action = "/pet/manage" method=post>
    <fieldset>

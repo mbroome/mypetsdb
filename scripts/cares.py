@@ -65,7 +65,7 @@ def getSpeciesPage(page):
       cols = [ele.text.strip() for ele in cols]
       #data.append([ele for ele in cols if ele])
       rec = {}
-      rec['species'] = cols[0]
+      rec['species'] = cols[0].replace(u"\u2018", "'").replace(u"\u2019", "'").encode('ascii',errors='ignore')
       rec['classification'] = cols[1]
       rec['assessment'] = cols[2]
       rec['authority'] = cols[3]
@@ -97,7 +97,7 @@ def getClassifications():
          rec = {}
          rec['key'] = cols[0]
          rec['classification'] = cols[1]
-         rec['description'] = cols[2]
+         rec['description'] = cols[2].replace(u"\u2018", "'").replace(u"\u2019", "'").encode('ascii',errors='ignore')
          cls.append(rec)
 
    return(cls)
@@ -109,5 +109,5 @@ for page in pages:
 
 data['classifications'] = getClassifications()
 
-print(json.dumps(data))
+print(json.dumps(data, ensure_ascii=False))
 
