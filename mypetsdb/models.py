@@ -65,7 +65,8 @@ class PetSpeciesDatum(Base):
     scientific_name = Column(String(175), unique=True)
     iucn_category = Column(String(10), nullable=False, server_default='')
     iucn_id = Column(String(20), nullable=False, server_default='')
-    cares = Column(String(10), nullable=False, server_default='')
+    cares_category = Column(String(10), nullable=False, server_default='')
+    cares_link = Column(String(255), nullable=False, server_default='')
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
 
 

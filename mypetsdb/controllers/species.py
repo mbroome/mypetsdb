@@ -106,7 +106,10 @@ def species_lookup_scientific(id):
          models.Session.add(rec)
          models.Session.commit()
 
-         return(rec)
+         common = species_get_common_names(id)
+ 
+         if rec:
+            return({'species': rec, 'common': common})
 
 
 
@@ -133,7 +136,13 @@ def species_metadata_callout(species):
             .first())
 
    if cares:
-      species.cares = cares.code
+      species.cares_category = cares.code
+      species.cares_link = cares.link
 
    return(species)
+
+def endangered_classification_map():
+   classifications = (models.Session.query(models.EndangeredClasificationXREF)
+                      .all())
+   return(classifications)
 

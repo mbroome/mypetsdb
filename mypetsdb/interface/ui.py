@@ -8,11 +8,21 @@ from wtforms.validators import InputRequired, Email, Length
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
-from mypetsdb import login_manager
+from mypetsdb import login_manager, ma
 import mypetsdb.controllers.pets 
 import mypetsdb.controllers.species
 import mypetsdb.models as models
 import mypetsdb.forms as forms
+
+
+# define the response schema for json output
+class SpeciesSchema(ma.Schema):
+   class Meta:
+      fields = ('scientific_name','iucn_category','iucn_id','cares','timestamp')
+
+species_schema = SpeciesSchema(strict=True, partial=True)
+speciess_schema = SpeciesSchema(many=True, strict=True, partial=True)
+
 
 login_manager.login_view = 'ui.login'
 
@@ -114,6 +124,17 @@ def dashboard_species():
       #for r in q:
       #   print(r)
    return render_template('species_search.html', name=current_user.username, searchdata=q, form=speciesform, searchform=searchform)
+
+# Species details search
+@routes.route('/dashboard/species/<id>', methods=['GET'])
+@login_required
+def species_details_search(id):
+   q =  mypetsdb.controllers.species.species_lookup_scientific(id)
+   classifications =  mypetsdb.controllers.species.endangered_classification_map()
+   classes = {}
+   for c in classifications:
+      classes[c.code] = c.name
+   return render_template('search_details.html', name=current_user.username, searchdata=q, classifications=classes)
 
 ############################################################
 # manage a specific note about a specific pet

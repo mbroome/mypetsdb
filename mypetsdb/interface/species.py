@@ -9,7 +9,7 @@ import mypetsdb.controllers.species
 # define the response schema for json output
 class SpeciesSchema(ma.Schema):
    class Meta:
-      fields = ('scientific_name','iucn_category','iucn_id','cares')
+      fields = ('scientific_name','iucn_category','iucn_id','cares_category', 'cares_link')
 
 species_schema = SpeciesSchema(strict=True, partial=True)
 speciess_schema = SpeciesSchema(many=True, strict=True, partial=True)

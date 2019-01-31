@@ -1,9 +1,29 @@
 {% extends "dashboard_base.html" %}
 
+{% block scripts %}
+{{ super() }}
+
+<script>
+
+   function speciesDetails(species){
+      console.log(species);
+      if(species){
+         $.get("/dashboard/species/" + species, function(result){
+            console.log(result)
+            bootbox.alert(result);
+         });
+      }
+
+   }
+
+</script>
+
+{% endblock %}
+
 {% block inner_content %}
 
 {% if searchdata|length >= 50 %}
-Showing first 50 species.  More available more specific search criteria
+Showing first 50 species.  More available more with specific search criteria
 {% else %}
 Showing {{ searchdata|length }} species
 {% endif %}
@@ -23,19 +43,21 @@ Showing {{ searchdata|length }} species
       <a target="_blank" href="https://www.google.com/search?q={{ record.species.scientific_name|quote_plus }}&tbm=isch">
         <span class="glyphicon glyphicon-picture" style="padding-left: 4px;" aria-hidden="true"></span>
       </a>
+      <a href="#" onclick="speciesDetails('{{ record.species.scientific_name }}');">
+        <span class="glyphicon glyphicon-search" style="padding-left: 4px;" aria-hidden="true"></span>
+      </a>
       <br>
       <label>Common Names:</label>
 {% for c in record.common %}
    {{ c.common_name }}{%- if not loop.last -%},{% endif %}
 {% endfor %}
       <br>
-      {{ form.iucn_category.label }}: {{ record.species.iucn_category or 'N/A' }}<br>
-      {{ form.iucn_id.label }}: {{ record.species.iucn_id or 'N/A' }}<br>
-      {{ form.cares.label }}: {{ record.species.cares or 'N/A' }}<br>
-      <hr>
+      <div id="p{{ record.species.scientific_name|hash_key }}">
+      </div>
 
    </fieldset>
 </form>
+<hr>
 {% endfor %}
 
 {% endblock %}
