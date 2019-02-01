@@ -72,6 +72,15 @@ def signup():
    form = forms.RegisterForm()
 
    if form.validate_on_submit():
+      user = (models.Session.query(models.User)
+               .filter(models.User.username == form.username.data)
+               .first())
+      if user:
+         print('### user exists')
+         flash('Sorry, ' + form.username.data + ' already exists', 'warning')
+         return render_template('signup.html', form=form)
+         return redirect(url_for('ui.signup'))
+
       hashed_password = generate_password_hash(form.password.data, method='sha256')
       new_user = models.User(username=form.username.data, email=form.email.data, password=hashed_password)
       models.Session.add(new_user)
