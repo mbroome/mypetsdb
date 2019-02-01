@@ -2,9 +2,7 @@
 
 {% block scripts %}
 {{ super() }}
-
 <script>
-
    function speciesDetails(species){
       console.log(species);
       if(species){
@@ -13,22 +11,17 @@
             bootbox.alert(result);
          });
       }
-
    }
-
 </script>
-
 {% endblock %}
 
 {% block inner_content %}
-
 {% if searchdata|length >= 50 %}
 Showing first 50 species.  More available more with specific search criteria
 {% else %}
 Showing {{ searchdata|length }} species
 {% endif %}
-<br>
-<br>
+<p>
 {% for record in searchdata %}
 <form id="f{{ record.species.scientific_name|hash_key }}" action = "/pet/manage" method=post>
    <fieldset>

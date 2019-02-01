@@ -76,10 +76,9 @@ def signup():
                .filter(models.User.username == form.username.data)
                .first())
       if user:
-         print('### user exists')
+         #print('### user exists')
          flash('Sorry, ' + form.username.data + ' already exists', 'warning')
          return render_template('signup.html', form=form)
-         return redirect(url_for('ui.signup'))
 
       hashed_password = generate_password_hash(form.password.data, method='sha256')
       new_user = models.User(username=form.username.data, email=form.email.data, password=hashed_password)
@@ -129,21 +128,20 @@ def dashboard_species():
       if type(q) is not list:
          q = [q]
 
-      #print(q)
-      #for r in q:
-      #   print(r)
    return render_template('species_search.html', name=current_user.username, searchdata=q, form=speciesform, searchform=searchform)
 
 # Species details search
 @routes.route('/dashboard/species/<id>', methods=['GET'])
 @login_required
 def species_details_search(id):
+   speciesform = forms.PetSpeciesDatumForm()
+
    q =  mypetsdb.controllers.species.species_lookup_scientific(id)
    classifications =  mypetsdb.controllers.species.endangered_classification_map()
    classes = {}
    for c in classifications:
       classes[c.code] = c.name
-   return render_template('search_details.html', name=current_user.username, searchdata=q, classifications=classes)
+   return render_template('search_details.html', name=current_user.username, searchdata=q, form=speciesform, classifications=classes)
 
 ############################################################
 # manage a specific note about a specific pet
@@ -159,7 +157,7 @@ def manage_specific_pet_note_id(id, note_id):
    if request.method == 'POST':
       if not form.validate_on_submit():
          flash(form.errors, 'danger')
-         print(form.errors)
+         #print(form.errors)
 
       if form.submit.data == True:
          status = mypetsdb.controllers.pets.pet_note_update(id, note_id, form.data)
@@ -188,7 +186,7 @@ def manage_specific_pet_note(id):
    if request.method == 'POST':
       if not form.validate_on_submit():
          flash(form.errors, 'danger')
-         print(form.errors)
+         #print(form.errors)
          return render_template('manage_note.html', name=current_user.username, form=form, searchform=searchform, pet_id=id)
 
       if form.submit.data == True:
@@ -212,7 +210,7 @@ def manage_specific_pet(id):
 
       if not form.validate_on_submit():
          flash(form.errors, 'danger')
-         print(form.errors)
+         #print(form.errors)
 
       if form.edit.data == True:
          pet = mypetsdb.controllers.pets.pet_lookup_specific(id)
@@ -243,17 +241,17 @@ def manage_pet():
       form.species.csrf_token.data = form.csrf_token.data
 
    #print(request.form)
-   print(json.dumps(form.data))
+   #print(json.dumps(form.data))
    if request.method == 'POST':
-      print('manage POST')
+      #print('manage POST')
       #del(form.pet.start)
       #del(form.pet.end)
       #del(form.pet.pet_id)
-      print(dir(form.pet))
+      #print(dir(form.pet))
       if not form.validate_on_submit():
          flash(form.errors, 'danger')
-         print(form.errors)
-         print('failed validation')
+         #print(form.errors)
+         #print('failed validation')
       #print(form.species.scientific_name.data)
       q =  mypetsdb.controllers.species.species_lookup_scientific(form.species.scientific_name.data)
 
@@ -263,7 +261,7 @@ def manage_pet():
          return redirect(url_for('ui.dashboard'))
       return render_template('manage_pet.html', name=current_user.username, form=form, searchform=searchform)
    else:
-      print('manage GET')
+      #print('manage GET')
       return render_template('manage_pet.html', name=current_user.username, form=form, searchform=searchform)
 
 

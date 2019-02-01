@@ -1,4 +1,9 @@
 
+<form id="f{{ searchdata.species.scientific_name|hash_key }}" action = "/pet/manage" method=post>
+   <fieldset>
+      {{ form.hidden_tag() }}
+      <input id="species-scientific_name" name="species-scientific_name" type="hidden" value="{{ searchdata.species.scientific_name }}">
+
 <label>Scientific Name:</label> {{ searchdata.species.scientific_name }}
 <br>
 <label>IUCN Classification:</label>
@@ -20,5 +25,18 @@
 {% endif %}
 <br>
 <label>Timestamp:</label> {{ searchdata.species.timestamp }}
+<p>
+<p>
+<label>Actions</label>
+<a target="_blank" href="https://www.google.com/search?q={{ searchdata.species.scientific_name|quote_plus }}&tbm=isch">
+   Google image search
+</a>
+&nbsp;:&nbsp; 
+<a onclick="document.getElementById('f{{ searchdata.species.scientific_name|hash_key }}').submit();">
+   Add pet to collection
+</a>
+<br>
 
+   </fieldset>
+</form>
 

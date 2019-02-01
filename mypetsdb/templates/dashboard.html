@@ -17,7 +17,9 @@
 
 {% block inner_content %}
 {{ super() }}
-
+{% if petdata|length <= 0 %}
+No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
+{% else %}
 <div class="panel-group" id="my-accordion">
 {% for record in petdata %}
     <div class="panel panel-default">
@@ -95,5 +97,6 @@
    <p>
 {% endfor %}
 </div>
+{% endif %}
 
 {% endblock %}
