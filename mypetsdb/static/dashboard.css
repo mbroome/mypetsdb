@@ -117,6 +117,10 @@ p {
   word-break: break-all;
 }
 
+a {
+   cursor: pointer;
+}
+
 .panel-heading {
    cursor: pointer;
 }
