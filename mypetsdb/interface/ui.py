@@ -208,9 +208,9 @@ def manage_specific_pet(id):
    #print(json.dumps(form.data))
    if request.method == 'POST':
 
-      if not form.validate_on_submit():
-         flash(form.errors, 'danger')
-         #print(form.errors)
+      #if not form.validate_on_submit():
+      #   flash(form.errors, 'danger')
+      #   #print(form.errors)
 
       if form.edit.data == True:
          pet = mypetsdb.controllers.pets.pet_lookup_specific(id)
@@ -243,11 +243,6 @@ def manage_pet():
    #print(request.form)
    #print(json.dumps(form.data))
    if request.method == 'POST':
-      #print('manage POST')
-      #del(form.pet.start)
-      #del(form.pet.end)
-      #del(form.pet.pet_id)
-      #print(dir(form.pet))
       if not form.validate_on_submit():
          flash(form.errors, 'danger')
          #print(form.errors)
