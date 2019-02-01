@@ -61,7 +61,7 @@ def login():
             login_user(user, remember=form.remember.data)
             return redirect(url_for('ui.dashboard'))
 
-      flash('Invalid username or password')
+      flash('Invalid username or password', 'warning')
       #return '<h1>Invalid username or password</h1>'
       #return '<h1>' + form.username.data + ' ' + form.password.data + '</h1>'
 
@@ -86,7 +86,7 @@ def signup():
       models.Session.add(new_user)
       models.Session.commit()
 
-      flash('User created')
+      flash('User created', 'success')
       return redirect(url_for('ui.login'))
       #return '<h1>' + form.username.data + ' ' + form.email.data + ' ' + form.password.data + '</h1>'
 
@@ -158,7 +158,7 @@ def manage_specific_pet_note_id(id, note_id):
    #print('id: %s, note: %s' % (id, note_id))
    if request.method == 'POST':
       if not form.validate_on_submit():
-         flash(form.errors)
+         flash(form.errors, 'danger')
          print(form.errors)
 
       if form.submit.data == True:
@@ -187,7 +187,7 @@ def manage_specific_pet_note(id):
    #print(json.dumps(form.data))
    if request.method == 'POST':
       if not form.validate_on_submit():
-         flash(form.errors)
+         flash(form.errors, 'danger')
          print(form.errors)
          return render_template('manage_note.html', name=current_user.username, form=form, searchform=searchform, pet_id=id)
 
@@ -211,7 +211,7 @@ def manage_specific_pet(id):
    if request.method == 'POST':
 
       if not form.validate_on_submit():
-         flash(form.errors)
+         flash(form.errors, 'danger')
          print(form.errors)
 
       if form.edit.data == True:
@@ -251,7 +251,7 @@ def manage_pet():
       #del(form.pet.pet_id)
       print(dir(form.pet))
       if not form.validate_on_submit():
-         flash(form.errors)
+         flash(form.errors, 'danger')
          print(form.errors)
          print('failed validation')
       #print(form.species.scientific_name.data)
