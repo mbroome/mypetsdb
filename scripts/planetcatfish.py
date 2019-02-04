@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 import json
+import string
+import time
 from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
@@ -25,8 +27,7 @@ def is_good_response(resp):
             and content_type.find('html') > -1)
 
 
-data = {"species":[],
-        "classifications":[]}
+data = []
 
 hostname = 'https://www.planetcatfish.com'
 commonNameLookup = hostname + '/common/common_names.php?language=English&letter='
@@ -61,6 +62,14 @@ def getAlphaCommonPage(letter):
 
    return(species)
 
-c = getAlphaCommonPage("b")
-print(json.dumps(c))
+#c = getAlphaCommonPage("b")
+#print(json.dumps(c))
+
+for char in list(string.ascii_lowercase):
+   #print char
+   c = getAlphaCommonPage(char)
+   data += c
+   time.sleep(3)
+
+print(json.dumps(data))
 
