@@ -115,6 +115,15 @@ class CaresXREF(Base):
     link = Column(String(255), nullable=True)
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
 
+class PlanetCatfishXREF(Base):
+    __tablename__ = 'planetcatfish_xref'
+
+    rec_id = Column(Integer, primary_key=True, autoincrement=True)
+    scientific_name = Column(String(175), nullable=False)
+    common_name = Column(String(100), nullable=False)
+    link = Column(String(255), nullable=True)
+    timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
+
 class User(UserMixin, Base):
     __tablename__ = 'users'
 
@@ -198,11 +207,47 @@ def loadCARESData():
          pass
 
 
+def loadPlanetCatfishData():
+   dataFile = '../data/planetcatfish-2-4-2019.json'
+   contents = open(dataFile, 'r').read()
+   data = json.loads(contents)
+
+   for row in data:
+      rec = {'scientific_name': row['scientific_name'].lower(),
+             'source': 'planetcatfish'}
+
+      try:
+         engine.execute(SpeciesNameXREF.__table__.insert().values(rec))
+      except sqlalchemy.exc.IntegrityError:
+         pass
+
+      rec = {'scientific_name': row['scientific_name'].lower(),
+             'common_name': row['common_name'].lower(),
+             'source': 'planetcatfish'}
+      print(rec)
+      try:
+         engine.execute(CommonNameXREF.__table__.insert().values(rec))
+      except sqlalchemy.exc.IntegrityError:
+         pass
+
+      rec = {'scientific_name': row['scientific_name'].lower(),
+             'common_name': row['common_name'].lower(),
+             'link': row['link']}
+      print(rec)
+      try:
+         engine.execute(PlanetCatfishXREF.__table__.insert().values(rec))
+      except sqlalchemy.exc.IntegrityError:
+         pass
+
+
+
 Base.metadata.reflect(bind=engine)
 
 if __name__ == '__main__':
    Base.metadata.create_all()
 
    #loadITISData()
-   loadCARESData()
+   #loadCARESData()
+   loadPlanetCatfishData()
+
 
