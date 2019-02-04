@@ -31,7 +31,7 @@ def species_lookup(id):
       print('already cached species')
       return(species)
 
-   if len(id) < 4:
+   if len(id) < 3:
       return([])
 
    id = id.replace(' ', '%')
