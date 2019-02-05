@@ -56,8 +56,8 @@ def getAlphaCommonPage(letter):
       #print(cols)
       rec = {}
       rec['link'] = hostname + link
-      rec['common_name'] = cols[1].lower()
-      rec['scientific_name'] = cols[2].replace('(', '').replace(')', '').lower()
+      rec['common_name'] = cols[1].lower().replace(u"\u2018", "'").replace(u"\u2019", "'").encode('ascii',errors='ignore')
+      rec['scientific_name'] = cols[2].replace('(', '').replace(')', '').replace(u"\u2018", "'").replace(u"\u2019", "'").replace(u"\u2020", "").encode('ascii',errors='ignore').lower()
       species.append(rec)
 
    return(species)
