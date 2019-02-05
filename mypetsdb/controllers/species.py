@@ -6,18 +6,6 @@ from sqlalchemy import func, or_
 
 import mypetsdb.models as models
 
-# return a species from our cache if we have it
-def species_cached_lookup(id):
-   id = id.lower()
-   species = (models.Session.query(models.PetSpeciesDatum)
-       .filter(models.PetSpeciesDatum.scientific_name == id)
-       .first())
-
-   common = species_get_common_names(id)
-
-   if species:
-      return({'species': species, 'common': common})
-
 # do a full lookup and build the cache if we found a specific species
 def species_lookup(id):
    id = id.lower()
@@ -51,7 +39,7 @@ def species_lookup(id):
       for s in species:
          s =  models.PetSpeciesDatum(scientific_name=s.scientific_name)
          c = species_get_common_names(s.scientific_name)
-         recList[s.scientific_name] = {'species': s, 'common': c}
+         recList[s.scientific_name] = {'species': s, 'common': c, 'links': []}
 
    print('@@@ in the common list')
    # but we might have more than one common name for the same species
@@ -69,7 +57,7 @@ def species_lookup(id):
          s =  models.PetSpeciesDatum(scientific_name=name)
          c = species_get_common_names(name)
 
-         recList[s.scientific_name] = {'species': s, 'common': c}
+         recList[s.scientific_name] = {'species': s, 'common': c, 'links': []}
 
    # since we stuck the data into a dict, we need to turn the values into an array
    response = []
@@ -86,6 +74,38 @@ def species_get_common_names(id):
 
    return(common)
 
+def species_get_planetcatfish(id):
+
+   pcatfish = (models.Session.query(models.PlanetCatfishXREF)
+               .filter(models.PlanetCatfishXREF.scientific_name == id)
+               .all())
+
+   return(pcatfish)
+
+def species_get_links(id):
+   pcatfish = species_get_planetcatfish(id)
+
+   links = []
+   for pcat in pcatfish:
+      link = {'url': pcat.link,
+              'source': 'planetcatfish'}
+      links.append(link)
+   return(links)
+
+# return a species from our cache if we have it
+def species_cached_lookup(id):
+   id = id.lower()
+   species = (models.Session.query(models.PetSpeciesDatum)
+       .filter(models.PetSpeciesDatum.scientific_name == id)
+       .first())
+
+   common = species_get_common_names(id)
+   links = species_get_links(id)
+
+   if species:
+      return({'species': species, 'common': common, 'links': links})
+
+
 
 def species_lookup_scientific(id):
    species = species_cached_lookup(id)
@@ -98,8 +118,8 @@ def species_lookup_scientific(id):
                  .first())
 
       if species:
-         print('#### scientific_lookup lookup:')
-         print(species)
+         #print('#### scientific_lookup lookup:')
+         #print(species)
 
          rec = models.PetSpeciesDatum(scientific_name=species.scientific_name)
          rec = species_metadata_callout(rec)
@@ -107,9 +127,10 @@ def species_lookup_scientific(id):
          models.Session.commit()
 
          common = species_get_common_names(id)
- 
+         links = species_get_links(id)
+
          if rec:
-            return({'species': rec, 'common': common})
+            return({'species': rec, 'common': common, 'links': links})
 
 
 

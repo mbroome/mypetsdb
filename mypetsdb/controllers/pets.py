@@ -71,8 +71,9 @@ def pet_lookup_all():
                .all())
 
       common = mypetsdb.controllers.species.species_get_common_names(row[0].scientific_name)
+      links = mypetsdb.controllers.species.species_get_links(row[0].scientific_name)
 
-      rec = {"pet": row[0], "species": row[1], "notes": notes, "common": common}
+      rec = {"pet": row[0], "species": row[1], "notes": notes, "common": common, "links": links}
       response.append(rec)
    return(response)
 

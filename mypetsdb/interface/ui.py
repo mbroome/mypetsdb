@@ -111,7 +111,13 @@ def dashboard():
       p = mypetsdb.controllers.pets.pet_search(searchform.petsearch.data)
    else:
       p = mypetsdb.controllers.pets.pet_lookup_all()
-   return render_template('dashboard.html', name=current_user.username, petdata=p, form=petform, searchform=searchform)
+
+   classifications =  mypetsdb.controllers.species.endangered_classification_map()
+   classes = {}
+   for c in classifications:
+      classes[c.code] = c.name
+
+   return render_template('dashboard.html', name=current_user.username, petdata=p, form=petform, searchform=searchform, classifications=classes)
 
 # Species search from the main dashboard
 @routes.route('/dashboard/species', methods=['GET', 'POST'])
@@ -137,6 +143,7 @@ def species_details_search(id):
    speciesform = forms.PetSpeciesDatumForm()
 
    q =  mypetsdb.controllers.species.species_lookup_scientific(id)
+   #print(q)
    classifications =  mypetsdb.controllers.species.endangered_classification_map()
    classes = {}
    for c in classifications:

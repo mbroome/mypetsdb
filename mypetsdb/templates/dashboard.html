@@ -31,11 +31,9 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
                <form action = "/pet/manage/{{ record.pet.pet_id }}" method=post>
                   <fieldset>
                      {{ form.hidden_tag() }}
-                     <div style = font-size:20px; font-weight:bold; margin-left:150px;>
-                        <br>
-                        {{ form.species.scientific_name.label }}: {{ record.species.scientific_name }} 
-
-                        : 
+                     <!-- <div style = font-size:20px; font-weight:bold; margin-left:150px;> -->
+                     <div>
+                        {{ form.species.scientific_name.label }}: {{ record.species.scientific_name }} : 
                         <a target="_blank" href="https://www.google.com/search?q={{ record.species.scientific_name|quote_plus }}&tbm=isch">
                            <span class="glyphicon glyphicon-picture" style="padding-left: 4px;" aria-hidden="true"></span>
                         </a>
@@ -46,18 +44,38 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
                         <a href="#" onclick="bootbox.confirm('Delete Pet?', function(r){ deleteItem(r, '{{ url_for('ui.manage_specific_pet', id=record.pet.pet_id) }}'); } );">
                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                         </a>
- 
                         <br>
+
                         <label>Common Names:</label>
                         {% for c in record.common %}
                             {{ c.common_name }}{%- if not loop.last -%},{% endif %}
                         {% endfor %}
-<!--                        <br>
-                        {{ form.pet.start.label }}: {{ record.pet.start }} : {{ form.pet.end.label }}: {{ record.pet.end }}
--->
                         <br>
-                        {{ form.species.iucn_category.label }}: {{ record.species.iucn_category }}
-                        {{ form.species.cares_category.label }}: {{ record.species.cares_category }}
+
+                        <label>IUCN Classification:</label>
+                        {% if record.species.iucn_category|length > 0 %}
+                           {{ classifications[record.species.iucn_category] or record.species.iucn_category }} :
+                           <a target="_blank" href="http://apiv3.iucnredlist.org/api/v3/taxonredirect/{{ record.species.iucn_id }}">IUCN Red List ({{ record.species.iucn_id }})</a>
+                        {% else %}
+                           N/A
+                        {% endif %}
+                        <br>
+
+                        <label>Cares Classification:</label>
+                        {% if record.species.cares_category |length > 0 %}
+                           {{ classifications[record.species.cares_category] or record.species.cares_category }} :
+                           <a target="_blank" href="{{ record.species.cares_link }}">CARES Website</a>
+                        {% else %}
+                           N/A
+                        {% endif %}
+                        <br>
+
+                        <label>Links:</label>
+                        {% if record.links |length > 0 %}
+                           {% for link in record.links %}
+                              <a target="_blank" href="{{ link.url }}">{{ link.source }}</a>{%- if not loop.last -%},{% endif %}
+                           {% endfor %}
+                        {% endif %}
                         <br>
 
                         <label>Notes</label>:

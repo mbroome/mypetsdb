@@ -35,6 +35,8 @@ Session = scoped_session(sess)
 Base = declarative_base()
 Base.metadata.bind = engine
 
+###############################################
+# pet related data points
 class PetDatum(Base):
     __tablename__ = 'pet_data'
 
@@ -67,9 +69,12 @@ class PetSpeciesDatum(Base):
     iucn_id = Column(String(20), nullable=False, server_default='')
     cares_category = Column(String(10), nullable=False, server_default='')
     cares_link = Column(String(255), nullable=False, server_default='')
+    planetcatfish_link = Column(String(255), nullable=False, server_default='')
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
 
 
+###############################################
+# xref tables
 class CommonNameXREF(Base):
     __tablename__ = 'common_names_xref'
 
@@ -124,6 +129,8 @@ class PlanetCatfishXREF(Base):
     link = Column(String(255), nullable=True)
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
 
+###############################################
+# auth tables
 class User(UserMixin, Base):
     __tablename__ = 'users'
 
@@ -248,6 +255,6 @@ if __name__ == '__main__':
 
    #loadITISData()
    #loadCARESData()
-   loadPlanetCatfishData()
+   #loadPlanetCatfishData()
 
 

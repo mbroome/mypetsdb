@@ -6,24 +6,39 @@
 
 <label>Scientific Name:</label> {{ searchdata.species.scientific_name }}
 <br>
-<label>IUCN Classification:</label>
+
+{% if searchdata.common|length > 0 %}
+<label>Common Names:</label>
+{% for c in searchdata.common %}
+  {{ c.common_name }}{%- if not loop.last -%},{% endif %}
+{% endfor %}
+<br>
+{% endif %}
+
 {% if searchdata.species.iucn_category|length > 0 %}
+<label>IUCN Classification:</label>
    {{ classifications[searchdata.species.iucn_category] or searchdata.species.iucn_category }}
-   <br>
-   <label>IUCN ID:</label><a target="_blank" href="http://apiv3.iucnredlist.org/api/v3/taxonredirect/{{ searchdata.species.iucn_id }}">{{ searchdata.species.iucn_id }}</a>
-{% else %}
-   N/A
-{% endif %}
+:
+   <a target="_blank" href="http://apiv3.iucnredlist.org/api/v3/taxonredirect/{{ searchdata.species.iucn_id }}">IUCN Red List ({{ searchdata.species.iucn_id }})</a>
 <br>
-<label>Cares Classification:</label>
+{% endif %}
+
 {% if searchdata.species.cares_category |length > 0 %}
+<label>Cares Classification:</label>
    {{ classifications[searchdata.species.cares_category] or searchdata.species.cares_category }}
-   <br>
+:
    <a target="_blank" href="{{ searchdata.species.cares_link }}">CARES Website</a>
-{% else %}
-   N/A
-{% endif %}
 <br>
+{% endif %}
+
+{% if searchdata.links |length > 0 %}
+<label>Links:</label>
+{% for link in searchdata.links %}
+  <a target="_blank" href="{{ link.url }}">{{ link.source }}</a>{%- if not loop.last -%},{% endif %}
+{% endfor %}
+<br>
+{% endif %}
+
 <label>Timestamp:</label> {{ searchdata.species.timestamp }}
 <p>
 <p>

@@ -41,6 +41,7 @@ class PetSpeciesDatumForm(FlaskForm):
     iucn_id = StringField('IUCN ID')
     cares_category = IntegerField('CARES')
     cares_link = IntegerField('CARES Link')
+    planetcatfish_link = IntegerField('PlanetCatfish Link')
 
 class PetDatumForm(FlaskForm):
     pet_id = IntegerField('pet_id')
