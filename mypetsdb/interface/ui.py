@@ -24,13 +24,7 @@ species_schema = SpeciesSchema(strict=True, partial=True)
 speciess_schema = SpeciesSchema(many=True, strict=True, partial=True)
 
 
-login_manager.login_view = 'ui.login'
-
-@login_manager.user_loader
-def load_user(user_id):
-   return (models.Session.query(models.User)
-            .filter(models.User.id == user_id)
-            .first())
+login_manager.login_view = 'auth.login'
 
 routes = Blueprint('ui', __name__, template_folder='templates', static_folder='static')
 
@@ -45,57 +39,6 @@ def index():
          pass
 
    return render_template('index.html')
-
-#########################################################
-# Auth related endpoints
-@routes.route('/login', methods=['GET', 'POST'])
-def login():
-   form = forms.LoginForm()
-
-   if form.validate_on_submit():
-      user = (models.Session.query(models.User)
-               .filter(models.User.username == form.username.data)
-               .first())
-      if user:
-         if check_password_hash(user.password, form.password.data):
-            login_user(user, remember=form.remember.data)
-            return redirect(url_for('ui.dashboard'))
-
-      flash('Invalid username or password', 'warning')
-      #return '<h1>Invalid username or password</h1>'
-      #return '<h1>' + form.username.data + ' ' + form.password.data + '</h1>'
-
-   return render_template('login.html', form=form)
-
-@routes.route('/signup', methods=['GET', 'POST'])
-def signup():
-   form = forms.RegisterForm()
-
-   if form.validate_on_submit():
-      user = (models.Session.query(models.User)
-               .filter(models.User.username == form.username.data)
-               .first())
-      if user:
-         #print('### user exists')
-         flash('Sorry, ' + form.username.data + ' already exists', 'warning')
-         return render_template('signup.html', form=form)
-
-      hashed_password = generate_password_hash(form.password.data, method='sha256')
-      new_user = models.User(username=form.username.data, email=form.email.data, password=hashed_password)
-      models.Session.add(new_user)
-      models.Session.commit()
-
-      flash('User created', 'success')
-      return redirect(url_for('ui.login'))
-      #return '<h1>' + form.username.data + ' ' + form.email.data + ' ' + form.password.data + '</h1>'
-
-   return render_template('signup.html', form=form)
-
-@routes.route('/logout')
-@login_required
-def logout():
-   logout_user()
-   return redirect(url_for('ui.index'))
 
 #########################################################
 # The base logged in dashboard
