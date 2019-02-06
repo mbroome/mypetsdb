@@ -10,10 +10,11 @@ pytest
 coverage
 flask-dance
 flask-dance[sqla]
-
+itsdangerous
 flask_bootstrap
 flask_wtf
 wtforms
 flask_login
 python-dwca-reader
 MySQL-python
+boto3

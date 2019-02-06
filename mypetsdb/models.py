@@ -16,16 +16,8 @@ from sqlalchemy.sql import select, text
 
 from flask_login import UserMixin
 
-try:
-   contents = open('/etc/config/mypetsdb.json', 'r').read()
-   config = json.loads(contents)
-except:
-   config = {'db':{
-                  'mypetsdb': 'mysql://mypetsdb:wzUIrLafJ5nR@localhost/mypetsdb?charset=utf8',
-                  'itis': 'mysql://mypetsdb:wzUIrLafJ5nR@localhost/ITIS?charset=latin1'
-                 }
-            }
-
+import mypetsdb
+config = mypetsdb.loadConfig()
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 engine = create_engine(config['db']['mypetsdb'], pool_pre_ping=True)

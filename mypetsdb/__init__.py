@@ -1,5 +1,6 @@
 import os
 import urllib
+import json
 
 from flask import Flask, request, render_template, redirect, url_for, Blueprint, flash
 
@@ -13,9 +14,10 @@ ma = Marshmallow()
 #bootstrap = Bootstrap()
 bootstrap = None
 login_manager = LoginManager()
+config = None
 
 def create_app(test_config=None):
-
+   loadConfig()
    app = Flask(__name__)
    app.wsgi_app = ProxyFix(app.wsgi_app)
    ma.init_app(app)
@@ -46,4 +48,9 @@ def create_app(test_config=None):
       return render_template('error.html'), 500
 
    return(app)
+
+def loadConfig():
+   contents = open('/etc/config/mypetsdb.json', 'r').read()
+   config = json.loads(contents)
+   return(config)
 
