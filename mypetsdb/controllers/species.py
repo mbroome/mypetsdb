@@ -85,12 +85,11 @@ def species_get_planetcatfish(id):
 def species_get_links(id):
    pcatfish = species_get_planetcatfish(id)
 
-   links = []
+   links = {}
    for pcat in pcatfish:
-      link = {'url': pcat.link,
-              'source': 'planetcatfish'}
-      links.append(link)
-   return(links)
+      links[pcat.scientific_name] = {'url': pcat.link,
+                                     'source': 'planetcatfish'}
+   return(links.values())
 
 # return a species from our cache if we have it
 def species_cached_lookup(id):
