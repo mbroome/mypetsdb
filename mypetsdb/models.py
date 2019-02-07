@@ -129,6 +129,14 @@ class PlanetCatfishXREF(Base):
     link = Column(String(255), nullable=True)
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
 
+class SeriouslyFishXREF(Base):
+    __tablename__ = 'seriouslyfish_xref'
+
+    rec_id = Column(Integer, primary_key=True, autoincrement=True)
+    scientific_name = Column(String(175), nullable=False)
+    link = Column(String(255), nullable=True)
+    timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
+
 ###############################################
 # auth tables
 class User(UserMixin, Base):
@@ -258,6 +266,27 @@ def loadPlanetCatfishData():
          pass
 
 
+def loadSeriouslyFishData():
+   dataFile = '../data/seriouslyfish-2-7-2019.json'
+   contents = open(dataFile, 'r').read()
+   data = json.loads(contents)
+
+   for row in data:
+      rec = {'scientific_name': row['scientific_name'].lower(),
+             'source': 'seriouslyfish'}
+      try:
+         engine.execute(SpeciesNameXREF.__table__.insert().values(rec))
+      except sqlalchemy.exc.IntegrityError:
+         pass
+
+      rec = {'scientific_name': row['scientific_name'].lower(),
+             'link': row['link']}
+      print(rec)
+      try:
+         engine.execute(SeriouslyFishXREF.__table__.insert().values(rec))
+      except sqlalchemy.exc.IntegrityError:
+         pass
+
 
 Base.metadata.reflect(bind=engine)
 
@@ -267,5 +296,5 @@ if __name__ == '__main__':
    #loadITISData()
    #loadCARESData()
    #loadPlanetCatfishData()
-
+   #loadSeriouslyFishData()
 
