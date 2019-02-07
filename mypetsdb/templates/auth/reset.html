@@ -1,0 +1,10 @@
+{# ourapp/templates/reset_with_token.html #}
+
+{% block body %}
+<form action="{{ url_for('auth.reset') }}" method="POST">
+    {{ form.email.label }}: {{ form.email }}<br>
+    {{ form.csrf_token }}
+    <input type="submit" value="Change my password" />
+</form>
+{% endblock %}
+

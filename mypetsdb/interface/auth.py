@@ -54,6 +54,12 @@ def login():
 
    return render_template('login.html', form=form)
 
+@routes.route('/logout')
+@login_required
+def logout():
+   logout_user()
+   return redirect(url_for('ui.index'))
+
 @routes.route('/signup', methods=['GET', 'POST'])
 def signup():
    form = forms.RegisterForm()
@@ -123,10 +129,62 @@ def confirm_email(token):
    flash('User verified.  You can now sign in.', 'success')
    return redirect(url_for('auth.login'))
 
-@routes.route('/logout')
-@login_required
-def logout():
-   logout_user()
-   return redirect(url_for('ui.index'))
+@routes.route('/reset', methods=["GET", "POST"])
+def reset():
+    form = forms.EmailForm()
+    if form.validate_on_submit():
+        user = (models.Session.query(models.User)
+                .filter(models.User.email == form.email.data)
+                .first())
+        if not user:
+           abort(404)
 
+        subject = "Password reset requested"
+
+        # Here we use the URLSafeTimedSerializer we created in `util` at the
+        # beginning of the chapter
+        token = ts.dumps(user.email, salt='recover-key')
+
+        recover_url = url_for(
+            'auth.reset_with_token',
+            token=token,
+            _external=True)
+
+        html = render_template(
+            'auth/recover.html',
+            recover_url=recover_url)
+
+        # Let's assume that send_email was defined in myapp/util.py
+        mypetsdb.controllers.auth.send_email([user.email], subject=subject, html=html)
+
+        flash('Password reset email sent', 'success')
+
+        return redirect(url_for('ui.index'))
+    return render_template('auth/reset.html', form=form)
+
+@routes.route('/reset/<token>', methods=["GET", "POST"])
+def reset_with_token(token):
+    try:
+        email = ts.loads(token, salt="recover-key", max_age=86400)
+    except:
+        abort(404)
+
+    print(email)
+    form = forms.PasswordForm()
+
+    if form.validate_on_submit():
+        user = (models.Session.query(models.User)
+                .filter(models.User.email == email)
+                .first())
+        if not user:
+           abort(404)
+
+        user.password = form.password.data
+
+        models.Session.add(user)
+        models.Session.commit()
+
+        return redirect(url_for('auth.login'))
+
+    return render_template('auth/reset_with_token.html', form=form, token=token)
 

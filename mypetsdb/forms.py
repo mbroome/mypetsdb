@@ -2,13 +2,15 @@ from flask import Flask, render_template, redirect, url_for, Blueprint
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, IntegerField, SubmitField, FieldList, FormField
-from wtforms.validators import InputRequired, Email, Length
+from wtforms.validators import InputRequired, DataRequired, Email, Length
 from wtforms.fields.html5 import DateField
 
 from datetime import datetime
 
 import mypetsdb.models as models
 
+###################################################
+# user management
 class LoginForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=30)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
@@ -19,7 +21,15 @@ class RegisterForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
 
+class EmailForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
 
+class PasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+
+
+###################################################
+# data management
 class SearchForm(FlaskForm):
     petsearch = StringField('Search', validators=[Length(min=4, max=50)], render_kw={"placeholder": "Pet Search..."})
     speciessearch = StringField('Search', validators=[Length(min=4, max=50)], render_kw={"placeholder": "Species Search..."})
