@@ -48,11 +48,11 @@ def login():
                return redirect(url_for('ui.dashboard'))
             else:
                flash('User account not yet verified.  Please check your email', 'warning')
-               return render_template('login.html', form=form)
+               return render_template('auth/login.html', form=form)
 
       flash('Invalid username or password', 'warning')
 
-   return render_template('login.html', form=form)
+   return render_template('auth/login.html', form=form)
 
 @routes.route('/logout')
 @login_required
@@ -74,7 +74,7 @@ def signup():
       if user:
          #print('### user exists')
          flash('Sorry, ' + form.username.data + ' already exists', 'warning')
-         return render_template('signup.html', form=form)
+         return render_template('auth/signup.html', form=form)
 
 
       new_user = models.User(username=form.username.data, email=form.email.data, password=form.password.data)
@@ -104,7 +104,7 @@ def signup():
          flash('Verification email sent', 'success')
       return redirect(url_for('auth.login'))
 
-   return render_template('signup.html', form=form)
+   return render_template('auth/signup.html', form=form)
 
 @routes.route('/confirm/<token>')
 def confirm_email(token):
@@ -159,7 +159,7 @@ def reset():
 
         flash('Password reset email sent', 'success')
 
-        return redirect(url_for('ui.index'))
+        return redirect(url_for('ui.login'))
     return render_template('auth/reset.html', form=form)
 
 @routes.route('/reset/<token>', methods=["GET", "POST"])

@@ -77,7 +77,7 @@ def dashboard_species():
       if type(q) is not list:
          q = [q]
 
-   return render_template('species_search.html', name=current_user.username, searchdata=q, form=speciesform, searchform=searchform)
+   return render_template('search/species_search.html', name=current_user.username, searchdata=q, form=speciesform, searchform=searchform)
 
 # Species details search
 @routes.route('/dashboard/species/<id>', methods=['GET'])
@@ -91,7 +91,7 @@ def species_details_search(id):
    classes = {}
    for c in classifications:
       classes[c.code] = c.name
-   return render_template('search_details.html', name=current_user.username, searchdata=q, form=speciesform, classifications=classes)
+   return render_template('search/search_details.html', name=current_user.username, searchdata=q, form=speciesform, classifications=classes)
 
 ############################################################
 # manage a specific note about a specific pet
