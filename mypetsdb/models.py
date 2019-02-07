@@ -14,6 +14,9 @@ from sqlalchemy.orm import backref, relationship
 from sqlalchemy.orm import scoped_session, sessionmaker
 import sqlalchemy.exc
 from sqlalchemy.sql import select, text
+from sqlalchemy.ext.hybrid import hybrid_property
+
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from flask_login import UserMixin
 
@@ -134,9 +137,19 @@ class User(UserMixin, Base):
     id = Column(Integer, primary_key=True)
     username = Column(String(30), unique=True)
     email = Column(String(50), unique=True)
-    password = Column(String(80))
+    _password = Column(String(128))
     email_confirmed = Column(Boolean, nullable=False, default=False, server_default=expression.false())
 
+    @hybrid_property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, plaintext):
+        self._password = generate_password_hash(plaintext, method='sha256')
+
+    def is_correct_password(self, plaintext):
+        return check_password_hash(self._password, plaintext)
 
 def loadITISData():
    itis_engine = create_engine(config['db']['itis'], pool_pre_ping=True)

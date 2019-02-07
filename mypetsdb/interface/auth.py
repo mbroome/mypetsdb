@@ -42,7 +42,7 @@ def login():
                .filter(models.User.username == form.username.data)
                .first())
       if user:
-         if check_password_hash(user.password, form.password.data):
+         if user.is_correct_password(form.password.data):
             if user.email_confirmed:
                login_user(user, remember=form.remember.data)
                return redirect(url_for('ui.dashboard'))
@@ -71,8 +71,7 @@ def signup():
          return render_template('signup.html', form=form)
 
 
-      hashed_password = generate_password_hash(form.password.data, method='sha256')
-      new_user = models.User(username=form.username.data, email=form.email.data, password=hashed_password)
+      new_user = models.User(username=form.username.data, email=form.email.data, password=form.password.data)
       if disableEmailVerify:
          new_user.email_confirmed = True
          flash('User created', 'success')
@@ -85,14 +84,14 @@ def signup():
          subject = "Confirm your email"
 
          token = ts.dumps(form.email.data, salt='email-confirm-key')
-         print(token)
+         #print(token)
          confirm_url = url_for(
                'auth.confirm_email',
                token=token,
                _external=True)
 
          html = render_template('email/activate.html', confirm_url=confirm_url)
-         print(html)
+         #print(html)
 
          mypetsdb.controllers.auth.send_email([form.email.data], subject=subject, html=html)
 
