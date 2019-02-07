@@ -8,7 +8,7 @@ requests
 BeautifulSoup4
 pytest
 coverage
-flask-dance
+#flask-dance
 flask-dance[sqla]
 itsdangerous
 flask_bootstrap
