@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask, request, render_template, redirect, url_for, Blueprint, flash
+from flask import Flask, request, render_template, redirect, url_for, Blueprint, flash, abort
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm 
 from wtforms import StringField, PasswordField, BooleanField, IntegerField
@@ -8,13 +8,16 @@ from wtforms.validators import InputRequired, Email, Length
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
-from mypetsdb import login_manager, ma
-import mypetsdb.controllers.pets 
-import mypetsdb.controllers.species
+#from sqlalchemy import is_
+
+from mypetsdb import login_manager, ma, ts
+import mypetsdb.controllers.auth
+import mypetsdb.controllers.utils
+
 import mypetsdb.models as models
 import mypetsdb.forms as forms
 
-
+config = mypetsdb.controllers.utils.loadConfig()
 login_manager.login_view = 'auth.login'
 
 @login_manager.user_loader
@@ -32,14 +35,20 @@ routes = Blueprint('auth', __name__, template_folder='templates', static_folder=
 def login():
    form = forms.LoginForm()
 
+   #mypetsdb.controllers.auth.emailTest()
+
    if form.validate_on_submit():
       user = (models.Session.query(models.User)
                .filter(models.User.username == form.username.data)
                .first())
       if user:
          if check_password_hash(user.password, form.password.data):
-            login_user(user, remember=form.remember.data)
-            return redirect(url_for('ui.dashboard'))
+            if user.email_confirmed:
+               login_user(user, remember=form.remember.data)
+               return redirect(url_for('ui.dashboard'))
+            else:
+               flash('User account not yet verified.  Please check your email', 'warning')
+               return render_template('login.html', form=form)
 
       flash('Invalid username or password', 'warning')
 
@@ -48,6 +57,9 @@ def login():
 @routes.route('/signup', methods=['GET', 'POST'])
 def signup():
    form = forms.RegisterForm()
+   disableEmailVerify = False
+   if 'flask' in config and 'DISABLE_EMAIL_VERIFY' in config['flask'] and config['flask']['DISABLE_EMAIL_VERIFY']:
+      disableEmailVerify = True
 
    if form.validate_on_submit():
       user = (models.Session.query(models.User)
@@ -58,15 +70,59 @@ def signup():
          flash('Sorry, ' + form.username.data + ' already exists', 'warning')
          return render_template('signup.html', form=form)
 
+
       hashed_password = generate_password_hash(form.password.data, method='sha256')
       new_user = models.User(username=form.username.data, email=form.email.data, password=hashed_password)
+      if disableEmailVerify:
+         new_user.email_confirmed = True
+         flash('User created', 'success')
+
       models.Session.add(new_user)
       models.Session.commit()
 
-      flash('User created', 'success')
+      if not disableEmailVerify:
+         # Now we'll send the email confirmation link
+         subject = "Confirm your email"
+
+         token = ts.dumps(form.email.data, salt='email-confirm-key')
+         print(token)
+         confirm_url = url_for(
+               'auth.confirm_email',
+               token=token,
+               _external=True)
+
+         html = render_template('email/activate.html', confirm_url=confirm_url)
+         print(html)
+
+         mypetsdb.controllers.auth.send_email([form.email.data], subject=subject, html=html)
+
+         flash('Verification email sent', 'success')
       return redirect(url_for('auth.login'))
 
    return render_template('signup.html', form=form)
+
+@routes.route('/confirm/<token>')
+def confirm_email(token):
+   try:
+       email = ts.loads(token, salt="email-confirm-key", max_age=86400)
+   except:
+       abort(404)
+
+   user = (models.Session.query(models.User)
+           .filter(models.User.email == email)
+           .first())
+
+   if not user:
+      flash('Error', 'critical')
+      return redirect(url_for('auth.login'))
+
+   user.email_confirmed = True
+
+   models.Session.add(user)
+   models.Session.commit()
+
+   flash('User verified.  You can now sign in.', 'success')
+   return redirect(url_for('auth.login'))
 
 @routes.route('/logout')
 @login_required

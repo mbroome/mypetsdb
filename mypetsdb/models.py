@@ -5,6 +5,7 @@ from sqlalchemy import Column, Date, DateTime, Index, Integer, String, Text, Tab
 from sqlalchemy.schema import FetchedValue
 from sqlalchemy.dialects.mysql.enumerated import ENUM
 from sqlalchemy.dialects.mysql import TIMESTAMP
+from sqlalchemy.sql import expression
 
 from sqlalchemy import ForeignKey
 from sqlalchemy import create_engine
@@ -16,8 +17,12 @@ from sqlalchemy.sql import select, text
 
 from flask_login import UserMixin
 
-import mypetsdb
-config = mypetsdb.loadConfig()
+try:
+   from mypetsdb.controllers.utils import loadConfig
+except:
+   from controllers.utils import loadConfig
+
+config = loadConfig()
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 engine = create_engine(config['db']['mypetsdb'], pool_pre_ping=True)
@@ -130,6 +135,7 @@ class User(UserMixin, Base):
     username = Column(String(30), unique=True)
     email = Column(String(50), unique=True)
     password = Column(String(80))
+    email_confirmed = Column(Boolean, nullable=False, default=False, server_default=expression.false())
 
 
 def loadITISData():
