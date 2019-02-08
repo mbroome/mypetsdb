@@ -35,8 +35,6 @@ routes = Blueprint('auth', __name__, template_folder='templates', static_folder=
 def login():
    form = forms.LoginForm()
 
-   #mypetsdb.controllers.auth.emailTest()
-
    if form.validate_on_submit():
       user = (models.Session.query(models.User)
                .filter(models.User.username == form.username.data)

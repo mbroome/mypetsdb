@@ -40,15 +40,3 @@ def send_email(recipients, subject='', text='', html=''):
       }
    )
 
-
-def emailTest():
-   recipients = ['mitchell.broome@gmail.com']
-   subject = 'Thanks for registering'
-
-   # You can render the message using Jinja2
-   html = render_template('email/test.html', name='John Doe')
-
-   send_email(recipients=recipients,
-              subject=subject,
-              html=html
-              )
