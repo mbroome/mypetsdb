@@ -159,7 +159,7 @@ def reset():
 
         flash('Password reset email sent', 'success')
 
-        return redirect(url_for('ui.login'))
+        return redirect(url_for('auth.login'))
     return render_template('auth/reset.html', form=form)
 
 @routes.route('/reset/<token>', methods=["GET", "POST"])
@@ -184,6 +184,7 @@ def reset_with_token(token):
         models.Session.add(user)
         models.Session.commit()
 
+        flash('Password updated', 'success')
         return redirect(url_for('auth.login'))
 
     return render_template('auth/reset_with_token.html', form=form, token=token)

@@ -1,10 +1,24 @@
 {# ourapp/templates/reset_with_token.html #}
+{% extends "index_base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
-{% block body %}
-<form action="{{ url_for('auth.reset_with_token', token=token) }}" method="POST">
-    {{ form.password.label }}: {{ form.password }}<br>
-    {{ form.csrf_token }}
-    <input type="submit" value="Change my password" />
-</form>
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('ui.static', filename='signin.css')}}">
+{% endblock %}
+
+{% block inner_content %}
+{{ super() }}
+
+    <div class="container">
+      <form class="form-signin" method="POST" action="{{ url_for('auth.reset_with_token', token=token) }}">
+        {{ form.hidden_tag() }}
+        {{ form.csrf_token }}
+        {{ wtf.form_field(form.password) }}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Change my password</button>
+      </form>
+
+    </div> <!-- /container -->
+
 {% endblock %}
 
