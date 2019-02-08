@@ -135,12 +135,15 @@ def reset():
                 .filter(models.User.email == form.email.data)
                 .first())
         if not user:
-           abort(404)
+           return redirect(url_for('auth.login'))
+
+        if not user.email_confirmed:
+           flash('User account not yet verified.  Please check your email', 'warning')
+           return redirect(url_for('auth.login'))
+
 
         subject = "Password reset requested"
 
-        # Here we use the URLSafeTimedSerializer we created in `util` at the
-        # beginning of the chapter
         token = ts.dumps(user.email, salt='recover-key')
 
         recover_url = url_for(
@@ -152,7 +155,6 @@ def reset():
             'auth/recover.html',
             recover_url=recover_url)
 
-        # Let's assume that send_email was defined in myapp/util.py
         mypetsdb.controllers.auth.send_email([user.email], subject=subject, html=html)
 
         flash('Password reset email sent', 'success')
@@ -167,7 +169,6 @@ def reset_with_token(token):
     except:
         abort(404)
 
-    print(email)
     form = forms.PasswordForm()
 
     if form.validate_on_submit():

@@ -35,12 +35,14 @@ def create_app(test_config=None):
    import interface.pets
    import interface.ui
    import interface.auth
+   import interface.profile
 
    # Register blueprint(s)
    app.register_blueprint(interface.species.routes)
    app.register_blueprint(interface.pets.routes)
    app.register_blueprint(interface.ui.routes)
    app.register_blueprint(interface.auth.routes)
+   app.register_blueprint(interface.profile.routes)
 
 
 

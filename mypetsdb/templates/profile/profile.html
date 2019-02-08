@@ -1,0 +1,18 @@
+{% extends "dashboard_base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block inner_content %}
+<div class="container">
+  <h2 class="form-signin-heading">Profile Information</h2>
+  <form class="form-signin" method="POST" action="{{ url_for('profile.profile_email') }}">
+    {{ form.hidden_tag() }}
+    <span><label>Email</label></span>
+    <span><input id="email" name="email" type="text" value="{{ user.email }}"></span>
+    <span><button class="btn btn-primary btn-block" type="submit">Update</button></span>
+  </form>
+
+</div> <!-- /container -->
+
+
+{% endblock %}
+
