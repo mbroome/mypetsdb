@@ -41,7 +41,7 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                         </a>
 
-                        <a title="Delete saved pet" href="#" onclick="bootbox.confirm('Delete Pet?', function(r){ deleteItem(r, '{{ url_for('ui.manage_specific_pet', id=record.pet.pet_id) }}'); } );">
+                        <a title="Remove pet from collection" href="#" onclick="bootbox.confirm('Delete Pet?', function(r){ deleteItem(r, '{{ url_for('ui.manage_specific_pet', id=record.pet.pet_id) }}'); } );">
                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                         </a>
                         <br>
