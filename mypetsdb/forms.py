@@ -25,7 +25,7 @@ class EmailForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
 
 class PasswordForm(FlaskForm):
-    password = PasswordField('Password', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8, max=80)])
 
 
 ###################################################

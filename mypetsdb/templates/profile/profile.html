@@ -2,14 +2,25 @@
 {% from "_formhelpers.html" import render_field %}
 
 {% block inner_content %}
+<h2 class="form-signin-heading">Profile Information</h2>
 <div class="container">
-  <h2 class="form-signin-heading">Profile Information</h2>
-  <form class="form-signin" method="POST" action="{{ url_for('profile.profile_email') }}">
-    {{ form.hidden_tag() }}
-    <span><label>Email</label></span>
-    <span><input id="email" name="email" type="text" value="{{ user.email }}"></span>
-    <span><button class="btn btn-primary btn-block" type="submit">Update</button></span>
-  </form>
+   <div class="row profile-row">
+      <form class="form-signin" method="POST" action="{{ url_for('profile.profile_email') }}">
+         {{ form.hidden_tag() }}
+         <div class="col-sm-2 col-md-2"><label>Email</label></div>
+         <div class="col-sm-6 col-md-6"><input id="email" name="email" type="text" value="{{ user.email }}" style="width:100%;"></div>
+         <div class="col-sm-2 col-md-2"><button class="btn btn-primary btn-block" type="submit">Update</button></div>
+      </form>
+
+   </div>
+   <div class="row profile-row">
+      <form class="form-signin" method="POST" action="{{ url_for('profile.profile_password') }}">
+         {{ form.hidden_tag() }}
+         <div class="col-sm-2 col-md-2"><label>Password</label></div>
+         <div class="col-sm-6 col-md-6"><input id="password" name="password" type="password" value="" style="width:100%;"></div>
+         <div class="col-sm-2 col-md-2"><button class="btn btn-primary btn-block" type="submit">Update</button></div>
+      </form>
+   </div>
 
 </div> <!-- /container -->
 

@@ -50,9 +50,11 @@ def profile_email():
          flash(form.errors, 'danger')
          return redirect(url_for('profile.profile'))
 
-      if form.submit.data == True:
-         print('update that email')
-         flash('Information saved', 'success')
+      if len(form.email.data) > 0 and form.email.data != user.email:
+         user.email = form.email.data
+         models.Session.commit()
+
+         flash('Email address saved', 'success')
    return redirect(url_for('profile.profile'))
 
 
@@ -69,13 +71,16 @@ def profile_password():
            .first())
 
    if request.method == 'POST':
-      #if not form.validate_on_submit():
-      #   flash(form.errors, 'danger')
-      #   return redirect(url_for('profile.profile'))
+      if not form.validate_on_submit():
+         if form.errors['password']:
+            flash('Password: ' + form.errors['password'][0], 'danger')
+         return redirect(url_for('profile.profile'))
 
-      if form.submit.data == True:
-         print('update that password')
-         flash('Information saved', 'success')
+      if len(form.password.data) > 0:
+         user.password = form.password.data
+         models.Session.commit()
+
+         flash('Password saved', 'success')
    return redirect(url_for('profile.profile'))
 
 
