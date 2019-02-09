@@ -24,7 +24,7 @@ def send_email(recipients, subject='', text='', html=''):
          aws_secret_access_key=config['aws']['secret']
       )
    else:
-      ses = boto3.client('ses')
+      ses = boto3.client('ses', region_name='us-east-1')
 
    sender = config['flask']['SES_EMAIL_FROM']
 
