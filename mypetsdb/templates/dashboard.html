@@ -34,23 +34,25 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
                      <!-- <div style = font-size:20px; font-weight:bold; margin-left:150px;> -->
                      <div>
                         {{ form.species.scientific_name.label }}: {{ record.species.scientific_name }} : 
-                        <a target="_blank" href="https://www.google.com/search?q={{ record.species.scientific_name|quote_plus }}&tbm=isch">
+                        <a target="_blank" title="Google image search" href="https://www.google.com/search?q={{ record.species.scientific_name|quote_plus }}&tbm=isch">
                            <span class="glyphicon glyphicon-picture" style="padding-left: 4px;" aria-hidden="true"></span>
                         </a>
                         <a data-toggle="tooltip" title="Last Edited: {{ record.species.timestamp }}" href="{{ url_for('ui.manage_specific_pet', id=record.pet.pet_id) }}">
                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                         </a>
 
-                        <a href="#" onclick="bootbox.confirm('Delete Pet?', function(r){ deleteItem(r, '{{ url_for('ui.manage_specific_pet', id=record.pet.pet_id) }}'); } );">
+                        <a title="Delete saved pet" href="#" onclick="bootbox.confirm('Delete Pet?', function(r){ deleteItem(r, '{{ url_for('ui.manage_specific_pet', id=record.pet.pet_id) }}'); } );">
                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                         </a>
                         <br>
 
+                        {% if record.common|length > 0 %}
                         <label>Common Names:</label>
                         {% for c in record.common %}
                             {{ c.common_name }}{%- if not loop.last -%},{% endif %}
                         {% endfor %}
                         <br>
+                        {% endif %}
 
                         {% if record.species.iucn_category|length > 0 %}
                         <label>IUCN Classification:</label>
@@ -75,7 +77,7 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
                         {% endif %}
 
                         <label>Notes</label>:
-                        <a data-toggle="tooltip" href="{{ url_for('ui.manage_specific_pet_note', id=record.pet.pet_id) }}">
+                        <a title="Add note" data-toggle="tooltip" href="{{ url_for('ui.manage_specific_pet_note', id=record.pet.pet_id) }}">
                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                         </a>
                         <br>

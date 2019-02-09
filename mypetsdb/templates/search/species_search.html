@@ -30,21 +30,23 @@ Showing {{ searchdata|length }} species
       <input id="species-scientific_name" name="species-scientific_name" type="hidden" value="{{ record.species.scientific_name }}">
 
       {{ form.scientific_name.label }}: {{ record.species.scientific_name }} 
-      <a onclick="document.getElementById('f{{ record.species.scientific_name|hash_key }}').submit();">
+      <a title="Add to collection" onclick="document.getElementById('f{{ record.species.scientific_name|hash_key }}').submit();">
         <span class="glyphicon glyphicon-plus" style="padding-left: 4px;" aria-hidden="true"></span>
       </a>
-      <a target="_blank" href="https://www.google.com/search?q={{ record.species.scientific_name|quote_plus }}&tbm=isch">
+      <a target="_blank" title="Google image search" href="https://www.google.com/search?q={{ record.species.scientific_name|quote_plus }}&tbm=isch">
         <span class="glyphicon glyphicon-picture" style="padding-left: 4px;" aria-hidden="true"></span>
       </a>
-      <a onclick="speciesDetails('{{ record.species.scientific_name }}');">
+      <a title="Lookup details" onclick="speciesDetails('{{ record.species.scientific_name }}');">
         <span class="glyphicon glyphicon-search" style="padding-left: 4px;" aria-hidden="true"></span>
       </a>
       <br>
+{% if record.common | length > 0 %}
       <label>Common Names:</label>
 {% for c in record.common %}
    {{ c.common_name }}{%- if not loop.last -%},{% endif %}
 {% endfor %}
       <br>
+{% endif %}
       <div id="p{{ record.species.scientific_name|hash_key }}">
       </div>
 
