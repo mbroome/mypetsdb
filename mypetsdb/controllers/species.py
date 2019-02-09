@@ -67,28 +67,37 @@ def species_lookup(id):
    return(response)
 
 def species_get_common_names(id):
-
    common = (models.Session.query(models.CommonNameXREF)
              .filter(models.CommonNameXREF.scientific_name == id)
              .all())
-
    return(common)
 
 def species_get_planetcatfish(id):
-
    pcatfish = (models.Session.query(models.PlanetCatfishXREF)
                .filter(models.PlanetCatfishXREF.scientific_name == id)
                .all())
-
    return(pcatfish)
+
+def species_get_seriouslyfish(id):
+   seriouslyfish = (models.Session.query(models.SeriouslyFishXREF)
+                    .filter(models.SeriouslyFishXREF.scientific_name == id)
+                    .all())
+   return(seriouslyfish)
 
 def species_get_links(id):
    pcatfish = species_get_planetcatfish(id)
+   seriouslyfish = species_get_seriouslyfish(id)
 
    links = {}
    for pcat in pcatfish:
-      links[pcat.scientific_name] = {'url': pcat.link,
-                                     'source': 'planetcatfish'}
+      links[pcat.scientific_name + ':' + 'planetcatfish'] = {'url': pcat.link,
+                                                             'source': 'planetcatfish'}
+
+   for fish in seriouslyfish:
+      links[fish.scientific_name + ':' + 'seriouslyfish'] = {'url': fish.link,
+                                                             'source': 'seriouslyfish'}
+
+
    return(links.values())
 
 # return a species from our cache if we have it

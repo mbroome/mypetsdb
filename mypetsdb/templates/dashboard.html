@@ -52,31 +52,27 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
                         {% endfor %}
                         <br>
 
-                        <label>IUCN Classification:</label>
                         {% if record.species.iucn_category|length > 0 %}
+                        <label>IUCN Classification:</label>
                            {{ classifications[record.species.iucn_category] or record.species.iucn_category }} :
                            <a target="_blank" href="http://apiv3.iucnredlist.org/api/v3/taxonredirect/{{ record.species.iucn_id }}">IUCN Red List ({{ record.species.iucn_id }})</a>
-                        {% else %}
-                           N/A
-                        {% endif %}
                         <br>
+                        {% endif %}
 
-                        <label>Cares Classification:</label>
                         {% if record.species.cares_category |length > 0 %}
+                        <label>Cares Classification:</label>
                            {{ classifications[record.species.cares_category] or record.species.cares_category }} :
                            <a target="_blank" href="{{ record.species.cares_link }}">CARES Website</a>
-                        {% else %}
-                           N/A
-                        {% endif %}
                         <br>
+                        {% endif %}
 
-                        <label>Links:</label>
                         {% if record.links |length > 0 %}
+                        <label>Links:</label>
                            {% for link in record.links %}
                               <a target="_blank" href="{{ link.url }}">{{ link.source }}</a>{%- if not loop.last -%},{% endif %}
                            {% endfor %}
-                        {% endif %}
                         <br>
+                        {% endif %}
 
                         <label>Notes</label>:
                         <a data-toggle="tooltip" href="{{ url_for('ui.manage_specific_pet_note', id=record.pet.pet_id) }}">
