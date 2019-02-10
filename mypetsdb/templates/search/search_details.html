@@ -49,9 +49,11 @@
 <p>
 <p>
 <label>Actions</label>
-<a target="_blank" href="https://www.google.com/search?q={{ searchdata.species.scientific_name|quote_plus }}&tbm=isch">
-   Google image search
-</a>
+{% if variety %}
+<a target="_blank" href="https://www.google.com/search?q={{ variety }}&tbm=isch">Google image search</a>
+{% else %}
+<a target="_blank" href="https://www.google.com/search?q={{ searchdata.species.scientific_name|quote_plus }}&tbm=isch">Google image search</a>
+{% endif %}
 &nbsp;:&nbsp; 
 <a onclick="document.getElementById('sf{{ searchdata.species.scientific_name|hash_key }}').submit();">
    Add to collection
