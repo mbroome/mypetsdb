@@ -36,6 +36,7 @@ def create_app(test_config=None):
    import interface.ui
    import interface.auth
    import interface.profile
+   import interface.search
 
    # Register blueprint(s)
    app.register_blueprint(interface.species.routes)
@@ -43,6 +44,7 @@ def create_app(test_config=None):
    app.register_blueprint(interface.ui.routes)
    app.register_blueprint(interface.auth.routes)
    app.register_blueprint(interface.profile.routes)
+   app.register_blueprint(interface.search.routes)
 
 
 

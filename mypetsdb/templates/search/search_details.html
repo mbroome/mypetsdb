@@ -15,7 +15,7 @@
 <br>
 {% endif %}
 
-{% if variety is defined %}
+{% if variety|length > 0 %}
 <label>Variety:</label>
   {{ variety }}
 <br>

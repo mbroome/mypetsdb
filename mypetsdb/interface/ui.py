@@ -14,16 +14,6 @@ import mypetsdb.controllers.species
 import mypetsdb.models as models
 import mypetsdb.forms as forms
 
-
-# define the response schema for json output
-class SpeciesSchema(ma.Schema):
-   class Meta:
-      fields = ('scientific_name','iucn_category','iucn_id','cares','timestamp')
-
-species_schema = SpeciesSchema(strict=True, partial=True)
-speciess_schema = SpeciesSchema(many=True, strict=True, partial=True)
-
-
 login_manager.login_view = 'auth.login'
 
 routes = Blueprint('ui', __name__, template_folder='templates', static_folder='static')
@@ -62,6 +52,7 @@ def dashboard():
 
    return render_template('dashboard.html', name=current_user.username, petdata=p, form=petform, searchform=searchform, classifications=classes)
 
+'''
 # Species search from the main dashboard
 @routes.route('/dashboard/species', methods=['GET', 'POST'])
 @login_required
@@ -94,6 +85,7 @@ def species_details_search(id, variety=''):
    for c in classifications:
       classes[c.code] = c.name
    return render_template('search/search_details.html', name=current_user.username, searchdata=q, form=speciesform, classifications=classes, variety=variety)
+'''
 
 ############################################################
 # manage a specific note about a specific pet
