@@ -50,7 +50,7 @@
 <p>
 <label>Actions</label>
 {% if variety %}
-<a target="_blank" href="https://www.google.com/search?q={{ variety }}&tbm=isch">Google image search</a>
+<a target="_blank" href="https://www.google.com/search?q={{ variety }}%20{{ searchdata.species.scientific_name }}&tbm=isch">Google image search</a>
 {% else %}
 <a target="_blank" href="https://www.google.com/search?q={{ searchdata.species.scientific_name|quote_plus }}&tbm=isch">Google image search</a>
 {% endif %}

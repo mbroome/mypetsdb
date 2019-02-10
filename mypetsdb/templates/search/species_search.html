@@ -45,7 +45,7 @@ Showing {{ searchdata|length }} species
 {% if record.common | length > 0 %}
       <label>Common Names:</label>
 {% for c in record.common %}
-   <a target="_blank" title="Google image search" href="https://www.google.com/search?q={{ c.common_name }}&tbm=isch">
+   <a target="_blank" title="Google image search" href="https://www.google.com/search?q={{ c.common_name }}%20{{ record.species.scientific_name }}&tbm=isch">
       {{ c.common_name }}
    </a>
    {%- if not loop.last -%},{% endif %}
@@ -55,7 +55,7 @@ Showing {{ searchdata|length }} species
 {% if record.varieties | length > 0 %}
       <label>Varieties:</label>
 {% for v in record.varieties %}
-   <a target="_blank" title="Google image search" href="https://www.google.com/search?q={{ v.variety }}&tbm=isch">
+   <a target="_blank" title="Google image search" href="https://www.google.com/search?q={{ v.variety }}%20{{ record.species.scientific_name }}&tbm=isch">
       {{ v.variety }}
    </a>
    <a title="Lookup details" onclick="speciesDetails('{{ record.species.scientific_name }}', '{{ v.variety }}');">
