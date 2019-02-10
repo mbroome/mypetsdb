@@ -7,6 +7,7 @@ MyPetsDB
 {% block styles %}
 {{super()}}
 <link rel="stylesheet" href="{{url_for('ui.static', filename='signin.css')}}">
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 {% endblock %}
 
 {% block content %}
