@@ -178,8 +178,10 @@ def manage_specific_pet(id):
 @routes.route('/pet/manage', methods = ['GET', 'POST'])
 @login_required
 def manage_pet():
+   #print(request.form)
    searchform = forms.SearchForm()
    form = forms.PetForm(request.form)
+
    if form.csrf_token.data:
       form.pet.csrf_token.data = form.csrf_token.data
       form.species.csrf_token.data = form.csrf_token.data
@@ -192,6 +194,9 @@ def manage_pet():
          #print(form.errors)
          #print('failed validation')
       #print(form.species.scientific_name.data)
+
+      #print(form.pet)
+
       q =  mypetsdb.controllers.species.species_lookup_scientific(form.species.scientific_name.data)
 
       if form.submit.data == True:

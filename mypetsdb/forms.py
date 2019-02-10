@@ -34,6 +34,10 @@ class SearchForm(FlaskForm):
     petsearch = StringField('Search', validators=[Length(min=4, max=50)], render_kw={"placeholder": "Pet Search..."})
     speciessearch = StringField('Search', validators=[Length(min=4, max=50)], render_kw={"placeholder": "Species Search..."})
 
+class SpeciesSearchForm(FlaskForm):
+    scientific_name = StringField('Scientific Name')
+    variety = StringField('Variety')
+
 class NoteDatumForm(FlaskForm):
     note_id =  IntegerField('Note ID')
     public =  BooleanField('Public')
@@ -47,6 +51,7 @@ class NoteDatumForm(FlaskForm):
 
 class PetSpeciesDatumForm(FlaskForm):
     scientific_name = StringField('Scientific Name')
+    variety = StringField('Variety')
     iucn_category = StringField('IUCN Category')
     iucn_id = StringField('IUCN ID')
     cares_category = IntegerField('CARES')
@@ -72,4 +77,5 @@ class PetForm(FlaskForm):
     submit = SubmitField('Submit')
     note = SubmitField('+Note')
     cancel = SubmitField('Cancel')
+
 

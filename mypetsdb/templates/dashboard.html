@@ -34,7 +34,11 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
                      <!-- <div style = font-size:20px; font-weight:bold; margin-left:150px;> -->
                      <div>
                         {{ form.species.scientific_name.label }}: {{ record.species.scientific_name }} : 
+                        {% if record.pet.variety %}
+                        <a target="_blank" title="Google image search" href="https://www.google.com/search?q={{ record.pet.variety }}&tbm=isch">
+                        {% else %}
                         <a target="_blank" title="Google image search" href="https://www.google.com/search?q={{ record.species.scientific_name|quote_plus }}&tbm=isch">
+                        {% endif %}
                            <span class="glyphicon glyphicon-picture" style="padding-left: 4px;" aria-hidden="true"></span>
                         </a>
                         <a data-toggle="tooltip" title="Last Edited: {{ record.species.timestamp }}" href="{{ url_for('ui.manage_specific_pet', id=record.pet.pet_id) }}">
@@ -45,6 +49,12 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                         </a>
                         <br>
+
+                        {% if record.pet.variety %}
+                        <label>Variety:</label>
+                            {{ record.pet.variety }}
+                        <br>
+                        {% endif %}
 
                         {% if record.common|length > 0 %}
                         <label>Common Names:</label>

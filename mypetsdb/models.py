@@ -42,7 +42,7 @@ class PetDatum(Base):
     __tablename__ = 'pet_data'
 
     pet_id = Column(Integer, primary_key=True, autoincrement=True)
-    variant = Column(String(100))
+    variety = Column(String(100))
     collection_point = Column(String(100))
     userid = Column(String(100), nullable=False)
     start = Column(Date)

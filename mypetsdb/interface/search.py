@@ -42,11 +42,13 @@ def search_species():
 @routes.route('/search/species/<id>/variety/<variety>', methods=['GET'])
 @login_required
 def species_details_search(id, variety=''):
-   speciesform = forms.PetSpeciesDatumForm()
+   #speciesform = forms.PetSpeciesDatumForm(scientific_name=id, variety=variety)
+   #speciesform = forms.SpeciesSearchForm(scientific_name=id, variety=variety)
+   speciesform = forms.SpeciesSearchForm()
    print('variety: ' + variety)
 
    q =  mypetsdb.controllers.species.species_lookup_scientific(id)
-   #print(q)
+   print(q['species'])
    classifications =  mypetsdb.controllers.species.endangered_classification_map()
    classes = {}
    for c in classifications:
