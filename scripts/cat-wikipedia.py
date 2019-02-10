@@ -42,7 +42,10 @@ hostname = 'https://en.wikipedia.org/wiki/List_of_cat_breeds'
 
 def getTopLevelPage():
    raw_html = simple_get(hostname)
-   html = BeautifulSoup(raw_html.decode('utf-8','ignore'), 'html.parser')
+   utf = raw_html.decode("utf-8")
+   asc = utf.encode("ascii","ignore")
+
+   html = BeautifulSoup(asc.decode('utf-8','ignore'), 'html.parser')
    table = html.find(class_="wikitable sortable")
 
    #pp.pprint(table)
