@@ -39,6 +39,8 @@ def species_lookup(id):
       for s in species:
          s =  models.PetSpeciesDatum(scientific_name=s.scientific_name)
          c = species_get_common_names(s.scientific_name)
+         #v = species_get_variety_names(s.scientific_name)
+
          recList[s.scientific_name] = {'species': s, 'common': c, 'links': []}
 
    print('@@@ in the common list')
@@ -56,8 +58,33 @@ def species_lookup(id):
       for name in slist:
          s =  models.PetSpeciesDatum(scientific_name=name)
          c = species_get_common_names(name)
+         #v = species_get_variety_names(name)
 
          recList[s.scientific_name] = {'species': s, 'common': c, 'links': []}
+
+   # but we might have more than one common name for the same species
+   varieties = (models.Session.query(models.SpeciesVarietyDatum)
+                .filter(models.SpeciesVarietyDatum.variety.ilike('%{0}%'.format(id)))
+                .limit(50)
+                .all())
+
+   if varieties:
+      vlist = {}
+      vdata = {}
+      for v in varieties:
+         vlist[v.scientific_name] = True
+         if not v.scientific_name in vdata:
+            vdata[v.scientific_name] = []
+         vdata[v.scientific_name].append(v)
+
+      print(vlist)
+      print(vdata)
+      for name in vlist:
+         s =  models.PetSpeciesDatum(scientific_name=name)
+         c = species_get_common_names(name)
+         #v = species_get_variety_names(name)
+
+         recList[s.scientific_name] = {'species': s, 'common': c, 'varieties': vdata[name], 'links': []}
 
    # since we stuck the data into a dict, we need to turn the values into an array
    response = []
@@ -69,8 +96,16 @@ def species_lookup(id):
 def species_get_common_names(id):
    common = (models.Session.query(models.CommonNameXREF)
              .filter(models.CommonNameXREF.scientific_name == id)
+             .order_by(models.CommonNameXREF.common_name)
              .all())
    return(common)
+
+def species_get_variety_names(id):
+   varieties = (models.Session.query(models.SpeciesVarietyDatum)
+             .filter(models.SpeciesVarietyDatum.scientific_name == id)
+             .order_by(models.SpeciesVarietyDatum.variety)
+             .all())
+   return(varieties)
 
 def species_get_planetcatfish(id):
    pcatfish = (models.Session.query(models.PlanetCatfishXREF)
@@ -108,10 +143,11 @@ def species_cached_lookup(id):
        .first())
 
    common = species_get_common_names(id)
+   varieties = species_get_variety_names(id)
    links = species_get_links(id)
 
    if species:
-      return({'species': species, 'common': common, 'links': links})
+      return({'species': species, 'common': common, 'links': links, 'varieties': varieties})
 
 
 

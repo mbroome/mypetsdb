@@ -3,10 +3,14 @@
 {% block scripts %}
 {{ super() }}
 <script>
-   function speciesDetails(species){
-      console.log(species);
+   function speciesDetails(species, variety){
+      console.log(species, variety);
       if(species){
-         $.get("/dashboard/species/" + species, function(result){
+         var url = "/dashboard/species/" + species;
+         if(variety){
+            url += "/variety/" + variety;
+         }
+         $.get(url, function(result){
             console.log(result)
             bootbox.alert(result);
          });
@@ -30,9 +34,7 @@ Showing {{ searchdata|length }} species
       <input id="species-scientific_name" name="species-scientific_name" type="hidden" value="{{ record.species.scientific_name }}">
 
       {{ form.scientific_name.label }}: {{ record.species.scientific_name }} 
-      <a title="Add to collection" onclick="document.getElementById('f{{ record.species.scientific_name|hash_key }}').submit();">
-        <span class="glyphicon glyphicon-plus" style="padding-left: 4px;" aria-hidden="true"></span>
-      </a>
+
       <a target="_blank" title="Google image search" href="https://www.google.com/search?q={{ record.species.scientific_name|quote_plus }}&tbm=isch">
         <span class="glyphicon glyphicon-picture" style="padding-left: 4px;" aria-hidden="true"></span>
       </a>
@@ -43,10 +45,28 @@ Showing {{ searchdata|length }} species
 {% if record.common | length > 0 %}
       <label>Common Names:</label>
 {% for c in record.common %}
-   {{ c.common_name }}{%- if not loop.last -%},{% endif %}
+   <a target="_blank" title="Google image search" href="https://www.google.com/search?q={{ c.common_name }}&tbm=isch">
+      {{ c.common_name }}
+   </a>
+   {%- if not loop.last -%},{% endif %}
 {% endfor %}
       <br>
 {% endif %}
+{% if record.varieties | length > 0 %}
+      <label>Varieties:</label>
+{% for v in record.varieties %}
+   <a target="_blank" title="Google image search" href="https://www.google.com/search?q={{ v.variety }}&tbm=isch">
+      {{ v.variety }}
+   </a>
+   <a title="Lookup details" onclick="speciesDetails('{{ record.species.scientific_name }}', '{{ v.variety }}');">
+     <span class="glyphicon glyphicon-search" style="padding-left: 4px;" aria-hidden="true"></span>
+   </a>
+
+   {%- if not loop.last -%},{% endif %}
+{% endfor %}
+      <br>
+{% endif %}
+
       <div id="p{{ record.species.scientific_name|hash_key }}">
       </div>
 

@@ -15,6 +15,12 @@
 <br>
 {% endif %}
 
+{% if variety is defined %}
+<label>Variety:</label>
+  {{ variety }}
+<br>
+{% endif %}
+
 {% if searchdata.species.iucn_category|length > 0 %}
 <label>IUCN Classification:</label>
    {{ classifications[searchdata.species.iucn_category] or searchdata.species.iucn_category }}

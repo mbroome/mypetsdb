@@ -55,7 +55,7 @@ class PetSpeciesDatumForm(FlaskForm):
 
 class PetDatumForm(FlaskForm):
     pet_id = IntegerField('pet_id')
-    variant = StringField('Variant', validators=[Length(min=0, max=50)])
+    variety = StringField('Variety', validators=[Length(min=0, max=50)])
     collection_point = StringField('Collection Point', validators=[Length(min=0, max=50)])
     start = DateField('Start')
     end = DateField('End')

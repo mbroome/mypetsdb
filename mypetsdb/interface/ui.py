@@ -81,9 +81,11 @@ def dashboard_species():
 
 # Species details search
 @routes.route('/dashboard/species/<id>', methods=['GET'])
+@routes.route('/dashboard/species/<id>/variety/<variety>', methods=['GET'])
 @login_required
-def species_details_search(id):
+def species_details_search(id, variety=''):
    speciesform = forms.PetSpeciesDatumForm()
+   print('variety: ' + variety)
 
    q =  mypetsdb.controllers.species.species_lookup_scientific(id)
    #print(q)
@@ -91,7 +93,7 @@ def species_details_search(id):
    classes = {}
    for c in classifications:
       classes[c.code] = c.name
-   return render_template('search/search_details.html', name=current_user.username, searchdata=q, form=speciesform, classifications=classes)
+   return render_template('search/search_details.html', name=current_user.username, searchdata=q, form=speciesform, classifications=classes, variety=variety)
 
 ############################################################
 # manage a specific note about a specific pet

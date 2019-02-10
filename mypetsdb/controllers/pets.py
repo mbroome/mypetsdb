@@ -19,7 +19,7 @@ def _flatten_pet_dict(content):
       data['scientific_name'] = content['species']['scientific_name']
       data['desc'] = content['pet']['desc']
       data['public'] = content['pet']['public']
-      data['variant'] = content['pet']['variant']
+      data['variety'] = content['pet']['variety']
       data['collection_point'] = content['pet']['collection_point']
       data['start'] = content['pet']['start']
       data['end'] = content['pet']['end']
@@ -123,7 +123,7 @@ def pet_create(content):
                scientific_name=data['scientific_name']
             )
 
-   pet.variant = data['variant']
+   pet.variety = data['variety']
    pet.collection_point = data['collection_point']
    pet.start = data['start']
    pet.end = data['end']
@@ -151,7 +151,7 @@ def pet_update(id, content):
    pet.public = data['public']
    pet.desc = data['desc']
 
-   pet.variant = data['variant']
+   pet.variety = data['variety']
    pet.collection_point = data['collection_point']
    pet.start = data['start']
    pet.end = data['end']

@@ -55,7 +55,7 @@ import pytest
     ],
     "start": null,
     "userid": "bob.broome@gmail.com",
-    "variant": null
+    "variety": null
   }
 ]
 '''
@@ -119,7 +119,7 @@ def test_get_mypets(client):
   ],
   "start": null,
   "userid": "bob.broome@gmail.com",
-  "variant": null
+  "variety": null
 }
 '''
 def test_get_mypets(client):

@@ -1,4 +1,5 @@
 import os
+import glob
 import json
 
 from sqlalchemy import Column, Date, DateTime, Index, Integer, String, Text, Table, Boolean, ARRAY, UniqueConstraint
@@ -72,6 +73,14 @@ class PetSpeciesDatum(Base):
     planetcatfish_link = Column(String(255), nullable=False, server_default='')
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
 
+class SpeciesVarietyDatum(Base):
+    __tablename__ = 'species_variety_data'
+
+    variety_id = Column(Integer, primary_key=True, autoincrement=True)
+    scientific_name = Column(String(175), nullable=False)
+    variety = Column(String(100), nullable=False)
+    source = Column(String(20), nullable=True)
+    timestamp = Column(TIMESTAMP, primary_key=True, nullable=False, server_default=FetchedValue())
 
 ###############################################
 # xref tables
@@ -288,6 +297,30 @@ def loadSeriouslyFishData():
          pass
 
 
+def loadVarietyData():
+   dataDir = '../data/variety'
+
+   for dataFile in glob.glob(dataDir + '/*.json'):
+      contents = open(dataFile, 'r').read()
+      data = json.loads(contents)
+
+      for row in data:
+         rec = {'scientific_name': row['scientific_name'].lower(),
+                'source': row['source']}
+         try:
+            engine.execute(SpeciesNameXREF.__table__.insert().values(rec))
+         except sqlalchemy.exc.IntegrityError:
+            pass
+
+         rec = {'scientific_name': row['scientific_name'].lower(),
+                'variety': row['variety'].lower(),
+                'source': row['source']}
+         print(rec)
+         try:
+            engine.execute(SpeciesVarietyDatum.__table__.insert().values(rec))
+         except sqlalchemy.exc.IntegrityError:
+            pass
+
 Base.metadata.reflect(bind=engine)
 
 if __name__ == '__main__':
@@ -297,4 +330,5 @@ if __name__ == '__main__':
    #loadCARESData()
    #loadPlanetCatfishData()
    #loadSeriouslyFishData()
+   #loadVarietyData()
 
