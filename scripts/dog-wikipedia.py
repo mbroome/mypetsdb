@@ -61,6 +61,7 @@ def getTopLevelPage():
          except:
             pass
       if variety:
+         variety = variety.replace(u'\u012b', 'i')
          rec = {'variety': variety.lower(),
                 'scientific_name': 'canis lupus familiaris',
                 'source': 'dog-wikipedia'}

@@ -330,5 +330,5 @@ if __name__ == '__main__':
    #loadCARESData()
    #loadPlanetCatfishData()
    #loadSeriouslyFishData()
-   #loadVarietyData()
+   loadVarietyData()
 
