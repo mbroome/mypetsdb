@@ -41,7 +41,8 @@ class SpeciesSearchForm(FlaskForm):
 class NoteDatumForm(FlaskForm):
     note_id =  IntegerField('Note ID')
     public =  BooleanField('Public')
-    note = StringField('Note', validators=[InputRequired(message='A note must be between 4 and 255 characters long'), Length(min=4, max=255)])
+    #note = StringField('Note', validators=[InputRequired(message='A note must be between 4 and 255 characters long'), Length(min=4, max=255)])
+    note = StringField('Note', validators=[Length(min=4, max=255)])
     timestamp = DateField('timestamp',format="%m/%d/%Y",default=datetime.now())
 
     edit = SubmitField('Edit')

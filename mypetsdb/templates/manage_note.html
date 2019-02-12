@@ -7,23 +7,31 @@
 {% else %}
    <form action = "/pet/manage/{{ pet_id }}/note" method=post>
 {% endif %}
-      <fieldset>
          {{ form.hidden_tag() }}
-            
-         <div style = font-size:20px; font-weight:bold; margin-left:150px;>
-            Last edited: {{ form.timestamp.data }}
-            <br>
-            {{ render_field(form.public) }}
-            <br>
-               
-            {{ render_field(form.note) }}
-            <br>
-
-            {{ form.submit }}
-            {{ form.cancel }}
+      <div class="container">
+         <div class="row">
+            <div class="col-sm-5 col-med-5 col-lg-5">
+               <label>Last edited:</label> {{ form.timestamp.data }}
+            </div>
+            <div class="col-sm-3 col-med-3 col-lg-3">
+               <label>{{ form.public.label }}</label> {{ form.public }}
+            </div>
          </div>
-
-      </fieldset>
+         <div class="row">
+            <div class="col-sm-12 col-med-12 col-lg-12">
+               <label for="note">{{ form.note.label }}:</label>
+               <input class="form-control" id="note" name="note" type="text" value="{{ form.note.data }}">
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-sm-12 col-med-12 col-lg-12">
+               <div class="btn-group" role="group">
+                  <button class="btn btn-primary" name="submit" id="submit" value="Submit" type="submit">Submit</button>
+                  <button class="btn btn-secondary" name="cancel" id="cancel" value="Cancel" type="submit">Cancel</button>
+               </div>
+            </div>
+         </div>
+      </div>
    </form>
 
 {% endblock %}

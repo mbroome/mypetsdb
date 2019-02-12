@@ -52,41 +52,6 @@ def dashboard():
 
    return render_template('dashboard.html', name=current_user.username, petdata=p, form=petform, searchform=searchform, classifications=classes)
 
-'''
-# Species search from the main dashboard
-@routes.route('/dashboard/species', methods=['GET', 'POST'])
-@login_required
-def dashboard_species():
-   searchform = forms.SearchForm()
-   speciesform = forms.PetSpeciesDatumForm()
-   #print(searchform.speciessearch.data)
-   q = None
-   if request.method == 'POST' and searchform.speciessearch.data:
-      #print('get it on')
-      q =  mypetsdb.controllers.species.species_lookup(searchform.speciessearch.data)
-      #print(q)
-      if type(q) is not list:
-         q = [q]
-
-   return render_template('search/species_search.html', name=current_user.username, searchdata=q, form=speciesform, searchform=searchform)
-
-# Species details search
-@routes.route('/dashboard/species/<id>', methods=['GET'])
-@routes.route('/dashboard/species/<id>/variety/<variety>', methods=['GET'])
-@login_required
-def species_details_search(id, variety=''):
-   speciesform = forms.PetSpeciesDatumForm()
-   print('variety: ' + variety)
-
-   q =  mypetsdb.controllers.species.species_lookup_scientific(id)
-   #print(q)
-   classifications =  mypetsdb.controllers.species.endangered_classification_map()
-   classes = {}
-   for c in classifications:
-      classes[c.code] = c.name
-   return render_template('search/search_details.html', name=current_user.username, searchdata=q, form=speciesform, classifications=classes, variety=variety)
-'''
-
 ############################################################
 # manage a specific note about a specific pet
 @routes.route('/pet/manage/<id>/note/<note_id>', methods = ['GET', 'POST'])
@@ -99,6 +64,9 @@ def manage_specific_pet_note_id(id, note_id):
    #print(form.data)
    #print('id: %s, note: %s' % (id, note_id))
    if request.method == 'POST':
+      if form.cancel.data == True:
+         return redirect(url_for('ui.dashboard'))
+
       if not form.validate_on_submit():
          flash(form.errors, 'danger')
          #print(form.errors)
@@ -128,15 +96,16 @@ def manage_specific_pet_note(id):
    #print(request.form)
    #print(json.dumps(form.data))
    if request.method == 'POST':
+      if form.cancel.data == True:
+         return redirect(url_for('ui.dashboard'))
+
       if not form.validate_on_submit():
-         flash(form.errors, 'danger')
-         #print(form.errors)
+         if form.errors['note']:
+            flash('Note: ' + form.errors['note'][0], 'danger')
          return render_template('manage_note.html', name=current_user.username, form=form, searchform=searchform, pet_id=id)
 
       if form.submit.data == True:
          status = mypetsdb.controllers.pets.pet_note_create(id, form.data)
-      #elif form.edit.data == True:
-      #   #print('### got a note edit request')
       return redirect(url_for('ui.dashboard'))
    elif request.method == 'GET':
       return render_template('manage_note.html', name=current_user.username, form=form, searchform=searchform, pet_id=id)
@@ -148,10 +117,12 @@ def manage_specific_pet_note(id):
 def manage_specific_pet(id):
    searchform = forms.SearchForm()
    form = forms.PetForm(request.form)
-   print(request.form)
-   print(request.method)
+   #print(request.form)
+   #print(request.method)
    #print(json.dumps(form.data))
    if request.method == 'POST':
+      if form.cancel.data == True:
+         return redirect(url_for('ui.dashboard'))
 
       #if not form.validate_on_submit():
       #   flash(form.errors, 'danger')
@@ -164,8 +135,6 @@ def manage_specific_pet(id):
          return render_template('manage_pet.html', name=current_user.username, petdata=pet, form=editForm, searchform=searchform)
       elif form.submit.data == True:
          pet = mypetsdb.controllers.pets.pet_update(id, form.data)
-      elif form.cancel.data == True:
-         return redirect(url_for('ui.dashboard'))
       elif form.delete.data == True:
          status = mypetsdb.controllers.pets.pet_delete(id)
       elif form.note.data == True:
@@ -192,6 +161,9 @@ def manage_pet():
    #print(request.form)
    #print(json.dumps(form.data))
    if request.method == 'POST':
+      if form.cancel.data == True:
+         return redirect(url_for('ui.dashboard'))
+
       if not form.validate_on_submit():
          flash(form.errors, 'danger')
          #print(form.errors)
