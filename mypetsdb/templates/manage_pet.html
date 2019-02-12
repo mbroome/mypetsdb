@@ -8,33 +8,56 @@
 {% else %}
    <form action = "/pet/manage" method=post>
 {% endif %}
-      <fieldset>
-         {{ form.hidden_tag() }}
-         <div style = font-size:20px; font-weight:bold; margin-left:150px;>
-            {{ form.species.scientific_name.label }}
-            <input id="species-scientific_name" name="species-scientific_name" type="hidden" value="{{ form.species.scientific_name.data }}">
-            {{ form.species.scientific_name.data }}
-            <br>
-
-            {{ render_field(form.pet.desc) }}
-            <br>
-
-            {{ render_field(form.pet.variety) }}
-            <br>
-            {{ render_field(form.pet.collection_point) }}
-            <br>
-<!--            {{ form.pet.start.label }} {{ form.pet.start }} : {{ form.pet.end.label }} {{ form.pet.end }}
-            <br>
--->               
-<!--            {{ form.pet.desc.label }}<br> -->
-            {{ render_field(form.pet.public) }}
-            <br>
-
-            {{ form.submit }}
-            {{ form.cancel }}
+      {{ form.hidden_tag() }}
+      <input id="species-scientific_name" name="species-scientific_name" type="hidden" value="{{ form.species.scientific_name.data }}">
+      <div class="container">
+         <div class="row">
+            <div class="col-sm-3 col-med-3 col-lg-2">
+               <label>{{ form.species.scientific_name.label }}</label>
+            </div>
+            <div class="col-sm-9 col-med-9 col-lg-9 col-xl-9">
+               {{ form.species.scientific_name.data }}
+            </div>
          </div>
-            
-      </fieldset>
+         <div class="row">
+            <div class="col-sm-3 col-med-3 col-lg-2">
+               <label>{{ form.pet.desc.label }}</label>
+            </div>
+            <div class="col-sm-9 col-med-9 col-lg-9 col-xl-9">
+               <input class="form-control" id="pet-desc" name="pet-desc" type="text" value="{{ form.pet.desc.data }}">
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-sm-3 col-med-3 col-lg-2">
+               <label>{{ form.pet.variety.label }}</label>
+            </div>
+            <div class="col-sm-9 col-med-9 col-lg-9 col-xl-9">
+               <input class="form-control" id="pet-variety" name="pet-variety" type="text" value="{{ form.pet.variety.data }}">
+            </div>
+         </div> 
+         <div class="row">
+            <div class="col-sm-3 col-med-3 col-lg-2">
+               <label>{{ form.pet.collection_point.label }}</label>
+            </div>
+            <div class="col-sm-9 col-med-9 col-lg-9 col-xl-9">
+               <input class="form-control" id="pet-collection_point" name="pet-collection_point" type="text" value="{{ form.pet.collection_point.data }}">
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-sm-3 col-med-3 col-lg-2">
+               <label>{{ form.pet.public.label }}</label>
+            </div>
+            <div class="col-sm-1 col-med-1 col-lg-1">
+               {{ form.pet.public }}
+            </div>
+         </div>
+         <div class="row">
+            <div class="btn-group" role="group">
+               <button class="btn btn-primary" name="submit" id="submit" value="Submit" type="submit">Submit</button>
+               <button class="btn btn-secondary" name="cancel" id="cancel" value="Cancel" type="submit">Cancel</button>
+            </div>
+         </div>
+      </div>
    </form>
 
 {% endblock %}

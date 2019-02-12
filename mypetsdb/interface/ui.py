@@ -148,7 +148,8 @@ def manage_specific_pet_note(id):
 def manage_specific_pet(id):
    searchform = forms.SearchForm()
    form = forms.PetForm(request.form)
-   #print(request.form)
+   print(request.form)
+   print(request.method)
    #print(json.dumps(form.data))
    if request.method == 'POST':
 
@@ -163,6 +164,8 @@ def manage_specific_pet(id):
          return render_template('manage_pet.html', name=current_user.username, petdata=pet, form=editForm, searchform=searchform)
       elif form.submit.data == True:
          pet = mypetsdb.controllers.pets.pet_update(id, form.data)
+      elif form.cancel.data == True:
+         return redirect(url_for('ui.dashboard'))
       elif form.delete.data == True:
          status = mypetsdb.controllers.pets.pet_delete(id)
       elif form.note.data == True:

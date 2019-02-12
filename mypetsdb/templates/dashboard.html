@@ -25,6 +25,9 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
     <div class="panel panel-default">
         <div class="panel-heading"   href="#collapse-pet-{{ record.pet.pet_id }}" data-parent="#my-accordion" data-toggle="collapse">
             <a>{{ record.pet.desc }}</a> -  {{ record.species.scientific_name }}
+            {% if record.pet.variety %}
+               - {{ record.pet.variety }}
+            {% endif %}
         </div>
         <div class="panel-collapse collapse" id="collapse-pet-{{ record.pet.pet_id }}">
             <div class="panel-body">
