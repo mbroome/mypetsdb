@@ -3,16 +3,27 @@
 {% block scripts %}
 {{ super() }}
 <script>
+
    function speciesDetails(species, variety){
-      console.log(species, variety);
+      //console.log(species, variety);
       if(species){
          var url = "/search/species/" + species;
          if(variety){
             url += "/variety/" + variety;
          }
+         var dialog = bootbox.dialog({
+             message: '<p class="text-center">Please wait, looking up species...</p>',
+             closeButton: false,
+             size: 'small'
+         });
+
          $.get(url, function(result){
-            console.log(result)
-            bootbox.alert(result);
+            //console.log(result)
+            dialog.modal('hide');
+            bootbox.alert({
+                           message: result,
+                           backdrop: true
+                          });
          });
       }
    }
@@ -20,8 +31,9 @@
 {% endblock %}
 
 {% block inner_content %}
+
 {% if searchdata|length >= 50 %}
-Showing first 50 species.  More available more with specific search criteria
+Showing first 50 species.  More available. Please enter a more with specific search criteria.
 {% else %}
 Showing {{ searchdata|length }} species
 {% endif %}
