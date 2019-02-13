@@ -42,7 +42,7 @@ class PetDatum(Base):
     __tablename__ = 'pet_data'
 
     pet_id = Column(Integer, primary_key=True, autoincrement=True)
-    variety = Column(String(100))
+    variety = Column(String(50))
     collection_point = Column(String(100))
     userid = Column(String(100), nullable=False)
     start = Column(Date)
@@ -50,7 +50,7 @@ class PetDatum(Base):
     desc = Column(String(255))
     public = Column(Boolean, nullable=False, default=False)
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
-    scientific_name = Column(String(175))
+    scientific_name = Column(String(100))
 
 class PetNoteDatum(Base):
     __tablename__ = 'pet_note'
@@ -65,7 +65,7 @@ class PetSpeciesDatum(Base):
     __tablename__ = 'species_data'
 
     rec_id = Column(Integer, primary_key=True, autoincrement=True)
-    scientific_name = Column(String(175), unique=True)
+    scientific_name = Column(String(100), unique=True)
     iucn_category = Column(String(10), nullable=False, server_default='')
     iucn_id = Column(String(20), nullable=False, server_default='')
     cares_category = Column(String(10), nullable=False, server_default='')
@@ -77,10 +77,14 @@ class SpeciesVarietyDatum(Base):
     __tablename__ = 'species_variety_data'
 
     variety_id = Column(Integer, primary_key=True, autoincrement=True)
-    scientific_name = Column(String(175), nullable=False)
-    variety = Column(String(100), nullable=False)
+    scientific_name = Column(String(100), nullable=False)
+    variety = Column(String(50), nullable=False)
     source = Column(String(20), nullable=True)
     timestamp = Column(TIMESTAMP, primary_key=True, nullable=False, server_default=FetchedValue())
+
+    __table_args__ = (
+       UniqueConstraint('scientific_name', 'variety', name='u_sn_v'),
+    )
 
 ###############################################
 # xref tables
@@ -89,7 +93,7 @@ class CommonNameXREF(Base):
 
     rec_id = Column(Integer, primary_key=True, autoincrement=True)
     common_name = Column(String(100), nullable=False)
-    scientific_name = Column(String(175), nullable=False)
+    scientific_name = Column(String(100), nullable=False)
     source = Column(String(20), nullable=True)
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
     xref_id = Column(Integer, nullable=True)
@@ -103,7 +107,7 @@ class SpeciesNameXREF(Base):
     __tablename__ = 'species_names_xref'
 
     rec_id = Column(Integer, primary_key=True, autoincrement=True)
-    scientific_name = Column(String(175), primary_key=True, nullable=False, unique=True)
+    scientific_name = Column(String(100), primary_key=True, nullable=False, unique=True)
     source = Column(String(20), nullable=True)
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
     xref_id = Column(Integer, nullable=True)
@@ -122,7 +126,7 @@ class CaresXREF(Base):
     __tablename__ = 'cares_xref'
 
     rec_id = Column(Integer, primary_key=True, autoincrement=True)
-    scientific_name = Column(String(175), nullable=False, unique=True)
+    scientific_name = Column(String(100), nullable=False, unique=True)
     code = Column(String(10), nullable=False)
     assessment  = Column(String(50), nullable=True)
     authority  = Column(String(50), nullable=True)
@@ -133,7 +137,7 @@ class PlanetCatfishXREF(Base):
     __tablename__ = 'planetcatfish_xref'
 
     rec_id = Column(Integer, primary_key=True, autoincrement=True)
-    scientific_name = Column(String(175), nullable=False)
+    scientific_name = Column(String(100), nullable=False)
     common_name = Column(String(100), nullable=False)
     link = Column(String(255), nullable=True)
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
@@ -142,7 +146,7 @@ class SeriouslyFishXREF(Base):
     __tablename__ = 'seriouslyfish_xref'
 
     rec_id = Column(Integer, primary_key=True, autoincrement=True)
-    scientific_name = Column(String(175), nullable=False)
+    scientific_name = Column(String(100), nullable=False)
     link = Column(String(255), nullable=True)
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
 

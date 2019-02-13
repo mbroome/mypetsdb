@@ -86,6 +86,7 @@ def species_lookup(id):
 
          recList[s.scientific_name] = {'species': s, 'common': c, 'varieties': vdata[name], 'links': []}
 
+   print(recList)
    # since we stuck the data into a dict, we need to turn the values into an array
    response = []
    for r in sorted(recList):
