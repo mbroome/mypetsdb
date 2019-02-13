@@ -24,10 +24,10 @@ routes = Blueprint('search', __name__, template_folder='templates', static_folde
 @routes.route('/search/species', methods=['GET', 'POST'])
 @login_required
 def search_species():
-   searchform = forms.SearchForm()
-   speciesform = forms.PetSpeciesDatumForm()
-   #print(searchform.speciessearch.data)
-   q = None
+   searchform = forms.SearchForm(request.form)
+   petform = forms.PetSpeciesDatumForm()
+   #print(petform.speciessearch.data)
+   q = []
    if request.method == 'POST' and searchform.speciessearch.data:
       #print('get it on')
       q =  mypetsdb.controllers.species.species_lookup(searchform.speciessearch.data)
@@ -35,23 +35,21 @@ def search_species():
       if type(q) is not list:
          q = [q]
 
-   return render_template('search/species_search.html', name=current_user.username, searchdata=q, form=speciesform, searchform=searchform)
+   return render_template('search/species_search.html', name=current_user.username, searchdata=q, form=petform, searchform=searchform)
 
 # Species details search
 @routes.route('/search/species/<id>', methods=['GET'])
 @routes.route('/search/species/<id>/variety/<variety>', methods=['GET'])
 @login_required
 def species_details_search(id, variety=''):
-   #speciesform = forms.PetSpeciesDatumForm(scientific_name=id, variety=variety)
-   #speciesform = forms.SpeciesSearchForm(scientific_name=id, variety=variety)
-   speciesform = forms.SpeciesSearchForm()
-   print('variety: ' + variety)
+   petform = forms.SpeciesSearchForm()
+   #print('variety: ' + variety)
 
    q =  mypetsdb.controllers.species.species_lookup_scientific(id)
-   print(q['species'])
+   #print(q['species'])
    classifications =  mypetsdb.controllers.species.endangered_classification_map()
    classes = {}
    for c in classifications:
       classes[c.code] = c.name
-   return render_template('search/search_details.html', name=current_user.username, searchdata=q, form=speciesform, classifications=classes, variety=variety)
+   return render_template('search/search_details.html', name=current_user.username, searchdata=q, form=petform, classifications=classes, variety=variety)
 

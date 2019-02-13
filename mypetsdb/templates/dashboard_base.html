@@ -39,14 +39,28 @@ MyPetsDB
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             <li>
-               <form class="navbar-form navbar-left" action={{ url_for('search.search_species') }} method=post>
-                  <div>{{ searchform.speciessearch(class_="form-control") }} <a href='/dashboard'><span class="glyphicon glyphicon-refresh" style="padding-left: 4px;" aria-hidden="true"></span></a></div>
+               <form class="navbar-form navbar-left" action={{ url_for('search.search_species') }} method=post id="species-search-form">
+                  <div class="input-group">
+                     {{ searchform.speciessearch(class_="form-control") }}
+                     <span class="input-group-btn">
+                        <button class="btn btn-secondary" type="button" id="species-search" onclick="document.getElementById('species-search-form').submit();">
+                           <span class="glyphicon glyphicon-search" aria-hidden="true">
+                        </button>
+                     </span>
+                  </div>
                </form>
             </li>
 
             <li>
-               <form class="navbar-form navbar-right" action={{ url_for('ui.dashboard') }} method=post>
-                  <div>{{ searchform.petsearch(class_="form-control") }} <a href='/dashboard'><span class="glyphicon glyphicon-refresh" style="padding-left: 4px;" aria-hidden="true"></span></a></div>
+               <form class="navbar-form navbar-right" action={{ url_for('ui.dashboard') }} method=post id="pet-search-form">
+                  <div class="input-group">
+                     {{ searchform.petsearch(class_="form-control") }}
+                     <span class="input-group-btn">
+                        <button class="btn btn-secondary" type="button" id="pet-search" onclick="document.getElementById('pet-search-form').submit();">
+                           <span class="glyphicon glyphicon-search" aria-hidden="true">
+                        </button>
+                     </span>
+                  </div>
                </form>
             </li>
             <li><a href="{{ url_for('profile.profile') }}">Profile - {{ name }}</a></li>
