@@ -1,26 +1,36 @@
 {% extends "dashboard_base.html" %}
 
 {% block inner_content %}
-   <div style = font-size:20px; font-weight:bold; margin-left:150px;>
+   <div>
       <label>Usage:</label><br>
       <ul>
          <li>Start off by performing a <b>species search</b> using the input along the top</li>
-         <li>When you find the species you are looking for, click on the <b>+</b> sign to save it</li>
+         <h5>Example search terms:</h5>
+         <ul>
+            <li><b>apistogramma atahualpa</b> =  scientific name</li>
+            <li><b>apistogramma</b> = part of a scientific name</li>
+            <li><b>river birch</b> = a common name</li>
+            <li><b>birch</b> = part of a common name</li>
+            <li><b>siamese</b> = a variety of species</li>
+            <li><b>scott ter</b> = part of a name</li>
+         </ul>
+         <li>Click on the <span class="glyphicon glyphicon-search" aria-hidden="true"></span> to look up details about each species.</li>
+         <li>When you find the species you are looking for, click the <b>Add to collection</b> link.
          <li>Fill in information about your species.  <b>Description</b> is the most important information</li>
-         <li>Once you save the species, you can add notes about it</li>
+         <li>Once you save the species, you can add notes about it via the <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> button.</li>
          <li>You can have more than one instance of a single species and more than one note about each one</li>
          <li>You can go back and edit a species or a note at any time</li>
       </ul>
 
       <label>Legend:</label><br>
       <ul>
-         <li><span class="glyphicon glyphicon-refresh" style="padding-left: 4px;" aria-hidden="true"></span> Empty a search field</li>
-         <li><span class="glyphicon glyphicon-picture" style="padding-left: 4px;" aria-hidden="true"></span> Open a google search for images of the species</li>
+         <li><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Perform a search</li>
+         <li><span class="glyphicon glyphicon-picture" aria-hidden="true"></span> Open a google search for images of the species</li>
          <li><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit an entry, either a species record or a note about a species</li>
          <li><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete an entry, either a species record or a note about a species</li>
          <li><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add an entry, either a species record or a note about a species</li>
-         <li><span class="glyphicon glyphicon-star" style="padding-left: 4px;" aria-hidden="true"></span> Public: not yet implemented</li>
-         <li><span class="glyphicon glyphicon-star-empty" style="padding-left: 4px;" aria-hidden="true"></span> Private: not yet implemented</li>
+         <li><span class="glyphicon glyphicon-star" aria-hidden="true"></span> Public: not yet implemented</li>
+         <li><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Private: not yet implemented</li>
       </ul>
    </div>
 

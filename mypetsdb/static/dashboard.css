@@ -134,3 +134,7 @@ a.accordion-toggle {
   vertical-align: middle;
 }
 
+span.glyphicon-lg {
+    font-size: 1.2em;
+}
+

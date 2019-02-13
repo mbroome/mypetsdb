@@ -42,14 +42,14 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
                         {% else %}
                         <a target="_blank" title="Google image search" href="https://www.google.com/search?q={{ record.species.scientific_name|quote_plus }}&tbm=isch">
                         {% endif %}
-                           <span class="glyphicon glyphicon-picture" style="padding-left: 4px;" aria-hidden="true"></span>
+                           <span class="glyphicon glyphicon-lg glyphicon-picture" style="padding-left: 4px;" aria-hidden="true"></span>
                         </a>
                         <a data-toggle="tooltip" title="Last Edited: {{ record.species.timestamp }}" href="{{ url_for('ui.manage_specific_pet', id=record.pet.pet_id) }}">
-                           <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                           <span class="glyphicon glyphicon-lg glyphicon-edit" aria-hidden="true"></span>
                         </a>
 
                         <a title="Remove pet from collection" href="#" onclick="bootbox.confirm('Delete Pet?', function(r){ deleteItem(r, '{{ url_for('ui.manage_specific_pet', id=record.pet.pet_id) }}'); } );">
-                           <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                           <span class="glyphicon glyphicon-lg glyphicon-remove" aria-hidden="true"></span>
                         </a>
                         <br>
 
@@ -91,7 +91,7 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
 
                         <label>Notes</label>:
                         <a title="Add note" data-toggle="tooltip" href="{{ url_for('ui.manage_specific_pet_note', id=record.pet.pet_id) }}">
-                           <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                           <span class="glyphicon glyphicon-lg glyphicon-plus" aria-hidden="true"></span>
                         </a>
                         <br>
 
@@ -103,15 +103,15 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
                               </div>
                               <div class="col-sm-2 col-med-2 col-lg-1 col-xl-1">
                                  {% if note.public %}
-                                    <span class="glyphicon glyphicon-star" style="padding-left: 4px;" aria-hidden="true"></span>
+                                    <span class="glyphicon glyphicon-lg glyphicon-star" style="padding-left: 4px;" aria-hidden="true"></span>
                                  {% else %}
-                                    <span class="glyphicon glyphicon-star-empty" style="padding-left: 4px;" aria-hidden="true"></span>
+                                    <span class="glyphicon glyphicon-lg glyphicon-star-empty" style="padding-left: 4px;" aria-hidden="true"></span>
                                  {% endif %}
                                  <a data-toggle="tooltip" title="Last Edited: {{ note.timestamp }}" href="{{ url_for('ui.manage_specific_pet_note_id', id=record.pet.pet_id, note_id=note.note_id) }}">
-                                     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                     <span class="glyphicon glyphicon-lg glyphicon-edit" aria-hidden="true"></span>
                                  </a>
                                  <a href="#" onclick="bootbox.confirm('Delete note?', function(r){ deleteItem(r, '{{ url_for('ui.manage_specific_pet_note_id', id=record.pet.pet_id, note_id=note.note_id) }}'); } );">
-                                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                     <span class="glyphicon glyphicon-lg glyphicon-remove" aria-hidden="true"></span>
                                  </a>
                               </div>
                            </div>
