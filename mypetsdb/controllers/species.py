@@ -1,6 +1,7 @@
 import os
 import json
 import requests
+import time
 
 from sqlalchemy import func, or_
 
@@ -16,7 +17,7 @@ def species_lookup(id):
    #print('### here')
 
    if species:
-      print('already cached species')
+      #print('already cached species')
       return(species)
 
    if len(id) < 3:
@@ -34,7 +35,7 @@ def species_lookup(id):
    # we need to dedup the species list
    recList = {}
    if species:
-      print('@@@ in the species list')
+      #print('@@@ in the species list')
       # the species lookup is effectifly not duplicated already
       for s in species:
          s =  models.PetSpeciesDatum(scientific_name=s.scientific_name)
@@ -43,7 +44,7 @@ def species_lookup(id):
 
          recList[s.scientific_name] = {'species': s, 'common': c, 'links': []}
 
-   print('@@@ in the common list')
+   #print('@@@ in the common list')
    # but we might have more than one common name for the same species
    common = (models.Session.query(models.CommonNameXREF)
              .filter(models.CommonNameXREF.common_name.ilike('%{0}%'.format(id)))
@@ -77,8 +78,8 @@ def species_lookup(id):
             vdata[v.scientific_name] = []
          vdata[v.scientific_name].append(v)
 
-      print(vlist)
-      print(vdata)
+      #print(vlist)
+      #print(vdata)
       for name in vlist:
          s =  models.PetSpeciesDatum(scientific_name=name)
          c = species_get_common_names(name)
@@ -86,7 +87,7 @@ def species_lookup(id):
 
          recList[s.scientific_name] = {'species': s, 'common': c, 'varieties': vdata[name], 'links': []}
 
-   print(recList)
+   #print(recList)
    # since we stuck the data into a dict, we need to turn the values into an array
    response = []
    for r in sorted(recList):
@@ -181,8 +182,12 @@ def species_lookup_scientific(id):
 
 # lookup a species on the iucn red list
 def species_metadata_callout(species):
+   start = time.time()
+
    token = "a2e02f6727c0a4c8b63144b65b4357ddb1c5f357afb52ca84bf43faf902c9af2"
    url = 'http://apiv3.iucnredlist.org/api/v3/species/%s?token=%s' % (species.scientific_name, token)
+
+   print('metadata lookup callout start: %s' % start)
    #print url
    response = requests.request(
       "GET",
@@ -205,6 +210,8 @@ def species_metadata_callout(species):
       species.cares_category = cares.code
       species.cares_link = cares.link
 
+   end = time.time()
+   print('metadata lookup callout end: %s: took %s seconds' % (end, end - start))
    return(species)
 
 def endangered_classification_map():

@@ -11,6 +11,7 @@ from werkzeug.contrib.fixers import ProxyFix
 from itsdangerous import URLSafeTimedSerializer
 
 import mypetsdb.controllers.utils
+import mypetsdb.models as models
 
 ma = Marshmallow()
 bootstrap = None
@@ -51,6 +52,15 @@ def create_app(test_config=None):
    @app.errorhandler(500)
    def page_not_found(e):
       return render_template('error.html'), 500
+
+
+   @app.teardown_appcontext
+   def remove_session(exception=None):
+      try:
+         #print('removing db session')
+         models.Session.remove()
+      except:
+         pass
 
    return(app)
 

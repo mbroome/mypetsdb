@@ -30,6 +30,12 @@ def index():
 
    return render_template('index.html')
 
+@routes.route('/healthcheck')
+def healthcheck():
+   return("OK")
+
+
+
 #########################################################
 # The base logged in dashboard
 @routes.route('/dashboard', methods=['GET', 'POST'])
