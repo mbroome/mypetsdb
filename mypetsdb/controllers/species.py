@@ -191,9 +191,15 @@ def species_metadata_callout(species):
    #print url
    response = requests.request(
       "GET",
-      url
+      url,
+      timeout=10
    )
-   data = json.loads(response.text)
+   try:
+      data = json.loads(response.text)
+   except Exception, e:
+      print('Error getting data: %s' % url)
+      print(response.url)
+      print(e)
 
    try:
       for rec in data['result']:
