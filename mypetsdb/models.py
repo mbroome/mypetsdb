@@ -150,6 +150,20 @@ class SeriouslyFishXREF(Base):
     link = Column(String(255), nullable=True)
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
 
+'''
+class IUCNRedListXREF(Base):
+    __tablename__ = 'iucn_redlist_xref'
+
+    rec_id = Column(Integer, primary_key=True, autoincrement=True)
+    scientific_name = Column(String(100), nullable=False, unique=True)
+    code = Column(String(10), nullable=False)
+    assessment  = Column(String(50), nullable=True)
+    authority  = Column(String(50), nullable=True)
+    link = Column(String(255), nullable=True)
+    timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
+'''
+
+
 ###############################################
 # auth tables
 class User(UserMixin, Base):

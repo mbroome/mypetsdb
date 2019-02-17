@@ -8,7 +8,6 @@ requests
 BeautifulSoup4
 pytest
 coverage
-#flask-dance
 flask-dance[sqla]
 itsdangerous
 flask_bootstrap
@@ -18,3 +17,4 @@ flask_login
 python-dwca-reader
 MySQL-python
 boto3
+flask-jwt-extended

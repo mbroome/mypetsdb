@@ -1,0 +1,73 @@
+[
+  {
+    "classification": "Near Threatened",
+    "key": "CNT",
+    "description": "Species which are close to qualifying for classification to Vulnerable"
+  },
+  {
+    "classification": "Vulnerable",
+    "key": "CVU",
+    "description": "Species facing a high risk of extinction in the wild in the medium term future"
+  },
+  {
+    "classification": "Endangered",
+    "key": "CEN",
+    "description": "Species facing a very high risk of extinction in the wild in the near future (includes species on the ALA list (2) shown as Threatened)"
+  },
+  {
+    "classification": "Critically Endangered",
+    "key": "CCR",
+    "description": "Species facing an extremely high risk of extinction in the wild in the immediate future (same as 'EE' used by de Rham and Nourissat)"
+  },
+  {
+    "classification": "Extinct in the Wild",
+    "key": "CEW",
+    "description": "Known only to survive in cultivation, in captivity, or as a naturalized population (or populations) well outside the past range"
+  },
+  {
+    "classification": "Near Threatened",
+    "key": "NT",
+    "description": "Taxa which do not qualify for Conservation Dependent, but which are close to qualifying for Vulnerable"
+  },
+  {
+    "classification": "Vulnerable",
+    "key": "VU",
+    "description": "A taxon is Vulnerable when it is not Critically Endangered or Endangered but is facing a high risk of extinction in the wild in the medium-term future"
+  },
+  {
+    "classification": "Endangered",
+    "key": "EN",
+    "description": "A taxon is Endangered when it is not Critically Endangered but is facing a very high risk of extinction in the wild in the near future"
+  },
+  {
+    "classification": "Critically Endangered",
+    "key": "CR",
+    "description": "A taxon is Critically Endangered when it is facing an extremely high risk of extinction in the wild in the immediate future"
+  },
+  {
+    "classification": "Extinct in the Wild",
+    "key": "EW",
+    "description": "A taxon is Extinct in the wild when it is known only to survive in cultivation, in captivity or as a naturalised population (or populations) well outside the past range. A taxon is presumed extinct in the wild when exhaustive surveys in known and/or expected habitat, at appropriate times (diurnal, seasonal, annual), throughout its historic range have failed to record an individual. Surveys should be over a time frame appropriate to the taxon's life cycle and life form"
+  },
+  {
+    "classification": "Not Evaluated",
+    "key": "NE",
+    "description": ""
+  },
+  {
+    "classification": "Data Deficient",
+    "key": "DD",
+    "description": "A taxon is Data Deficient when there is inadequate information to make a direct, or indirect, assessment of its risk of extinction based on its distribution and/or population status. A taxon in this category may be well studied, and its biology well known, but appropriate data on abundance and/or distribution are lacking"
+  },
+  {
+    "classification": "Least Concern",
+    "key": "LC",
+    "description": "A taxon is Least Concern when it has been evaluated against the Red List criteria and does not qualify for Critically Endangered, Endangered, Vulnerable or Near Threatened"
+  },
+  {
+    "classification": "Extinct",
+    "key": "EX",
+    "description": "A taxon is Extinct when there is no reasonable doubt that the last individual has died. A taxon is presumed Extinct when exhaustive surveys in known and/or expected habitat, at appropriate times (diurnal, seasonal, annual), throughout its historic range have failed to record an individual. Surveys should be over a time frame appropriate to the taxon's life cycle and life form"
+  }
+
+]

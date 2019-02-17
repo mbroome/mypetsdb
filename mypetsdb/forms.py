@@ -31,7 +31,7 @@ class PasswordForm(FlaskForm):
 ###################################################
 # data management
 class SearchForm(FlaskForm):
-    petsearch = StringField('Search', validators=[Length(min=4, max=50)], render_kw={"placeholder": "My Pet Search..."})
+    petsearch = StringField('Search', validators=[Length(min=4, max=50)], render_kw={"placeholder": "Search My Collection..."})
     speciessearch = StringField('Search', validators=[Length(min=4, max=50)], render_kw={"placeholder": "Species Search..."})
 
 class SpeciesSearchForm(FlaskForm):
