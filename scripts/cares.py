@@ -65,15 +65,16 @@ def getSpeciesPage(page):
       cols = [ele.text.strip() for ele in cols]
       #data.append([ele for ele in cols if ele])
       rec = {}
-      rec['species'] = cols[0].replace(u"\u2018", "'").replace(u"\u2019", "'").encode('ascii',errors='ignore')
-      rec['classification'] = cols[1]
-      rec['assessment'] = cols[2]
-      rec['authority'] = cols[3]
+      rec['species'] = cols[0].replace(u"\u2018", "'").replace(u"\u2019", "'").encode('ascii',errors='ignore').lower()
+      rec['classification'] = cols[1].lower()
+      rec['assessment'] = cols[2].lower()
+      rec['authority'] = cols[3].lower()
       rec['link'] = link
       species.append(rec)
 
    return(species)
 
+'''
 def getClassifications():
    pid = 464
    raw_html = simple_get(hostname +'?page_id=%s' % pid)
@@ -101,13 +102,14 @@ def getClassifications():
          cls.append(rec)
 
    return(cls)
+'''
 
 pages = getTopLevelPage()
 for page in pages:
    d = getSpeciesPage(page)
    data['species'] += d
 
-data['classifications'] = getClassifications()
+#data['classifications'] = getClassifications()
 
 print(json.dumps(data, ensure_ascii=False))
 

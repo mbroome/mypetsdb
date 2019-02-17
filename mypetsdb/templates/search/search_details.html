@@ -23,17 +23,17 @@
 
 {% if searchdata.species.iucn_category|length > 0 %}
 <label>IUCN Classification:</label>
-   {{ classifications[searchdata.species.iucn_category] or searchdata.species.iucn_category }}
-:
-   <a target="_blank" href="http://apiv3.iucnredlist.org/api/v3/taxonredirect/{{ searchdata.species.iucn_id }}">IUCN Red List ({{ searchdata.species.iucn_id }})</a>
+   <a target="_blank" href="{{ searchdata.species.iucn_link }}">
+      {{ classifications[searchdata.species.iucn_category].classification or searchdata.species.iucn_category }}
+   </a>
 <br>
 {% endif %}
 
 {% if searchdata.species.cares_category |length > 0 %}
 <label>Cares Classification:</label>
-   {{ classifications[searchdata.species.cares_category] or searchdata.species.cares_category }}
-:
-   <a target="_blank" href="{{ searchdata.species.cares_link }}">CARES Website</a>
+   <a target="_blank" href="{{ searchdata.species.cares_link }}">
+      {{ classifications[searchdata.species.cares_category].classification or searchdata.species.cares_category }}
+   </a>
 <br>
 {% endif %}
 

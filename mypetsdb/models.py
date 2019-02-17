@@ -67,7 +67,7 @@ class PetSpeciesDatum(Base):
     rec_id = Column(Integer, primary_key=True, autoincrement=True)
     scientific_name = Column(String(100), unique=True)
     iucn_category = Column(String(10), nullable=False, server_default='')
-    iucn_id = Column(String(20), nullable=False, server_default='')
+    iucn_link = Column(String(255), nullable=False, server_default='')
     cares_category = Column(String(10), nullable=False, server_default='')
     cares_link = Column(String(255), nullable=False, server_default='')
     planetcatfish_link = Column(String(255), nullable=False, server_default='')
@@ -116,7 +116,7 @@ class SpeciesNameXREF(Base):
 class EndangeredClasificationXREF(Base):
     __tablename__ = 'endangered_clasification_xref'
 
-    code = Column(String(10), primary_key=True, nullable=False)
+    category = Column(String(10), primary_key=True, nullable=False)
     name  = Column(String(30), nullable=True)
     description  = Column(String(512), nullable=True)
     source = Column(String(20), nullable=True)
@@ -127,7 +127,7 @@ class CaresXREF(Base):
 
     rec_id = Column(Integer, primary_key=True, autoincrement=True)
     scientific_name = Column(String(100), nullable=False, unique=True)
-    code = Column(String(10), nullable=False)
+    category = Column(String(10), nullable=False)
     assessment  = Column(String(50), nullable=True)
     authority  = Column(String(50), nullable=True)
     link = Column(String(255), nullable=True)
@@ -150,18 +150,18 @@ class SeriouslyFishXREF(Base):
     link = Column(String(255), nullable=True)
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
 
-'''
+
 class IUCNRedListXREF(Base):
     __tablename__ = 'iucn_redlist_xref'
 
     rec_id = Column(Integer, primary_key=True, autoincrement=True)
     scientific_name = Column(String(100), nullable=False, unique=True)
-    code = Column(String(10), nullable=False)
-    assessment  = Column(String(50), nullable=True)
-    authority  = Column(String(50), nullable=True)
+    category = Column(String(10), nullable=False)
+    #assessment  = Column(String(50), nullable=True)
+    #authority  = Column(String(50), nullable=True)
     link = Column(String(255), nullable=True)
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
-'''
+
 
 
 ###############################################
@@ -186,6 +186,11 @@ class User(UserMixin, Base):
     def is_correct_password(self, plaintext):
         return check_password_hash(self._password, plaintext)
 
+
+
+
+###############################################
+# data loaders
 def loadITISData():
    itis_engine = create_engine(config['db']['itis'], pool_pre_ping=True)
 
@@ -224,12 +229,12 @@ def loadITISData():
          pass
 
 def loadCARESData():
-   dataFile = '../data/cares-1-29-2019.json'
+   dataFile = '../data/cares-2-17-2019.json'
    contents = open(dataFile, 'r').read()
    data = json.loads(contents)
 
    for classification in data['classifications']:
-      rec = {'code': classification['key'],
+      rec = {'category': classification['key'],
              'name': classification['classification'],
              'description': classification['description'],
              'source': 'cares'}
@@ -240,8 +245,11 @@ def loadCARESData():
          pass
 
    for species in data['species']:
+      category =  species['classification']
+      if ' ' in category:
+         category = species['classification'][:species['classification'].find(' ')]
       rec = {'scientific_name': species['species'].lower(),
-             'code': species['classification'][:species['classification'].find(' ')],
+             'category': category.lower(),
              'assessment': species['assessment'],
              'link': species['link'],
              'authority': species['authority']}
@@ -339,14 +347,40 @@ def loadVarietyData():
          except sqlalchemy.exc.IntegrityError:
             pass
 
+
+def loadIUCNRedListData():
+   dataFile = '../data/iucn-redlist-2-17-2019.json'
+   contents = open(dataFile, 'r').read()
+   data = json.loads(contents)
+
+   for row in data:
+      rec = {'scientific_name': row['scientific_name'].lower(),
+             'source': 'iucn'}
+      try:
+         engine.execute(SpeciesNameXREF.__table__.insert().values(rec))
+      except sqlalchemy.exc.IntegrityError:
+         pass
+
+      rec = {'scientific_name': row['scientific_name'].lower(),
+             'category': row['redlistcategory'] if row['redlistcategory'] else '',
+             'link': row['link']}
+      #print(rec)
+      try:
+         engine.execute(IUCNRedListXREF.__table__.insert().values(rec))
+      except sqlalchemy.exc.IntegrityError:
+         pass
+
+
 Base.metadata.reflect(bind=engine)
 
 if __name__ == '__main__':
    Base.metadata.create_all()
 
    #loadITISData()
-   #loadCARESData()
+   loadCARESData()
    #loadPlanetCatfishData()
    #loadSeriouslyFishData()
-   loadVarietyData()
+   #loadVarietyData()
+   #loadIUCNRedListData()
+
 

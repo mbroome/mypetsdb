@@ -47,9 +47,6 @@ def species_details_search(id, variety=''):
 
    q =  mypetsdb.controllers.species.species_lookup_scientific(id)
    #print(q['species'])
-   classifications =  mypetsdb.controllers.species.endangered_classification_map()
-   classes = {}
-   for c in classifications:
-      classes[c.code] = c.name
+   classes =  mypetsdb.controllers.species.endangered_classification_map()
    return render_template('search/search_details.html', name=current_user.username, searchdata=q, form=petform, classifications=classes, variety=variety)
 

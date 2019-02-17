@@ -69,15 +69,17 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
 
                         {% if record.species.iucn_category|length > 0 %}
                         <label>IUCN Classification:</label>
-                           {{ classifications[record.species.iucn_category] or record.species.iucn_category }} :
-                           <a target="_blank" href="http://apiv3.iucnredlist.org/api/v3/taxonredirect/{{ record.species.iucn_id }}">IUCN Red List ({{ record.species.iucn_id }})</a>
+                           <a target="_blank" href="{{ record.species.iucn_link }}">
+                              {{ classifications[record.species.iucn_category].classification or record.species.iucn_category }}
+                           </a>
                         <br>
                         {% endif %}
 
                         {% if record.species.cares_category |length > 0 %}
                         <label>Cares Classification:</label>
-                           {{ classifications[record.species.cares_category] or record.species.cares_category }} :
-                           <a target="_blank" href="{{ record.species.cares_link }}">CARES Website</a>
+                           <a target="_blank" href="{{ record.species.cares_link }}">
+                              {{ classifications[record.species.cares_category].classification or record.species.cares_category }}
+                           </a>
                         <br>
                         {% endif %}
 

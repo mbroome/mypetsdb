@@ -51,10 +51,7 @@ def dashboard():
    else:
       p = mypetsdb.controllers.pets.pet_lookup_all()
 
-   classifications =  mypetsdb.controllers.species.endangered_classification_map()
-   classes = {}
-   for c in classifications:
-      classes[c.code] = c.name
+   classes =  mypetsdb.controllers.species.endangered_classification_map()
 
    return render_template('dashboard.html', name=current_user.username, petdata=p, form=petform, searchform=searchform, classifications=classes)
 

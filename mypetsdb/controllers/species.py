@@ -4,6 +4,7 @@ import requests
 import time
 
 from sqlalchemy import func, or_
+from mypetsdb import config
 
 import mypetsdb.models as models
 
@@ -183,7 +184,7 @@ def species_lookup_scientific(id):
 # lookup a species on the iucn red list
 def species_metadata_callout(species):
    start = time.time()
-
+   '''
    token = "a2e02f6727c0a4c8b63144b65b4357ddb1c5f357afb52ca84bf43faf902c9af2"
    url = 'http://apiv3.iucnredlist.org/api/v3/species/%s?token=%s' % (species.scientific_name, token)
 
@@ -207,13 +208,22 @@ def species_metadata_callout(species):
          species.iucn_category = rec['category']
    except:
       pass
+   '''
+
+   iucn = (models.Session.query(models.IUCNRedListXREF)
+           .filter(models.IUCNRedListXREF.scientific_name == species.scientific_name)
+           .first())
+
+   if iucn:
+      species.iucn_category = iucn.category
+      species.iucn_link = iucn.link
 
    cares = (models.Session.query(models.CaresXREF)
             .filter(models.CaresXREF.scientific_name == species.scientific_name)
             .first())
 
    if cares:
-      species.cares_category = cares.code
+      species.cares_category = cares.category
       species.cares_link = cares.link
 
    end = time.time()
@@ -221,7 +231,11 @@ def species_metadata_callout(species):
    return(species)
 
 def endangered_classification_map():
-   classifications = (models.Session.query(models.EndangeredClasificationXREF)
-                      .all())
-   return(classifications)
+   content = open(config['TOP_LEVEL_DIR'] + '/data/' + 'classifications.json', 'r').read()
+   data = json.loads(content)
+   classes = {}
+   for c in data:
+      classes[c['key'].lower()] = c
+
+   return(classes)
 
