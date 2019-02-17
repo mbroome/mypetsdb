@@ -113,14 +113,14 @@ class SpeciesNameXREF(Base):
     xref_id = Column(Integer, nullable=True)
 
 
-class EndangeredClasificationXREF(Base):
-    __tablename__ = 'endangered_clasification_xref'
-
-    category = Column(String(10), primary_key=True, nullable=False)
-    name  = Column(String(30), nullable=True)
-    description  = Column(String(512), nullable=True)
-    source = Column(String(20), nullable=True)
-    timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
+#class EndangeredClasificationXREF(Base):
+#    __tablename__ = 'endangered_clasification_xref'
+#
+#    category = Column(String(10), primary_key=True, nullable=False)
+#    name  = Column(String(30), nullable=True)
+#    description  = Column(String(512), nullable=True)
+#    source = Column(String(20), nullable=True)
+#    timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
 
 class CaresXREF(Base):
     __tablename__ = 'cares_xref'
@@ -233,16 +233,16 @@ def loadCARESData():
    contents = open(dataFile, 'r').read()
    data = json.loads(contents)
 
-   for classification in data['classifications']:
-      rec = {'category': classification['key'],
-             'name': classification['classification'],
-             'description': classification['description'],
-             'source': 'cares'}
-      #print(rec)
-      try:
-         engine.execute(EndangeredClasificationXREF.__table__.insert().values(rec))
-      except sqlalchemy.exc.IntegrityError:
-         pass
+   #for classification in data['classifications']:
+   #   rec = {'category': classification['key'],
+   #          'name': classification['classification'],
+   #          'description': classification['description'],
+   #          'source': 'cares'}
+   #   #print(rec)
+   #   try:
+   #      engine.execute(EndangeredClasificationXREF.__table__.insert().values(rec))
+   #   except sqlalchemy.exc.IntegrityError:
+   #      pass
 
    for species in data['species']:
       category =  species['classification']
