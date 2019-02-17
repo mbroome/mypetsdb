@@ -53,7 +53,10 @@ for row in data:
       else:
          rec[k.lower()] = data[row][k].lower()
 
-   rec['scientific_name'] = data[row]['genusName'].lower() + ' ' + data[row]['speciesName'].lower()
+   sn = data[row]['genusName'].lower() + ' ' + data[row]['speciesName'].lower()
+   utf = sn.decode("utf-8")
+   asc = utf.encode("ascii","ignore")
+   rec['scientific_name'] = asc.decode('utf-8','ignore')
    rec['link'] = 'https://www.iucnredlist.org/species/' + data[row]['internalTaxonId'] + '/' + data[row]['assessmentId']
    processed.append(rec)
 
