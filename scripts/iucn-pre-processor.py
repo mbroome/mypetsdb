@@ -54,6 +54,7 @@ for row in data:
          rec[k.lower()] = data[row][k].lower()
 
    rec['scientific_name'] = data[row]['genusName'].lower() + ' ' + data[row]['speciesName'].lower()
+   rec['link'] = 'https://www.iucnredlist.org/species/' + data[row]['internalTaxonId'] + '/' + data[row]['assessmentId']
    processed.append(rec)
 
 print(json.dumps(processed))
