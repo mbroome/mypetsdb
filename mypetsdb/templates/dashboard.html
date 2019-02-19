@@ -20,11 +20,36 @@
 {% if petdata|length <= 0 %}
 No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
 {% else %}
+{% if groups|length == 1 and groups.ZZZ__NONE__ is defined %}
+   {% set groupsDefined = False %}
+{% else %}
+   {% set groupsDefined = True %}
+{% endif %}
 <div class="panel-group" id="my-accordion">
-{% for record in petdata %}
+
+{% for key, val in groups | dictsort %}
+{% if groupsDefined %}
+  {% if key == 'ZZZ__NONE__' %}
+     {% set panelTitle = 'Other' %}
+  {% else %}
+     {% set panelTitle = key %}
+  {% endif %}
+  <div class="panel panel-default" id="group-{{ key }}">
+    <div class="panel-heading accordion-nested-heading" id="heading-{{ key }}">
+        <div class="panel-heading panel-title"  href="#collapse-group-{{ key }}" data-parent="#my-accordion" data-toggle="collapse">
+          <a>{{ panelTitle }}</a>
+    </div>
+    <div class="panel-collapse collapse" id="collapse-group-{{ key }}">
+      <div class="panel-body">
+{% endif %}
+
+{% for record in val %}
     <div class="panel panel-default">
         <div class="panel-heading"   href="#collapse-pet-{{ record.pet.pet_id }}" data-parent="#my-accordion" data-toggle="collapse">
-            <a>{{ record.pet.desc }}</a> -  {{ record.species.scientific_name }}
+            {% if record.pet.desc|length > 0 %}
+            <a>{{ record.pet.desc }}</a> -  
+            {% endif %}
+            {{ record.species.scientific_name }}
             {% if record.pet.variety %}
                - {{ record.pet.variety }}
             {% endif %}
@@ -34,7 +59,6 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
                <form action = "/pet/manage/{{ record.pet.pet_id }}" method=post>
                   <fieldset>
                      {{ form.hidden_tag() }}
-                     <!-- <div style = font-size:20px; font-weight:bold; margin-left:150px;> -->
                      <div>
                         {{ form.species.scientific_name.label }}: {{ record.species.scientific_name }} : 
                         {% if record.pet.variety %}
@@ -132,7 +156,15 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
         </div><!-- .accordion-body -->
     </div><!-- .accordion-group -->
    <p>
-{% endfor %}
+{% endfor %} <!-- record for -->
+{% if groupsDefined %}
+      </div>
+      </div>
+    </div>
+  </div>
+<p></p>
+{% endif %}
+{% endfor %} <!-- group for -->
 </div>
 {% endif %}
 

@@ -44,16 +44,31 @@ def dashboard():
    #print(request.data)
    searchform = forms.SearchForm()
    petform = forms.PetForm()
+   pets = []
 
    if request.method == 'POST' and searchform.petsearch.data:
       #print(searchform.petsearch.data)
-      p = mypetsdb.controllers.pets.pet_search(searchform.petsearch.data)
+      pets = mypetsdb.controllers.pets.pet_search(searchform.petsearch.data)
    else:
-      p = mypetsdb.controllers.pets.pet_lookup_all()
+      pets = mypetsdb.controllers.pets.pet_lookup_all()
 
-   classes =  mypetsdb.controllers.species.endangered_classification_map()
+   petGroups = {}
+   for pet in pets:
+      # make a placeholder group in the case where someone has
+      # not defined groups on pets
+      groupName = 'ZZZ__NONE__'
+      if pet['pet'].group_name:
+         groupName = pet['pet'].group_name
+      #print('group name: %s' % groupName)
+      if not petGroups.has_key(groupName):
+         petGroups[groupName] = []
+      petGroups[groupName].append(pet)
+         
+   #print(petGroups)
 
-   return render_template('dashboard.html', name=current_user.username, petdata=p, form=petform, searchform=searchform, classifications=classes)
+   classes = mypetsdb.controllers.species.endangered_classification_map()
+
+   return render_template('dashboard.html', name=current_user.username, petdata=pets, form=petform, searchform=searchform, classifications=classes, groups=petGroups)
 
 ############################################################
 # manage a specific note about a specific pet
