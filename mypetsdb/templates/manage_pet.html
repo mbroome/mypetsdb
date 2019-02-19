@@ -12,7 +12,7 @@
       <input id="species-scientific_name" name="species-scientific_name" type="hidden" value="{{ form.species.scientific_name.data }}">
       <div class="container">
          <div class="row">
-            <div class="col-sm-3 col-med-3 col-lg-2">
+            <div class="col-sm-3 col-med-3 col-lg-2 text-right">
                <label>{{ form.species.scientific_name.label }}</label>
             </div>
             <div class="col-sm-9 col-med-9 col-lg-9 col-xl-9">
@@ -20,7 +20,7 @@
             </div>
          </div>
          <div class="row">
-            <div class="col-sm-3 col-med-3 col-lg-2">
+            <div class="col-sm-3 col-med-3 col-lg-2 text-right">
                <label>{{ form.pet.desc.label }}</label>
             </div>
             <div class="col-sm-9 col-med-9 col-lg-9 col-xl-9">
@@ -28,7 +28,7 @@
             </div>
          </div>
          <div class="row">
-            <div class="col-sm-3 col-med-3 col-lg-2">
+            <div class="col-sm-3 col-med-3 col-lg-2 text-right">
                <label>{{ form.pet.variety.label }}</label>
             </div>
             <div class="col-sm-9 col-med-9 col-lg-9 col-xl-9">
@@ -36,7 +36,7 @@
             </div>
          </div> 
          <div class="row">
-            <div class="col-sm-3 col-med-3 col-lg-2">
+            <div class="col-sm-3 col-med-3 col-lg-2 text-right">
                <label>{{ form.pet.collection_point.label }}</label>
             </div>
             <div class="col-sm-9 col-med-9 col-lg-9 col-xl-9">
@@ -44,7 +44,13 @@
             </div>
          </div>
          <div class="row">
-            <div class="col-sm-3 col-med-3 col-lg-2">
+            <div class="col-sm-3 col-med-3 col-lg-2 text-right">
+               <label>{{ form.pet.group_name.label }}</label>
+            </div>
+            <div class="col-sm-3 col-med-3 col-lg-3 col-xl-3">
+               <input class="form-control" id="pet-group_name" name="pet-group_name" type="text" value="{{ form.pet.group_name.data }}">
+            </div>
+            <div class="col-sm-1 col-med-1 col-lg-1 text-right">
                <label>{{ form.pet.public.label }}</label>
             </div>
             <div class="col-sm-1 col-med-1 col-lg-1">

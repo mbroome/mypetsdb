@@ -49,6 +49,7 @@ class PetDatum(Base):
     end = Column(Date)
     desc = Column(String(255))
     public = Column(Boolean, nullable=False, default=False)
+    group_name = Column(String(50), nullable=False, server_default=FetchedValue())
     timestamp = Column(TIMESTAMP, nullable=False, server_default=FetchedValue())
     scientific_name = Column(String(100))
 
@@ -377,7 +378,7 @@ if __name__ == '__main__':
    Base.metadata.create_all()
 
    #loadITISData()
-   loadCARESData()
+   #loadCARESData()
    #loadPlanetCatfishData()
    #loadSeriouslyFishData()
    #loadVarietyData()

@@ -23,6 +23,7 @@ def _flatten_pet_dict(content):
       data['collection_point'] = content['pet']['collection_point']
       data['start'] = content['pet']['start']
       data['end'] = content['pet']['end']
+      data['group_name'] = content['pet']['group_name']
    else:
       data = content
    return(data)
@@ -35,6 +36,7 @@ def pet_search(name):
         .filter(models.PetDatum.scientific_name == models.PetSpeciesDatum.scientific_name)
         .filter(or_(models.PetDatum.desc.ilike('%{0}%'.format(name)), models.PetDatum.scientific_name.ilike('%{0}%'.format(name))))
         .filter(models.PetDatum.userid == userid)
+        .order_by(models.PetDatum.group_name,models.PetDatum.desc)
         .all())
 
    response = []
@@ -56,6 +58,7 @@ def pet_lookup_all():
        .select_from(models.PetDatum)
        .filter(models.PetDatum.scientific_name == models.PetSpeciesDatum.scientific_name)
        .filter(models.PetDatum.userid == userid)
+       .order_by(models.PetDatum.group_name,models.PetDatum.desc)
        .all())
 
    #print(q)
@@ -119,7 +122,7 @@ def pet_create(content):
    pet.collection_point = data['collection_point']
    pet.start = data['start']
    pet.end = data['end']
-
+   pet.group_name = data['group_name']
 
    models.Session.add(pet)
    models.Session.commit()
@@ -145,6 +148,7 @@ def pet_update(id, content):
    pet.collection_point = data['collection_point']
    pet.start = data['start']
    pet.end = data['end']
+   pet.group_name = data['group_name']
 
    models.Session.commit()
 
@@ -218,6 +222,7 @@ def pet_note_get(id):
    userid = current_user.username
    notes = (models.Session.query(models.PetNoteDatum)
            .filter(models.PetNoteDatum.pet_id == id)
+           .order_by(models.PetNoteDatum.note_id)
            .all())
 
    return(notes)

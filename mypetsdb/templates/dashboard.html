@@ -91,6 +91,12 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
                         <br>
                         {% endif %}
 
+                        {% if record.pet.group_name %}
+                        <label>Group:</label>
+                            {{ record.pet.group_name }}
+                        <br>
+                        {% endif %}
+
                         <label>Notes</label>:
                         <a title="Add note" data-toggle="tooltip" href="{{ url_for('ui.manage_specific_pet_note', id=record.pet.pet_id) }}">
                            <span class="glyphicon glyphicon-lg glyphicon-plus" aria-hidden="true"></span>

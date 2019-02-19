@@ -66,6 +66,7 @@ class PetDatumForm(FlaskForm):
     start = DateField('Start')
     end = DateField('End')
     desc = StringField('Description')
+    group_name = StringField('Group')
     public =  BooleanField('Public')
 
 class PetForm(FlaskForm):
