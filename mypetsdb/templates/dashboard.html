@@ -17,155 +17,154 @@
 
 {% block inner_content %}
 {{ super() }}
-{% if petdata|length <= 0 %}
+{%- if petdata|length <= 0 %}
 No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
-{% else %}
-{% if groups|length == 1 and groups.ZZZ__NONE__ is defined %}
-   {% set groupsDefined = False %}
-{% else %}
-   {% set groupsDefined = True %}
-{% endif %}
+{%- else %}
+{%- if groups|length == 1 and groups.ZZZ__NONE__ is defined %}
+   {%- set groupsDefined = False %}
+   {%- set dataParent = "#my-accordion" %}
+{%- else %}
+   {%- set groupsDefined = True %}
+{%- endif %}
+
 <div class="panel-group" id="my-accordion">
-
-{% for key, val in groups | dictsort %}
-{% if groupsDefined %}
-  {% if key == 'ZZZ__NONE__' %}
-     {% set panelTitle = 'Other' %}
-  {% else %}
-     {% set panelTitle = key %}
-  {% endif %}
-  <div class="panel panel-default" id="group-{{ key }}">
-    <div class="panel-heading accordion-nested-heading" id="heading-{{ key }}">
-        <div class="panel-heading panel-title"  href="#collapse-group-{{ key }}" data-parent="#my-accordion" data-toggle="collapse">
-          <a>{{ panelTitle }}</a>
-    </div>
-    <div class="panel-collapse collapse" id="collapse-group-{{ key }}">
-      <div class="panel-body">
-{% endif %}
-
-{% for record in val %}
-    <div class="panel panel-default">
-        <div class="panel-heading"   href="#collapse-pet-{{ record.pet.pet_id }}" data-parent="#my-accordion" data-toggle="collapse">
-            {% if record.pet.desc|length > 0 %}
-            <a>{{ record.pet.desc }}</a> -  
-            {% endif %}
-            {{ record.species.scientific_name }}
-            {% if record.pet.variety %}
-               - {{ record.pet.variety }}
-            {% endif %}
-        </div>
-        <div class="panel-collapse collapse" id="collapse-pet-{{ record.pet.pet_id }}">
-            <div class="panel-body">
-               <form action = "/pet/manage/{{ record.pet.pet_id }}" method=post>
-                  <fieldset>
-                     {{ form.hidden_tag() }}
-                     <div>
-                        {{ form.species.scientific_name.label }}: {{ record.species.scientific_name }} : 
-                        {% if record.pet.variety %}
-                        <a target="_blank" title="Google image search" href="https://www.google.com/search?q={{ record.pet.variety }}%20{{ record.species.scientific_name }}&tbm=isch">
-                        {% else %}
-                        <a target="_blank" title="Google image search" href="https://www.google.com/search?q={{ record.species.scientific_name|quote_plus }}&tbm=isch">
-                        {% endif %}
-                           <span class="glyphicon glyphicon-lg glyphicon-picture" style="padding-left: 4px;" aria-hidden="true"></span>
-                        </a>
-                        <a data-toggle="tooltip" title="Last Edited: {{ record.species.timestamp }}" href="{{ url_for('ui.manage_specific_pet', id=record.pet.pet_id) }}">
-                           <span class="glyphicon glyphicon-lg glyphicon-edit" aria-hidden="true"></span>
-                        </a>
-
-                        <a title="Remove pet from collection" href="#" onclick="bootbox.confirm('Delete Pet?', function(r){ deleteItem(r, '{{ url_for('ui.manage_specific_pet', id=record.pet.pet_id) }}'); } );">
-                           <span class="glyphicon glyphicon-lg glyphicon-remove" aria-hidden="true"></span>
-                        </a>
-                        <br>
-
-                        {% if record.pet.variety %}
-                        <label>Variety:</label>
-                            {{ record.pet.variety }}
-                        <br>
-                        {% endif %}
-
-                        {% if record.common|length > 0 %}
-                        <label>Common Names:</label>
-                        {% for c in record.common %}
-                            {{ c.common_name }}{%- if not loop.last -%},{% endif %}
-                        {% endfor %}
-                        <br>
-                        {% endif %}
-
-                        {% if record.species.iucn_category|length > 0 %}
-                        <label>IUCN Classification:</label>
-                           <a target="_blank" href="{{ record.species.iucn_link }}">
-                              {{ classifications[record.species.iucn_category].classification or record.species.iucn_category }}
-                           </a>
-                        <br>
-                        {% endif %}
-
-                        {% if record.species.cares_category |length > 0 %}
-                        <label>Cares Classification:</label>
-                           <a target="_blank" href="{{ record.species.cares_link }}">
-                              {{ classifications[record.species.cares_category].classification or record.species.cares_category }}
-                           </a>
-                        <br>
-                        {% endif %}
-
-                        {% if record.links |length > 0 %}
-                        <label>Links:</label>
-                           {% for link in record.links %}
-                              <a target="_blank" href="{{ link.url }}">{{ link.source }}</a>{%- if not loop.last -%},{% endif %}
-                           {% endfor %}
-                        <br>
-                        {% endif %}
-
-                        {% if record.pet.group_name %}
-                        <label>Group:</label>
-                            {{ record.pet.group_name }}
-                        <br>
-                        {% endif %}
-
-                        <label>Notes</label>:
-                        <a title="Add note" data-toggle="tooltip" href="{{ url_for('ui.manage_specific_pet_note', id=record.pet.pet_id) }}">
-                           <span class="glyphicon glyphicon-lg glyphicon-plus" aria-hidden="true"></span>
-                        </a>
-                        <br>
-
-                        <div>
-                        {% for note in record.notes %}
-                           <div class="row well well-sm">
-                              <div class="col-sm-10 col-md-10 col-lg-11 col-xl-11">
-                                <p>{{ note.note }}</p>
-                              </div>
-                              <div class="col-sm-2 col-med-2 col-lg-1 col-xl-1">
-                                 {% if note.public %}
-                                    <span class="glyphicon glyphicon-lg glyphicon-star" style="padding-left: 4px;" aria-hidden="true"></span>
-                                 {% else %}
-                                    <span class="glyphicon glyphicon-lg glyphicon-star-empty" style="padding-left: 4px;" aria-hidden="true"></span>
-                                 {% endif %}
-                                 <a data-toggle="tooltip" title="Last Edited: {{ note.timestamp }}" href="{{ url_for('ui.manage_specific_pet_note_id', id=record.pet.pet_id, note_id=note.note_id) }}">
-                                     <span class="glyphicon glyphicon-lg glyphicon-edit" aria-hidden="true"></span>
-                                 </a>
-                                 <a href="#" onclick="bootbox.confirm('Delete note?', function(r){ deleteItem(r, '{{ url_for('ui.manage_specific_pet_note_id', id=record.pet.pet_id, note_id=note.note_id) }}'); } );">
-                                     <span class="glyphicon glyphicon-lg glyphicon-remove" aria-hidden="true"></span>
-                                 </a>
-                              </div>
-                           </div>
-                        {% endfor %}
-                        </div>
-                     </div>
-                  </fieldset>
-               </form>
-            </div><!-- .accordion-inner -->
-        </div><!-- .accordion-body -->
-    </div><!-- .accordion-group -->
-   <p>
-{% endfor %} <!-- record for -->
-{% if groupsDefined %}
+{%- for key, val in groups | dictsort %}
+  {%- if key == 'ZZZ__NONE__' %}
+     {%- set panelTitle = 'Ungrouped Collection' %}
+  {%- else %}
+     {%- set panelTitle = key %}
+  {%- endif %}
+  {%- set dataGroup = "accordion-group-" + key  %}
+   <div class="panel panel-default">
+      <div class="panel-heading" data-toggle="collapse" data-parent="#my-accordion" href="#{{ dataGroup }}">
+         <a>
+            {{ panelTitle }}
+         </a>
       </div>
+      <div id="{{ dataGroup }}" class="panel-collapse collapse">
+         <div class="panel-body">
+            <div class="panel-group" id="collapse-group-{{ key }}">
+{%- for record in val %}
+                <div class="panel panel-default">
+                   <div class="panel-heading" href="#collapse-pet-{{ record.pet.pet_id }}" data-parent="#collapse-group-{{ key }}" data-toggle="collapse">
+                       {%- if record.pet.desc|length > 0 %}
+                       <a>{{ record.pet.desc }}</a> -  
+                       {%- endif %}
+                       {{- record.species.scientific_name }}
+                       {%- if record.pet.variety %}
+                           - {{ record.pet.variety }}
+                       {%- endif %}
+                   </div>
+                   <div class="panel-collapse collapse" id="collapse-pet-{{ record.pet.pet_id }}">
+                       <div class="panel-body">
+
+                          <form action = "/pet/manage/{{ record.pet.pet_id }}" method=post>
+                             <fieldset>
+                                {{ form.hidden_tag() }}
+                                <!-- <div style = font-size:20px; font-weight:bold; margin-left:150px;> -->
+                                <div>
+                                   {{ form.species.scientific_name.label }}: {{ record.species.scientific_name }} :
+                                   {% if record.pet.variety %}
+                                   <a target="_blank" title="Google image search" href="https://www.google.com/search?q={{ record.pet.variety }}%20{{ record.species.scientific_name }}&tbm=isch">
+                                   {% else %}
+                                   <a target="_blank" title="Google image search" href="https://www.google.com/search?q={{ record.species.scientific_name|quote_plus }}&tbm=isch">
+                                   {% endif %}
+                                      <span class="glyphicon glyphicon-lg glyphicon-picture" style="padding-left: 4px;" aria-hidden="true"></span>
+                                   </a>
+                                   <a data-toggle="tooltip" title="Last Edited: {{ record.species.timestamp }}" href="{{ url_for('ui.manage_specific_pet', id=record.pet.pet_id) }}">
+                                      <span class="glyphicon glyphicon-lg glyphicon-edit" aria-hidden="true"></span>
+                                   </a>
+           
+                                   <a title="Remove pet from collection" href="#" onclick="bootbox.confirm('Delete Pet?', function(r){ deleteItem(r, '{{ url_for('ui.manage_specific_pet', id=record.pet.pet_id) }}'); } );">
+                                      <span class="glyphicon glyphicon-lg glyphicon-remove" aria-hidden="true"></span>
+                                   </a>
+                                   <br>
+
+                                   {% if record.pet.variety %}
+                                   <label>Variety:</label>
+                                       {{ record.pet.variety }}
+                                   <br>
+                                   {% endif %}
+           
+                                   {% if record.common|length > 0 %}
+                                   <label>Common Names:</label>
+                                   {% for c in record.common %}
+                                       {{ c.common_name }}{%- if not loop.last -%},{% endif %}
+                                   {% endfor %}
+                                   <br>
+                                   {% endif %}
+           
+                                   {% if record.species.iucn_category|length > 0 %}
+                                   <label>IUCN Classification:</label>
+                                      <a target="_blank" href="{{ record.species.iucn_link }}">
+                                         {{ classifications[record.species.iucn_category].classification or record.species.iucn_category }}
+                                      </a>
+                                   <br>
+                                   {% endif %}
+
+                                   {% if record.species.cares_category |length > 0 %}
+                                   <label>Cares Classification:</label>
+                                      <a target="_blank" href="{{ record.species.cares_link }}">
+                                         {{ classifications[record.species.cares_category].classification or record.species.cares_category }}
+                                      </a>
+                                   <br>
+                                   {% endif %}
+           
+                                   {% if record.links |length > 0 %}
+                                   <label>Links:</label>
+                                      {% for link in record.links %}
+                                         <a target="_blank" href="{{ link.url }}">{{ link.source }}</a>{%- if not loop.last -%},{% endif %}
+                                      {% endfor %}
+                                   <br>
+                                   {% endif %}
+           
+                                   {% if record.pet.group_name %}
+                                   <label>Group:</label>
+                                       {{ record.pet.group_name }}
+                                   <br>
+                                   {% endif %}
+
+                                   <label>Notes</label>:
+                                   <a title="Add note" data-toggle="tooltip" href="{{ url_for('ui.manage_specific_pet_note', id=record.pet.pet_id) }}">
+                                      <span class="glyphicon glyphicon-lg glyphicon-plus" aria-hidden="true"></span>
+                                   </a>
+                                   <br>
+           
+                                   <div>
+                                   {% for note in record.notes %}
+                                      <div class="row well well-sm">
+                                         <div class="col-sm-10 col-md-10 col-lg-11 col-xl-11">
+                                           <p>{{ note.note }}</p>
+                                         </div>
+                                         <div class="col-sm-2 col-med-2 col-lg-1 col-xl-1">
+                                            {% if note.public %}
+                                               <span class="glyphicon glyphicon-lg glyphicon-star" style="padding-left: 4px;" aria-hidden="true"></span>
+                                            {% else %}
+                                               <span class="glyphicon glyphicon-lg glyphicon-star-empty" style="padding-left: 4px;" aria-hidden="true"></span>
+                                            {% endif %}
+                                            <a data-toggle="tooltip" title="Last Edited: {{ note.timestamp }}" href="{{ url_for('ui.manage_specific_pet_note_id', id=record.pet.pet_id, note_id=note.note_id) }}">
+                                                <span class="glyphicon glyphicon-lg glyphicon-edit" aria-hidden="true"></span>
+                                            </a>
+                                            <a href="#" onclick="bootbox.confirm('Delete note?', function(r){ deleteItem(r, '{{ url_for('ui.manage_specific_pet_note_id', id=record.pet.pet_id, note_id=note.note_id) }}'); } );">
+                                                <span class="glyphicon glyphicon-lg glyphicon-remove" aria-hidden="true"></span>
+                                            </a>
+                                         </div>
+                                      </div>
+                                   {% endfor %}
+                                   </div>
+                                </div>
+                             </fieldset>
+                          </form>
+                       </div>
+                   </div>
+                </div>
+{%- endfor %}
+            </div>
+         </div>
       </div>
-    </div>
-  </div>
-<p></p>
-{% endif %}
-{% endfor %} <!-- group for -->
+   </div>
+{%- endfor %}
 </div>
-{% endif %}
+{%- endif %}
 
 {% endblock %}
