@@ -1,1 +1,7 @@
-flask run -h 0.0.0.0
+#!/bin/bash
+if [ "$FLASK_ENV" = "production" ] ; then
+   flask run -h 0.0.0.0 &>> /var/log/mypetsdb/screen.log
+else
+   flask run -h 0.0.0.0
+fi
+
