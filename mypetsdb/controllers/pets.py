@@ -34,7 +34,7 @@ def pet_search(name):
    q = (models.Session.query(models.PetDatum, models.PetSpeciesDatum)
         .select_from(models.PetDatum)
         .filter(models.PetDatum.scientific_name == models.PetSpeciesDatum.scientific_name)
-        .filter(or_(models.PetDatum.desc.ilike('%{0}%'.format(name)), models.PetDatum.scientific_name.ilike('%{0}%'.format(name))))
+        .filter(or_(models.PetDatum.desc.ilike('%{0}%'.format(name)), models.PetDatum.scientific_name.ilike('%{0}%'.format(name)), models.PetDatum.variety.ilike('%{0}%'.format(name))))
         .filter(models.PetDatum.userid == userid)
         .order_by(models.PetDatum.group_name,models.PetDatum.desc)
         .all())
