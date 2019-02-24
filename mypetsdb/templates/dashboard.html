@@ -48,7 +48,7 @@ No pets defined yet.  You can add a pet via the <b>Species Search</b> above.
                 <div class="panel panel-default">
                    <div class="panel-heading" href="#collapse-pet-{{ record.pet.pet_id }}" data-parent="#collapse-group-{{ key }}" data-toggle="collapse">
                        {%- if record.pet.desc|length > 0 %}
-                       <a>{{ record.pet.desc }}</a> -  
+                       <a>{{ record.pet.desc }}</a>&nbsp;-&nbsp; 
                        {%- endif %}
                        {{- record.species.scientific_name }}
                        {%- if record.pet.variety %}
