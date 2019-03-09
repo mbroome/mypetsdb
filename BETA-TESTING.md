@@ -5,3 +5,5 @@ I'm currently storing 750k species and 87k common names for basically anything. 
 There is also varient data loaded for many domestic dogs and cats.  Basically, I can load pretty much any cross reference data.  If you know of some really useful sites that have data specific to some species of organism, let me know and I will talk to them and see about getting access to the data.
 
 Basically, I got tired of tracking info down in various places for the fish I keep...
+
+I would love any feedback you have, good or bad.
