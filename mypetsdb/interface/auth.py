@@ -1,4 +1,5 @@
 import json
+import datetime
 
 from flask import Flask, request, render_template, redirect, url_for, Blueprint, flash, abort
 from flask_bootstrap import Bootstrap
@@ -43,6 +44,8 @@ def login():
          if user.is_correct_password(form.password.data):
             if user.email_confirmed:
                login_user(user, remember=form.remember.data)
+               user.last_login = datetime.datetime.now()
+               models.Session.commit()
                return redirect(url_for('ui.dashboard'))
             else:
                flash('User account not yet verified.  Please check your email', 'warning')
@@ -77,7 +80,7 @@ def signup():
          return render_template('auth/signup.html', form=form)
 
 
-      new_user = models.User(username=form.username.data, email=form.email.data, password=form.password.data)
+      new_user = models.User(username=form.username.data, email=form.email.data, password=form.password.data, created=datetime.datetime.now())
       if disableEmailVerify:
          new_user.email_confirmed = True
          flash('User created', 'success')
@@ -122,6 +125,7 @@ def confirm_email(token):
       return redirect(url_for('auth.login'))
 
    user.email_confirmed = True
+   user.verified = datetime.datetime.now()
 
    models.Session.add(user)
    models.Session.commit()

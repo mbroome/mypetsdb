@@ -174,6 +174,9 @@ class User(UserMixin, Base):
     email = Column(String(50), unique=True)
     _password = Column(String(128))
     email_confirmed = Column(Boolean, nullable=False, default=False, server_default=expression.false())
+    last_login = Column(TIMESTAMP)
+    created = Column(TIMESTAMP)
+    verified = Column(TIMESTAMP)
 
     @hybrid_property
     def password(self):
