@@ -10,19 +10,17 @@ from flask_bootstrap import Bootstrap
 from werkzeug.contrib.fixers import ProxyFix
 from itsdangerous import URLSafeTimedSerializer
 
-import mypetsdb.controllers.utils
 import mypetsdb.models as models
+from config import settings
 
 ma = Marshmallow()
 bootstrap = None
 login_manager = LoginManager()
-config = mypetsdb.controllers.utils.loadConfig()
-ts = URLSafeTimedSerializer(config['flask']['SECRET_KEY'])
+ts = URLSafeTimedSerializer(settings.SECRET_KEY)
 
 def create_app(test_config=None):
    app = Flask(__name__)
-   for k in config['flask']:
-      app.config[k] = config['flask'][k]
+   app.config['SECRET_KEY'] = settings.SECRET_KEY
 
    app.wsgi_app = ProxyFix(app.wsgi_app)
    ma.init_app(app)

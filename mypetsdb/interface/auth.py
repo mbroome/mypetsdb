@@ -12,12 +12,12 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 
 from mypetsdb import login_manager, ma, ts
 import mypetsdb.controllers.auth
-import mypetsdb.controllers.utils
+#import mypetsdb.controllers.utils
 
 import mypetsdb.models as models
 import mypetsdb.forms as forms
 
-config = mypetsdb.controllers.utils.loadConfig()
+from mypetsdb.config import settings
 login_manager.login_view = 'auth.login'
 
 @login_manager.user_loader
@@ -62,8 +62,10 @@ def logout():
 def signup():
    form = forms.RegisterForm()
    disableEmailVerify = False
-   if 'flask' in config and 'DISABLE_EMAIL_VERIFY' in config['flask'] and config['flask']['DISABLE_EMAIL_VERIFY']:
+   if settings.DISABLE_EMAIL_VERIFY:
       disableEmailVerify = True
+   #if 'flask' in config and 'DISABLE_EMAIL_VERIFY' in config['flask'] and config['flask']['DISABLE_EMAIL_VERIFY']:
+   #   disableEmailVerify = True
 
    if form.validate_on_submit():
       user = (models.Session.query(models.User)

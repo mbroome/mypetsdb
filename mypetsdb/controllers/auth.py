@@ -10,23 +10,23 @@ from flask_login import current_user
 from sqlalchemy import func, or_
 from itsdangerous import URLSafeTimedSerializer
 
-import mypetsdb.controllers.utils
+#import mypetsdb.controllers.utils
+from mypetsdb.config import settings
 
-config = mypetsdb.controllers.utils.loadConfig()
 
 def send_email(recipients, subject='', text='', html=''):
    ses = None
-   if 'aws' in config:
+   if settings.AWS_ACCESS_KEY_ID:
       ses = boto3.client(
          'ses',
-         region_name=config['aws']['region'],
-         aws_access_key_id=config['aws']['access'],
-         aws_secret_access_key=config['aws']['secret']
+         region_name=settings.AWS_DEFAULT_REGION,
+         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+         aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
       )
    else:
       ses = boto3.client('ses', region_name='us-east-1')
 
-   sender = config['flask']['SES_EMAIL_FROM']
+   sender = settings.SES_EMAIL_FROM
 
    ses.send_email(
       Source=sender,

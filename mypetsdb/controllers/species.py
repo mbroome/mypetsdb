@@ -4,7 +4,8 @@ import requests
 import time
 
 from sqlalchemy import func, or_
-from mypetsdb import config
+
+from mypetsdb.config import settings
 
 import mypetsdb.models as models
 
@@ -231,7 +232,7 @@ def species_metadata_callout(species):
    return(species)
 
 def endangered_classification_map():
-   content = open(config['TOP_LEVEL_DIR'] + '/data/' + 'classifications.json', 'r').read()
+   content = open(settings.TOP_LEVEL_DIR + '/data/' + 'classifications.json', 'r').read()
    data = json.loads(content)
    classes = {}
    for c in data:

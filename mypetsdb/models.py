@@ -22,14 +22,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
 try:
-   from mypetsdb.controllers.utils import loadConfig
+   from mypetsdb.config import settings
 except:
-   from controllers.utils import loadConfig
+   from config import settings
 
-config = loadConfig()
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-engine = create_engine(config['db']['mypetsdb'], pool_pre_ping=True)
+engine = create_engine(settings.DB_MYPETSDB, pool_pre_ping=True)
 sess = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Session = scoped_session(sess)
 
@@ -193,7 +192,7 @@ class User(UserMixin, Base):
 ###############################################
 # data loaders
 def loadITISData():
-   itis_engine = create_engine(config['db']['itis'], pool_pre_ping=True)
+   itis_engine = create_engine(settings.DB_ITIS, pool_pre_ping=True)
 
    
    species_query = text('select complete_name,tsn from taxonomic_units where unit_name1!="" and unit_name2!=""')
