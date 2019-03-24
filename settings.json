@@ -1,0 +1,6 @@
+{
+  "default": {
+    "DISABLE_EMAIL_VERIFY": "false"
+  }
+}
+

@@ -6,4 +6,3 @@
 .env
 *.swp
 __pycache__
-settings.json
