@@ -8,9 +8,8 @@ import datetime
 from flask_login import current_user
 from sqlalchemy import func, or_
 
-from mypetsdb import ma
-import mypetsdb.models as models
-import mypetsdb.controllers.species
+import models
+import controllers.species
 
 def _flatten_pet_dict(content):
    data = {}
@@ -45,7 +44,7 @@ def pet_search(name):
                .filter(models.PetNoteDatum.pet_id == row[0].pet_id)
                .all())
 
-      common = mypetsdb.controllers.species.species_get_common_names(row[0].scientific_name)
+      common = controllers.species.species_get_common_names(row[0].scientific_name)
 
       rec = {"pet": row[0], "species": row[1], "notes": notes, "common": common}
       response.append(rec)
@@ -69,8 +68,8 @@ def pet_lookup_all():
                .filter(models.PetNoteDatum.pet_id == row[0].pet_id)
                .all())
 
-      common = mypetsdb.controllers.species.species_get_common_names(row[0].scientific_name)
-      links = mypetsdb.controllers.species.species_get_links(row[0].scientific_name)
+      common = controllers.species.species_get_common_names(row[0].scientific_name)
+      links = controllers.species.species_get_links(row[0].scientific_name)
 
       rec = {"pet": row[0], "species": row[1], "notes": notes, "common": common, "links": links}
       response.append(rec)
@@ -91,7 +90,7 @@ def pet_lookup_specific(id):
             .filter(models.PetNoteDatum.pet_id == q[0].pet_id)
             .all())
 
-   common = mypetsdb.controllers.species.species_get_common_names(q[0].scientific_name)
+   common = controllers.species.species_get_common_names(q[0].scientific_name)
 
    pet, species = q
    return({"pet": pet, "species": species, "notes": notes, "common": common})
@@ -103,11 +102,11 @@ def pet_create(content):
    data = _flatten_pet_dict(content)
 
    # find the species data
-   species = mypetsdb.controllers.species.species_cached_lookup(data['scientific_name'])
+   species = controllers.species.species_cached_lookup(data['scientific_name'])
 
    if not species:
       #print('################ lookup uncached pet')
-      species = mypetsdb.controllers.species.species_lookup(data['scientific_name'])
+      species = controllers.species.species_lookup(data['scientific_name'])
       #print(species)
 
    # make the new pet and save it
@@ -134,7 +133,7 @@ def pet_update(id, content):
 
    data = _flatten_pet_dict(content)
 
-   species = mypetsdb.controllers.species.species_cached_lookup(data['scientific_name'])
+   species = controllers.species.species_cached_lookup(data['scientific_name'])
 
    pet = (models.Session.query(models.PetDatum)
          .filter(models.PetDatum.userid == userid)

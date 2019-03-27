@@ -5,9 +5,9 @@ import time
 
 from sqlalchemy import func, or_
 
-from mypetsdb.config import settings
+from config import settings
 
-import mypetsdb.models as models
+import models
 
 # do a full lookup and build the cache if we found a specific species
 def species_lookup(id):

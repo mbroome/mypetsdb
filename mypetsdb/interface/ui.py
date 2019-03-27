@@ -8,13 +8,10 @@ from wtforms.validators import InputRequired, Email, Length
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
-from mypetsdb import login_manager, ma
-import mypetsdb.controllers.pets 
-import mypetsdb.controllers.species
-import mypetsdb.models as models
-import mypetsdb.forms as forms
-
-login_manager.login_view = 'auth.login'
+import controllers.pets 
+import controllers.species
+import models
+import forms
 
 routes = Blueprint('ui', __name__, template_folder='templates', static_folder='static')
 
@@ -48,9 +45,9 @@ def dashboard():
 
    if request.method == 'POST' and searchform.petsearch.data:
       #print(searchform.petsearch.data)
-      pets = mypetsdb.controllers.pets.pet_search(searchform.petsearch.data)
+      pets = controllers.pets.pet_search(searchform.petsearch.data)
    else:
-      pets = mypetsdb.controllers.pets.pet_lookup_all()
+      pets = controllers.pets.pet_lookup_all()
 
    petGroups = {}
    for pet in pets:
@@ -66,7 +63,7 @@ def dashboard():
          
    #print(petGroups)
 
-   classes = mypetsdb.controllers.species.endangered_classification_map()
+   classes = controllers.species.endangered_classification_map()
 
    return render_template('dashboard.html', name=current_user.username, petdata=pets, form=petform, searchform=searchform, classifications=classes, groups=petGroups)
 
@@ -90,14 +87,14 @@ def manage_specific_pet_note_id(id, note_id):
          #print(form.errors)
 
       if form.submit.data == True:
-         status = mypetsdb.controllers.pets.pet_note_update(id, note_id, form.data)
+         status = controllers.pets.pet_note_update(id, note_id, form.data)
       elif form.delete.data == True:
          #print('## we got a note delete for: %s => %s' % (id, note_id))
-         status = mypetsdb.controllers.pets.pet_note_delete(id, note_id)
+         status = controllers.pets.pet_note_delete(id, note_id)
       return redirect(url_for('ui.dashboard'))
    elif request.method == 'GET':
       #print('in the get')
-      note = mypetsdb.controllers.pets.pet_note_get_id(id, note_id)
+      note = controllers.pets.pet_note_get_id(id, note_id)
       #print(note)
       #print(note.__dict__)
       form = forms.NoteDatumForm(obj=note)
@@ -123,7 +120,7 @@ def manage_specific_pet_note(id):
          return render_template('manage_note.html', name=current_user.username, form=form, searchform=searchform, pet_id=id)
 
       if form.submit.data == True:
-         status = mypetsdb.controllers.pets.pet_note_create(id, form.data)
+         status = controllers.pets.pet_note_create(id, form.data)
       return redirect(url_for('ui.dashboard'))
    elif request.method == 'GET':
       return render_template('manage_note.html', name=current_user.username, form=form, searchform=searchform, pet_id=id)
@@ -147,19 +144,19 @@ def manage_specific_pet(id):
       #   #print(form.errors)
 
       if form.edit.data == True:
-         pet = mypetsdb.controllers.pets.pet_lookup_specific(id)
+         pet = controllers.pets.pet_lookup_specific(id)
          editForm = forms.PetForm(pet=pet['pet'], species=pet['species'], notes=[])
 
          return render_template('manage_pet.html', name=current_user.username, petdata=pet, form=editForm, searchform=searchform)
       elif form.submit.data == True:
-         pet = mypetsdb.controllers.pets.pet_update(id, form.data)
+         pet = controllers.pets.pet_update(id, form.data)
       elif form.delete.data == True:
-         status = mypetsdb.controllers.pets.pet_delete(id)
+         status = controllers.pets.pet_delete(id)
       elif form.note.data == True:
          return redirect(url_for('ui.manage_specific_pet_note', id=id))
       return redirect(url_for('ui.dashboard'))
    elif request.method == 'GET':
-      pet = mypetsdb.controllers.pets.pet_lookup_specific(id)
+      pet = controllers.pets.pet_lookup_specific(id)
       editForm = forms.PetForm(pet=pet['pet'], species=pet['species'], notes=[])
       return render_template('manage_pet.html', name=current_user.username,  petdata=pet, form=editForm, searchform=searchform)
 
@@ -190,10 +187,10 @@ def manage_pet():
 
       #print(form.pet)
 
-      q =  mypetsdb.controllers.species.species_lookup_scientific(form.species.scientific_name.data)
+      q =  controllers.species.species_lookup_scientific(form.species.scientific_name.data)
 
       if form.submit.data == True:
-         pet = mypetsdb.controllers.pets.pet_create(form.data)
+         pet = controllers.pets.pet_create(form.data)
 
          return redirect(url_for('ui.dashboard'))
       return render_template('manage_pet.html', name=current_user.username, form=form, searchform=searchform)

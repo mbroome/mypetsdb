@@ -11,21 +11,19 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 
 #from sqlalchemy import is_
 
-from mypetsdb import login_manager, ma, ts
-import mypetsdb.controllers.auth
-#import mypetsdb.controllers.utils
+import controllers.auth
 
-import mypetsdb.models as models
-import mypetsdb.forms as forms
+import models
+import forms
 
-from mypetsdb.config import settings
-login_manager.login_view = 'auth.login'
+from config import settings
+#login_manager.login_view = 'auth.login'
 
-@login_manager.user_loader
-def load_user(user_id):
-   return (models.Session.query(models.User)
-            .filter(models.User.id == user_id)
-            .first())
+#@login_manager.user_loader
+#def load_user(user_id):
+#   return (models.Session.query(models.User)
+#            .filter(models.User.id == user_id)
+#            .first())
 
 routes = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
 
@@ -92,7 +90,7 @@ def signup():
          # Now we'll send the email confirmation link
          subject = "Confirm your email"
 
-         token = ts.dumps(form.email.data, salt='email-confirm-key')
+         token = app.ts.dumps(form.email.data, salt='email-confirm-key')
          #print(token)
          confirm_url = url_for(
                'auth.confirm_email',
@@ -102,7 +100,7 @@ def signup():
          html = render_template('email/activate.html', confirm_url=confirm_url)
          #print(html)
 
-         mypetsdb.controllers.auth.send_email([form.email.data], subject=subject, html=html)
+         controllers.auth.send_email([form.email.data], subject=subject, html=html)
 
          flash('Verification email sent', 'success')
       return redirect(url_for('auth.login'))
@@ -112,7 +110,7 @@ def signup():
 @routes.route('/confirm/<token>')
 def confirm_email(token):
    try:
-       email = ts.loads(token, salt="email-confirm-key", max_age=86400)
+       email = app.ts.loads(token, salt="email-confirm-key", max_age=86400)
    except:
        abort(404)
 
@@ -150,7 +148,7 @@ def reset():
 
         subject = "Password reset requested"
 
-        token = ts.dumps(user.email, salt='recover-key')
+        token = app.ts.dumps(user.email, salt='recover-key')
 
         recover_url = url_for(
             'auth.reset_with_token',
@@ -161,7 +159,7 @@ def reset():
             'auth/recover.html',
             recover_url=recover_url)
 
-        mypetsdb.controllers.auth.send_email([user.email], subject=subject, html=html)
+        controllers.auth.send_email([user.email], subject=subject, html=html)
 
         flash('Password reset email sent', 'success')
 
@@ -171,7 +169,7 @@ def reset():
 @routes.route('/reset/<token>', methods=["GET", "POST"])
 def reset_with_token(token):
     try:
-        email = ts.loads(token, salt="recover-key", max_age=86400)
+        email = app.ts.loads(token, salt="recover-key", max_age=86400)
     except:
         abort(404)
 

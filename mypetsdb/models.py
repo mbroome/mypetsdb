@@ -21,11 +21,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from flask_login import UserMixin
 
-try:
-   from mypetsdb.config import settings
-except:
-   from config import settings
-
+from config import settings
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 engine = create_engine(settings.DB_MYPETSDB, pool_pre_ping=True)

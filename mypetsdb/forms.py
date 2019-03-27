@@ -7,7 +7,7 @@ from wtforms.fields.html5 import DateField
 
 from datetime import datetime
 
-import mypetsdb.models as models
+import models
 
 ###################################################
 # user management

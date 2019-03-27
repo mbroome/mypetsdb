@@ -8,13 +8,10 @@ from wtforms.validators import InputRequired, Email, Length
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
-from mypetsdb import login_manager, ma
-import mypetsdb.controllers.pets 
-import mypetsdb.controllers.species
-import mypetsdb.models as models
-import mypetsdb.forms as forms
-
-login_manager.login_view = 'auth.login'
+import controllers.pets 
+import controllers.species
+import models
+import forms
 
 routes = Blueprint('search', __name__, template_folder='templates', static_folder='static')
 
@@ -30,7 +27,7 @@ def search_species():
    q = []
    if request.method == 'POST' and searchform.speciessearch.data:
       #print('get it on')
-      q =  mypetsdb.controllers.species.species_lookup(searchform.speciessearch.data)
+      q =  controllers.species.species_lookup(searchform.speciessearch.data)
       #print(q)
       if type(q) is not list:
          q = [q]
@@ -45,8 +42,8 @@ def species_details_search(id, variety=''):
    petform = forms.SpeciesSearchForm()
    #print('variety: ' + variety)
 
-   q =  mypetsdb.controllers.species.species_lookup_scientific(id)
+   q =  controllers.species.species_lookup_scientific(id)
    #print(q['species'])
-   classes =  mypetsdb.controllers.species.endangered_classification_map()
+   classes =  controllers.species.endangered_classification_map()
    return render_template('search/search_details.html', name=current_user.username, searchdata=q, form=petform, classifications=classes, variety=variety)
 

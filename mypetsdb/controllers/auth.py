@@ -10,8 +10,7 @@ from flask_login import current_user
 from sqlalchemy import func, or_
 from itsdangerous import URLSafeTimedSerializer
 
-#import mypetsdb.controllers.utils
-from mypetsdb.config import settings
+from config import settings
 
 
 def send_email(recipients, subject='', text='', html=''):

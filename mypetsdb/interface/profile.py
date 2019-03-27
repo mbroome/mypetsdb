@@ -8,14 +8,11 @@ from wtforms.validators import InputRequired, Email, Length
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
-from mypetsdb import login_manager, ma
-import mypetsdb.controllers.pets 
-import mypetsdb.controllers.species
-import mypetsdb.models as models
-import mypetsdb.forms as forms
+import controllers.pets 
+import controllers.species
+import models
+import forms
 
-
-login_manager.login_view = 'auth.login'
 
 routes = Blueprint('profile', __name__, template_folder='templates', static_folder='static')
 
