@@ -1,5 +1,5 @@
 marshmallow
-marshmallow-sqlalchemy
+#marshmallow-sqlalchemy
 sqlalchemy
 flask_sqlalchemy
 flask

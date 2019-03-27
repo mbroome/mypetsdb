@@ -5,7 +5,6 @@ import logging
 
 from flask import Flask, request, render_template, redirect, url_for, Blueprint, flash
 
-from flask_marshmallow import Marshmallow
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_bootstrap import Bootstrap
 from werkzeug.contrib.fixers import ProxyFix
@@ -27,13 +26,10 @@ import interface.search
 app = Flask(__name__)
 app.config['SECRET_KEY'] = settings.SECRET_KEY
 
-ma = Marshmallow()
 login_manager = LoginManager()
 ts = URLSafeTimedSerializer(settings.SECRET_KEY)
 
-
 app.wsgi_app = ProxyFix(app.wsgi_app)
-ma.init_app(app)
 bootstrap = Bootstrap(app)
 login_manager.init_app(app)
 login_manager.login_view = 'auth.login'
