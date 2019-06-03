@@ -28,7 +28,8 @@ class ConfigLoader():
       for f in self.configFileList:
          self.mergeConfig(f)
 
-      self.config['TOP_LEVEL_DIR'] = os.path.dirname(os.path.realpath(__file__)) + '/../'
+      #self.config['TOP_LEVEL_DIR'] = os.path.dirname(os.path.realpath(__file__)) + '/../'
+      self.config['TOP_LEVEL_DIR'] = os.path.dirname(os.path.realpath(__file__))
 
       # pick the section of the config based on the APP_ENV
       if 'APP_ENV' in os.environ:

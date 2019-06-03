@@ -11,7 +11,7 @@ pp = pprint.PrettyPrinter(indent=4)
 
 csv.field_size_limit(sys.maxsize)
 
-classificationFile = '/home/mbroome/src/mypetsdb/data/classifications.json'
+classificationFile = '/home/mbroome/src/mypetsdb/mypetsdb/resources/classifications.json'
 
 csvDir = '/home/mbroome/tmp/iucn/'
 keyList = [

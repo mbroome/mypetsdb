@@ -232,7 +232,8 @@ def species_metadata_callout(species):
    return(species)
 
 def endangered_classification_map():
-   content = open(settings.TOP_LEVEL_DIR + '/data/' + 'classifications.json', 'r').read()
+   #content = open(settings.TOP_LEVEL_DIR + '/data/' + 'classifications.json', 'r').read()
+   content = open(settings.TOP_LEVEL_DIR + '/resources/' + 'classifications.json', 'r').read()
    data = json.loads(content)
    classes = {}
    for c in data:
