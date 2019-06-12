@@ -16,4 +16,4 @@ flask_login
 MySQL-python
 boto3
 #flask-jwt-extended
-zappa
+#zappa

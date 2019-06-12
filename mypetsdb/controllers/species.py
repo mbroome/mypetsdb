@@ -126,10 +126,10 @@ def species_get_seriouslyfish(id):
 def species_get_links(id):
    links = {}
 
-   #pcatfish = species_get_planetcatfish(id)
-   #for pcat in pcatfish:
-   #   links[pcat.scientific_name + ':' + 'planetcatfish'] = {'url': pcat.link,
-   #                                                          'source': 'planetcatfish'}
+   pcatfish = species_get_planetcatfish(id)
+   for pcat in pcatfish:
+      links[pcat.scientific_name + ':' + 'planetcatfish'] = {'url': pcat.link,
+                                                             'source': 'planetcatfish'}
 
    seriouslyfish = species_get_seriouslyfish(id)
    for fish in seriouslyfish:
